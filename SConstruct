@@ -194,7 +194,7 @@ if env.scons_version >= (4, 3):
 else:
     opts.Add("platform", "Target platform (%s)" % "|".join(platform_list), "")
     opts.Add("p", "Alias for 'platform'", "")
-opts.Add(EnumVariable("target", "Compilation target", "editor", ("editor", "template_release", "template_debug")))
+opts.Add(EnumVariable("target", "Compilation target", "pixel_debug", ("pixel_debug", "pixel_release", "editor", "template_release", "template_debug")))
 opts.Add(EnumVariable("arch", "CPU architecture", "auto", ["auto"] + architectures, architecture_aliases))
 opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
 opts.Add(
@@ -470,9 +470,10 @@ env.platform_apis = platform_apis
 # - Optimization level
 # - Debug symbols for crash traces / debuggers
 
-env.editor_build = env["target"] == "editor"
-env.dev_build = env["dev_build"]
-env.debug_features = env["target"] in ["editor", "template_debug"]
+env.pixel_engine = env["target"] in ["pixel_debug", "pixel_release"]
+env.editor_build = not env.pixel_engine and env["target"]
+env.debug_features = env["target"] in ["editor", "template_debug", "pixel_debug"]
+env.dev_build = env["target"] == "pixel_debug" or env["dev_build"]
 
 if env["optimize"] == "auto":
     if env.dev_build:
@@ -487,13 +488,19 @@ env["debug_symbols"] = methods.get_cmdline_bool("debug_symbols", env.dev_build)
 
 if env.editor_build:
     env.Append(CPPDEFINES=["TOOLS_ENABLED"])
+elif env["target"] == "pixel_debug":
+    env.Append(CPPDEFINES=["PIXEL_ENGINE"])
+    env.Append(CPPDEFINES=["PIXEL_DEBUG"])
+elif env["target"] == "pixel_release":
+    env.Append(CPPDEFINES=["PIXEL_ENGINE"])
+    env.Append(CPPDEFINES=["PIXEL_RELEASE"])
 
-if env.debug_features:
+if env.debug_features or env["target"] == "pixel_debug":
     # DEBUG_ENABLED enables debugging *features* and debug-only code, which is intended
     # to give *users* extra debugging information for their game development.
     env.Append(CPPDEFINES=["DEBUG_ENABLED"])
 
-if env.dev_build:
+if env.dev_build or env["target"] == "pixel_debug":
     # DEV_ENABLED enables *engine developer* code which should only be compiled for those
     # working on the engine itself.
     env.Append(CPPDEFINES=["DEV_ENABLED"])
@@ -904,7 +911,7 @@ else:
     suffix = "." + env["platform"]
 
 suffix += "." + env["target"]
-if env.dev_build:
+if env.dev_build and not env.pixel_engine:
     suffix += ".dev"
 
 if env["precision"] == "double":
@@ -1059,6 +1066,8 @@ SConscript("servers/SCsub")
 SConscript("scene/SCsub")
 if env.editor_build:
     SConscript("editor/SCsub")
+if env.pixel_engine:
+    SConscript("pixel/SCsub")
 SConscript("drivers/SCsub")
 
 SConscript("platform/SCsub")
