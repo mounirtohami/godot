@@ -28,6 +28,17 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+/**************************************************************************/
+/*                             PIXEL ENGINE                               */
+/* Copyright (c) 2024-present Pixel Engine contributors (see AUTHORS.md). */
+/**************************************************************************/
+/* NOTICE:                                                                */
+/* This file contains modifications and additions specific to the Pixel   */
+/* Engine project. While these changes are licensed under the MIT license */
+/* for compatibility, we request proper attribution if reused in any      */
+/* derivative works, including meta-forks.                                */
+/**************************************************************************/
+
 #include "main.h"
 
 #include "core/config/project_settings.h"
@@ -58,6 +69,7 @@
 #include "main/performance.h"
 #include "main/splash.gen.h"
 #include "modules/register_module_types.h"
+#include "pixel/main_tree.h"
 #include "platform/register_platform_apis.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/window.h"
@@ -189,6 +201,7 @@ static int audio_driver_idx = -1;
 static bool single_window = false;
 static bool editor = false;
 static bool project_manager = false;
+static bool pixel_engine = false;
 static bool cmdline_tool = false;
 static String locale;
 static String log_file;
@@ -1851,7 +1864,9 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #ifdef TOOLS_ENABLED
 		found_project = true;
 #endif
-	} else {
+	}
+#ifndef PIXEL_ENGINE
+	else {
 #ifdef TOOLS_ENABLED
 		editor = false;
 #else
@@ -1862,11 +1877,14 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		goto error;
 #endif
 	}
+#else
+	pixel_engine = true;
+#endif
 
 	// Initialize WorkerThreadPool.
 	{
 #ifdef THREADS_ENABLED
-		if (editor || project_manager) {
+		if (editor || project_manager || pixel_engine) {
 			WorkerThreadPool::get_singleton()->init(-1, 0.75);
 		} else {
 			int worker_threads = GLOBAL_GET("threading/worker_pool/max_threads");
@@ -1988,8 +2006,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		OS::get_singleton()->add_logger(memnew(RotatedFileLogger(base_path, max_files)));
 	}
 
-	if (main_args.size() == 0 && String(GLOBAL_GET("application/run/main_scene")) == "") {
-#ifdef TOOLS_ENABLED
+	if (!pixel_engine && main_args.size() == 0 && String(GLOBAL_GET("application/run/main_scene")) == "") {
+#if defined(TOOLS_ENABLED) && !defined(PIXEL_ENGINE)
 		if (!editor && !project_manager) {
 #endif
 			const String error_msg = "Error: Can't run project: no main scene defined in the project.\n";
@@ -2001,8 +2019,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #endif
 	}
 
-	if (editor || project_manager) {
-		Engine::get_singleton()->set_editor_hint(true);
+	if (editor || project_manager || pixel_engine) {
+		Engine::get_singleton()->set_editor_hint(!pixel_engine);
 		use_custom_res = false;
 		input_map->load_default(); //keys for editor
 	} else {
@@ -2496,8 +2514,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	OS::get_singleton()->_allow_hidpi = GLOBAL_DEF("display/window/dpi/allow_hidpi", true);
 	OS::get_singleton()->_allow_layered = GLOBAL_DEF("display/window/per_pixel_transparency/allowed", false);
 
-#ifdef TOOLS_ENABLED
-	if (editor || project_manager) {
+#if defined(TOOLS_ENABLED) || defined(PIXEL_ENGINE)
+	if (editor || project_manager || pixel_engine) {
 		// The editor and project manager always detect and use hiDPI if needed.
 		OS::get_singleton()->_allow_hidpi = true;
 		// Disable Vulkan overlays in editor, they cause various issues.
@@ -3828,9 +3846,15 @@ int Main::start() {
 	}
 #endif
 
+#ifdef PIXEL_ENGINE
+	pixel_engine = true;
+#endif
+
 	MainLoop *main_loop = nullptr;
 	if (editor) {
 		main_loop = memnew(SceneTree);
+	} else if (pixel_engine) {
+		main_loop = memnew(MainTree);
 	}
 	if (main_loop_type.is_empty()) {
 		main_loop_type = GLOBAL_GET("application/run/main_loop_type");
@@ -3944,7 +3968,7 @@ int Main::start() {
 		ResourceLoader::add_custom_loaders();
 		ResourceSaver::add_custom_savers();
 
-		if (!project_manager && !editor) { // game
+		if (!project_manager && !editor && !pixel_engine) { // game
 			if (!game_path.is_empty() || !script.is_empty()) {
 				//autoload
 				OS::get_singleton()->benchmark_begin_measure("Startup", "Load Autoloads");
