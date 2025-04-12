@@ -127,6 +127,11 @@ public:
 		AUTO_TRANSLATE_MODE_DISABLED,
 	};
 
+	enum DeleteMode {
+		DELETE_MODE_INSTANT_FREE,
+		DELETE_MODE_QUEUE_FREE,
+	};
+
 	struct Comparator {
 		bool operator()(const Node *p_a, const Node *p_b) const { return p_b->is_greater_than(p_a); }
 	};
@@ -346,6 +351,38 @@ private:
 
 	void _update_children_cache_impl() const;
 
+	template <bool IncludeInternal, typename DeleteOp>
+	_FORCE_INLINE_ void _delete_all_children_impl(DeleteOp delete_op) {
+		HashMap<StringName, Node *> children = data.children;
+		data.children.clear();
+
+		for (const KeyValue<StringName, Node *> &K : children) {
+			Node *child = K.value;
+
+			if constexpr (!IncludeInternal) {
+				if (child->data.internal_mode != INTERNAL_MODE_DISABLED) {
+					data.children.insert(K.key, child);
+					continue;
+				}
+			}
+
+			child->_set_tree(nullptr);
+			remove_child_notify(child);
+			child->notification(NOTIFICATION_UNPARENTED);
+
+			child->data.parent = nullptr;
+			child->data.index = -1;
+
+			if (data.tree) {
+				child->_propagate_after_exit_tree();
+			}
+
+			delete_op(child);
+		}
+
+		children.clear();
+	}
+
 	// Process group management
 	void _add_process_group();
 	void _remove_process_group();
@@ -512,6 +549,7 @@ public:
 	void add_child(Node *p_child, bool p_force_readable_name = false, InternalMode p_internal = INTERNAL_MODE_DISABLED);
 	void add_sibling(Node *p_sibling, bool p_force_readable_name = false);
 	void remove_child(Node *p_child);
+	void delete_all_children(bool p_include_internal = true, DeleteMode p_delete_mode = DELETE_MODE_INSTANT_FREE);
 
 	/// Optimal way to iterate the children of this node.
 	/// The caller is responsible to ensure:
