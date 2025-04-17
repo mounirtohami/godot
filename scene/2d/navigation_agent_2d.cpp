@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_agent_2d.h"
 
 #include "core/math/geometry_2d.h"
@@ -1076,3 +1078,5 @@ void NavigationAgent2D::_update_debug_path() {
 	}
 }
 #endif // DEBUG_ENABLED
+
+#endif // _3D_DISABLED

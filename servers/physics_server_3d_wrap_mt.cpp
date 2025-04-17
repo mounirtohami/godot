@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "physics_server_3d_wrap_mt.h"
 
 void PhysicsServer3DWrapMT::_assign_mt_ids(WorkerThreadPool::TaskID p_pump_task_id) {
@@ -108,3 +110,5 @@ PhysicsServer3DWrapMT::PhysicsServer3DWrapMT(PhysicsServer3D *p_contained, bool 
 PhysicsServer3DWrapMT::~PhysicsServer3DWrapMT() {
 	memdelete(physics_server_3d);
 }
+
+#endif // _3D_DISABLED

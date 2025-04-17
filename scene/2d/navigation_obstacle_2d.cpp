@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_obstacle_2d.h"
 
 #include "core/math/geometry_2d.h"
@@ -510,3 +512,5 @@ void NavigationObstacle2D::_update_static_obstacle_debug() {
 	rs->canvas_item_add_mesh(debug_canvas_item, debug_mesh_rid, get_global_transform());
 }
 #endif // DEBUG_ENABLED
+
+#endif // _3D_DISABLED

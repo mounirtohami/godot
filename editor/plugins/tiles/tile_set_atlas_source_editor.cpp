@@ -47,8 +47,9 @@
 
 #include "core/math/geometry_2d.h"
 #include "core/os/keyboard.h"
-
+#ifndef _3D_DISABLED
 #include "servers/navigation_server_2d.h"
+#endif // _3D_DISABLED
 
 void TileSetAtlasSourceEditor::TileSetAtlasSourceProxyObject::set_id(int p_id) {
 	ERR_FAIL_COND(p_id < 0);
@@ -758,7 +759,7 @@ void TileSetAtlasSourceEditor::_update_tile_data_editors() {
 		item->set_selectable(0, false);
 		item->set_custom_color(0, disabled_color);
 	}
-
+#ifndef _3D_DISABLED
 	// --- Navigation ---
 	ADD_TILE_DATA_EDITOR_GROUP(TTR("Navigation"));
 	for (int i = 0; i < tile_set->get_navigation_layers_count(); i++) {
@@ -786,6 +787,7 @@ void TileSetAtlasSourceEditor::_update_tile_data_editors() {
 		item->set_selectable(0, false);
 		item->set_custom_color(0, disabled_color);
 	}
+#endif // _3D_DISABLED
 
 	// --- Custom Data ---
 	ADD_TILE_DATA_EDITOR_GROUP(TTR("Custom Data"));
@@ -2778,6 +2780,7 @@ void EditorPropertyTilePolygon::_add_focusable_children(Node *p_node) {
 
 void EditorPropertyTilePolygon::_polygons_changed() {
 	if (String(count_property).is_empty()) {
+#ifndef _3D_DISABLED
 		if (base_type == "NavigationPolygon") {
 			Ref<NavigationPolygon> navigation_polygon;
 			if (generic_tile_polygon_editor->get_polygon_count() >= 1) {
@@ -2799,6 +2802,7 @@ void EditorPropertyTilePolygon::_polygons_changed() {
 			}
 			emit_changed(get_edited_property(), navigation_polygon);
 		}
+#endif // _3D_DISABLED
 	} else {
 		// Multiple array of vertices or OccluderPolygon2D.
 		Vector<String> changed_properties;
@@ -2840,6 +2844,7 @@ void EditorPropertyTilePolygon::update_property() {
 	// Reset the polygons.
 	generic_tile_polygon_editor->clear_polygons();
 
+#ifndef _3D_DISABLED
 	if (String(count_property).is_empty()) {
 		if (base_type == "NavigationPolygon") {
 			// Single NavigationPolygon.
@@ -2852,6 +2857,7 @@ void EditorPropertyTilePolygon::update_property() {
 			}
 		}
 	} else {
+#endif // _3D_DISABLED
 		int count = get_edited_object()->get(count_property);
 		if (base_type.is_empty()) {
 			// Multiple array of vertices.
@@ -2869,7 +2875,9 @@ void EditorPropertyTilePolygon::update_property() {
 				}
 			}
 		}
+#ifndef _3D_DISABLED
 	}
+#endif // _3D_DISABLED
 }
 
 void EditorPropertyTilePolygon::setup_single_mode(const StringName &p_property, const String &p_base_type) {
@@ -2954,6 +2962,7 @@ bool EditorInspectorPluginTileData::parse_property(Object *p_object, const Varia
 				return true;
 			}
 		}
+#ifndef _3D_DISABLED
 	} else if (components.size() == 2 && components[0].begins_with("navigation_layer_") && components[0].trim_prefix("navigation_layer_").is_valid_int()) {
 		// Navigation layers.
 		int layer_index = components[0].trim_prefix("navigation_layer_").to_int();
@@ -2964,6 +2973,7 @@ bool EditorInspectorPluginTileData::parse_property(Object *p_object, const Varia
 			add_property_editor(p_path, ep);
 			return true;
 		}
+#endif // _3D_DISABLED
 	} else if (p_path.begins_with("custom_data_") && p_path.trim_prefix("custom_data_").is_valid_int()) {
 		// Custom data layers.
 		int layer_index = components[0].trim_prefix("custom_data_").to_int();

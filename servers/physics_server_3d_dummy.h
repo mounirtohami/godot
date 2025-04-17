@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef PHYSICS_SERVER_3D_DUMMY_H
 #define PHYSICS_SERVER_3D_DUMMY_H
 
@@ -434,3 +436,5 @@ public:
 };
 
 #endif // PHYSICS_SERVER_3D_DUMMY_H
+
+#endif // _3D_DISABLED

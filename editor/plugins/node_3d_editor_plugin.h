@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NODE_3D_EDITOR_PLUGIN_H
 #define NODE_3D_EDITOR_PLUGIN_H
 
@@ -1056,3 +1058,5 @@ public:
 };
 
 #endif // NODE_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

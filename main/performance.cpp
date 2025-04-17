@@ -227,6 +227,7 @@ double Performance::get_monitor(Monitor p_monitor) const {
 
 		case AUDIO_OUTPUT_LATENCY:
 			return AudioServer::get_singleton()->get_output_latency();
+#ifndef _3D_DISABLED
 		case NAVIGATION_ACTIVE_MAPS:
 			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_ACTIVE_MAPS);
 		case NAVIGATION_REGION_COUNT:
@@ -247,6 +248,7 @@ double Performance::get_monitor(Monitor p_monitor) const {
 			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_EDGE_FREE_COUNT);
 		case NAVIGATION_OBSTACLE_COUNT:
 			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_OBSTACLE_COUNT);
+#endif // _3D_DISABLED
 
 		default: {
 		}

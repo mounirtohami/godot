@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "mesh_editor_plugin.h"
 
 #include "core/config/project_settings.h"
@@ -186,3 +188,5 @@ MeshEditorPlugin::MeshEditorPlugin() {
 	plugin.instantiate();
 	add_inspector_plugin(plugin);
 }
+
+#endif // _3D_DISABLED

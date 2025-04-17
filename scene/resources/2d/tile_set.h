@@ -38,10 +38,13 @@
 #include "scene/2d/light_occluder_2d.h"
 #include "scene/main/canvas_item.h"
 #include "scene/resources/2d/convex_polygon_shape_2d.h"
-#include "scene/resources/2d/navigation_polygon.h"
 #include "scene/resources/image_texture.h"
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/physics_material.h"
+
+#ifndef _3D_DISABLED
+#include "scene/resources/2d/navigation_polygon.h"
+#endif // _3D_DISABLED
 
 #ifndef DISABLE_DEPRECATED
 #include "scene/resources/shader.h"
@@ -56,7 +59,9 @@ class TileData;
 class TileSetPlugin;
 class TileSetPluginAtlasRendering;
 class TileSetPluginAtlasPhysics;
+#ifndef _3D_DISABLED
 class TileSetPluginAtlasNavigation;
+#endif // _3D_DISABLED
 
 union TileMapCell {
 	struct {
@@ -175,15 +180,19 @@ private:
 		int autotile_spacing = 0;
 		HashMap<Vector2i, int> autotile_bitmask_flags;
 		HashMap<Vector2i, Ref<OccluderPolygon2D>> autotile_occluder_map;
+#ifndef _3D_DISABLED
 		HashMap<Vector2i, Ref<NavigationPolygon>> autotile_navpoly_map;
+#endif // _3D_DISABLED
 		HashMap<Vector2i, int> autotile_priority_map;
 		HashMap<Vector2i, int> autotile_z_index_map;
 
 		Vector<CompatibilityShapeData> shapes;
 		Ref<OccluderPolygon2D> occluder;
 		Vector2 occluder_offset;
+#ifndef _3D_DISABLED
 		Ref<NavigationPolygon> navigation;
 		Vector2 navigation_offset;
+#endif // _3D_DISABLED
 		int z_index = 0;
 	};
 
@@ -351,11 +360,13 @@ private:
 	bool terrains_cache_dirty = true;
 	void _update_terrains_cache();
 
+#ifndef _3D_DISABLED
 	// Navigation
 	struct NavigationLayer {
 		uint32_t layers = 1;
 	};
 	Vector<NavigationLayer> navigation_layers;
+#endif // _3D_DISABLED
 
 	// CustomData
 	struct CustomDataLayer {
@@ -474,6 +485,7 @@ public:
 	bool is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terrain_mode, TileSet::CellNeighbor p_peering_bit) const;
 	bool is_valid_terrain_peering_bit(int p_terrain_set, TileSet::CellNeighbor p_peering_bit) const;
 
+#ifndef _3D_DISABLED
 	// Navigation
 	int get_navigation_layers_count() const;
 	void add_navigation_layer(int p_index = -1);
@@ -483,6 +495,7 @@ public:
 	uint32_t get_navigation_layer_layers(int p_layer_index) const;
 	void set_navigation_layer_layer_value(int p_layer_index, int p_layer_number, bool p_value);
 	bool get_navigation_layer_layer_value(int p_layer_index, int p_layer_number) const;
+#endif // _3D_DISABLED
 
 	// Custom data
 	int get_custom_data_layers_count() const;
@@ -588,9 +601,11 @@ public:
 	virtual void add_terrain(int p_terrain_set, int p_index) {}
 	virtual void move_terrain(int p_terrain_set, int p_from_index, int p_to_pos) {}
 	virtual void remove_terrain(int p_terrain_set, int p_index) {}
+#ifndef _3D_DISABLED
 	virtual void add_navigation_layer(int p_index) {}
 	virtual void move_navigation_layer(int p_from_index, int p_to_pos) {}
 	virtual void remove_navigation_layer(int p_index) {}
+#endif // _3D_DISABLED
 	virtual void add_custom_data_layer(int p_index) {}
 	virtual void move_custom_data_layer(int p_from_index, int p_to_pos) {}
 	virtual void remove_custom_data_layer(int p_index) {}
@@ -695,9 +710,11 @@ public:
 	virtual void add_terrain(int p_terrain_set, int p_index) override;
 	virtual void move_terrain(int p_terrain_set, int p_from_index, int p_to_pos) override;
 	virtual void remove_terrain(int p_terrain_set, int p_index) override;
+#ifndef _3D_DISABLED
 	virtual void add_navigation_layer(int p_index) override;
 	virtual void move_navigation_layer(int p_from_index, int p_to_pos) override;
 	virtual void remove_navigation_layer(int p_index) override;
+#endif // _3D_DISABLED
 	virtual void add_custom_data_layer(int p_index) override;
 	virtual void move_custom_data_layer(int p_from_index, int p_to_pos) override;
 	virtual void remove_custom_data_layer(int p_index) override;
@@ -875,12 +892,14 @@ private:
 	int terrain = -1;
 	int terrain_peering_bits[16] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
+#ifndef _3D_DISABLED
 	// Navigation
 	struct NavigationLayerTileData {
 		Ref<NavigationPolygon> navigation_polygon;
 		mutable HashMap<int, Ref<NavigationPolygon>> transformed_navigation_polygon;
 	};
 	Vector<NavigationLayerTileData> navigation;
+#endif // _3D_DISABLED
 
 	// Misc
 	double probability = 1.0;
@@ -895,7 +914,9 @@ protected:
 	static void _bind_methods();
 
 #ifndef DISABLE_DEPRECATED
+#ifndef _3D_DISABLED
 	Ref<NavigationPolygon> _get_navigation_polygon_bind_compat_84660(int p_layer_id) const;
+#endif // _3D_DISABLED
 	Ref<OccluderPolygon2D> _get_occluder_bind_compat_84660(int p_layer_id) const;
 
 	static void _bind_compatibility_methods();
@@ -917,9 +938,11 @@ public:
 	void add_terrain(int p_terrain_set, int p_index);
 	void move_terrain(int p_terrain_set, int p_from_index, int p_to_pos);
 	void remove_terrain(int p_terrain_set, int p_index);
+#ifndef _3D_DISABLED
 	void add_navigation_layer(int p_index);
 	void move_navigation_layer(int p_from_index, int p_to_pos);
 	void remove_navigation_layer(int p_index);
+#endif // _3D_DISABLED
 	void add_custom_data_layer(int p_index);
 	void move_custom_data_layer(int p_from_index, int p_to_pos);
 	void remove_custom_data_layer(int p_index);
@@ -989,9 +1012,11 @@ public:
 
 	TileSet::TerrainsPattern get_terrains_pattern() const; // Not exposed.
 
+#ifndef _3D_DISABLED
 	// Navigation
 	void set_navigation_polygon(int p_layer_id, Ref<NavigationPolygon> p_navigation_polygon);
 	Ref<NavigationPolygon> get_navigation_polygon(int p_layer_id, bool p_flip_h = false, bool p_flip_v = false, bool p_transpose = false) const;
+#endif // _3D_DISABLED
 
 	// Misc
 	void set_probability(float p_probability);

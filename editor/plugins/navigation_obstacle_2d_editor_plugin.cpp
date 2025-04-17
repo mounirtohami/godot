@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_obstacle_2d_editor_plugin.h"
 
 #include "editor/editor_undo_redo_manager.h"
@@ -71,3 +73,5 @@ NavigationObstacle2DEditor::NavigationObstacle2DEditor() {}
 NavigationObstacle2DEditorPlugin::NavigationObstacle2DEditorPlugin() :
 		AbstractPolygon2DEditorPlugin(memnew(NavigationObstacle2DEditor), "NavigationObstacle2D") {
 }
+
+#endif // _3D_DISABLED

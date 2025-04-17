@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef PATH_3D_EDITOR_PLUGIN_H
 #define PATH_3D_EDITOR_PLUGIN_H
 
@@ -185,3 +187,5 @@ public:
 };
 
 #endif // PATH_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

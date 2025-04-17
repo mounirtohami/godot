@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_POLYGON_H
 #define NAVIGATION_POLYGON_H
 
@@ -178,3 +180,5 @@ VARIANT_ENUM_CAST(NavigationPolygon::ParsedGeometryType);
 VARIANT_ENUM_CAST(NavigationPolygon::SourceGeometryMode);
 
 #endif // NAVIGATION_POLYGON_H
+
+#endif // _3D_DISABLED

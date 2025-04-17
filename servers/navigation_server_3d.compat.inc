@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef DISABLE_DEPRECATED
 
 Vector<Vector3> NavigationServer3D::_map_get_path_bind_compat_100129(RID p_map, Vector3 p_origin, Vector3 p_destination, bool p_optimize, uint32_t p_navigation_layers) const {
@@ -44,3 +46,5 @@ void NavigationServer3D::_bind_compatibility_methods() {
 }
 
 #endif // DISABLE_DEPRECATED
+
+#endif // _3D_DISABLED

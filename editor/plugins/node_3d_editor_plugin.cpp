@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "node_3d_editor_plugin.h"
 
 #include "core/config/project_settings.h"
@@ -9620,3 +9622,5 @@ Node3DEditorPlugin::Node3DEditorPlugin() {
 
 Node3DEditorPlugin::~Node3DEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

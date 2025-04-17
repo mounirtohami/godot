@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "lightmap_gi_editor_plugin.h"
 
 #include "editor/editor_node.h"
@@ -217,3 +219,5 @@ LightmapGIEditorPlugin::LightmapGIEditorPlugin() {
 
 LightmapGIEditorPlugin::~LightmapGIEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef MESH_INSTANCE_3D_EDITOR_PLUGIN_H
 #define MESH_INSTANCE_3D_EDITOR_PLUGIN_H
 
@@ -124,3 +126,5 @@ public:
 };
 
 #endif // MESH_INSTANCE_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_MESH_H
 #define NAVIGATION_MESH_H
 
@@ -213,3 +215,5 @@ VARIANT_ENUM_CAST(NavigationMesh::ParsedGeometryType);
 VARIANT_ENUM_CAST(NavigationMesh::SourceGeometryMode);
 
 #endif // NAVIGATION_MESH_H
+
+#endif // _3D_DISABLED

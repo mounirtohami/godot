@@ -34,14 +34,18 @@
 #include "editor/editor_inspector.h"
 #include "editor/plugins/editor_plugin.h"
 #include "editor/plugins/editor_resource_conversion_plugin.h"
-#include "scene/resources/3d/primitive_meshes.h"
 #include "scene/resources/material.h"
+#ifndef _3D_DISABLED
+#include "scene/resources/3d/primitive_meshes.h"
 
 class Camera3D;
-class ColorRect;
 class DirectionalLight3D;
-class HBoxContainer;
 class MeshInstance3D;
+class Environment;
+#endif // _3D_DISABLED
+
+class ColorRect;
+class HBoxContainer;
 class SubViewport;
 class SubViewportContainer;
 class Button;
@@ -50,12 +54,14 @@ class Label;
 class MaterialEditor : public Control {
 	GDCLASS(MaterialEditor, Control);
 
-	Vector2 rot;
-
 	SubViewportContainer *vc_2d = nullptr;
 	SubViewport *viewport_2d = nullptr;
 	HBoxContainer *layout_2d = nullptr;
 	ColorRect *rect_instance = nullptr;
+	Ref<Material> material;
+
+#ifndef _3D_DISABLED
+	Vector2 rot;
 
 	SubViewportContainer *vc = nullptr;
 	SubViewport *viewport = nullptr;
@@ -78,45 +84,56 @@ class MaterialEditor : public Control {
 
 	HBoxContainer *layout_3d = nullptr;
 
-	Ref<Material> material;
-
 	Button *sphere_switch = nullptr;
 	Button *box_switch = nullptr;
 	Button *quad_switch = nullptr;
 	Button *light_1_switch = nullptr;
 	Button *light_2_switch = nullptr;
+#endif // _3D_DISABLED
 
 	struct ThemeCache {
+#ifndef _3D_DISABLED
 		Ref<Texture2D> light_1_icon;
 		Ref<Texture2D> light_2_icon;
 		Ref<Texture2D> sphere_icon;
 		Ref<Texture2D> box_icon;
 		Ref<Texture2D> quad_icon;
+#endif // _3D_DISABLED
 		Ref<Texture2D> checkerboard;
 	} theme_cache;
 
+#ifndef _3D_DISABLED
 	void _on_light_1_switch_pressed();
 	void _on_light_2_switch_pressed();
 	void _on_sphere_switch_pressed();
 	void _on_box_switch_pressed();
 	void _on_quad_switch_pressed();
+#endif // _3D_DISABLED
 
 protected:
 	virtual void _update_theme_item_cache() override;
 	void _notification(int p_what);
+#ifndef _3D_DISABLED
 	void gui_input(const Ref<InputEvent> &p_event) override;
 	void _set_rotation(real_t p_x_degrees, real_t p_y_degrees);
 	void _store_rotation_metadata();
 	void _update_rotation();
+#endif // _3D_DISABLED
 
 public:
+#ifndef _3D_DISABLED
 	void edit(Ref<Material> p_material, const Ref<Environment> &p_env);
+#else
+	void edit(Ref<Material> p_material);
+#endif // _3D_DISABLED
 	MaterialEditor();
 };
 
 class EditorInspectorPluginMaterial : public EditorInspectorPlugin {
 	GDCLASS(EditorInspectorPluginMaterial, EditorInspectorPlugin);
+#ifndef _3D_DISABLED
 	Ref<Environment> env;
+#endif // _3D_DISABLED
 
 public:
 	virtual bool can_handle(Object *p_object) override;
@@ -136,6 +153,7 @@ public:
 	MaterialEditorPlugin();
 };
 
+#ifndef _3D_DISABLED
 class StandardMaterial3DConversionPlugin : public EditorResourceConversionPlugin {
 	GDCLASS(StandardMaterial3DConversionPlugin, EditorResourceConversionPlugin);
 
@@ -153,6 +171,7 @@ public:
 	virtual bool handles(const Ref<Resource> &p_resource) const override;
 	virtual Ref<Resource> convert(const Ref<Resource> &p_resource) const override;
 };
+#endif // _3D_DISABLED
 
 class ParticleProcessMaterialConversionPlugin : public EditorResourceConversionPlugin {
 	GDCLASS(ParticleProcessMaterialConversionPlugin, EditorResourceConversionPlugin);
@@ -172,6 +191,7 @@ public:
 	virtual Ref<Resource> convert(const Ref<Resource> &p_resource) const override;
 };
 
+#ifndef _3D_DISABLED
 class ProceduralSkyMaterialConversionPlugin : public EditorResourceConversionPlugin {
 	GDCLASS(ProceduralSkyMaterialConversionPlugin, EditorResourceConversionPlugin);
 
@@ -207,5 +227,6 @@ public:
 	virtual bool handles(const Ref<Resource> &p_resource) const override;
 	virtual Ref<Resource> convert(const Ref<Resource> &p_resource) const override;
 };
+#endif // _3D_DISABLED
 
 #endif // MATERIAL_EDITOR_PLUGIN_H

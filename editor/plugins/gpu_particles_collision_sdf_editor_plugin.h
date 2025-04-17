@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef GPU_PARTICLES_COLLISION_SDF_EDITOR_PLUGIN_H
 #define GPU_PARTICLES_COLLISION_SDF_EDITOR_PLUGIN_H
 
@@ -72,3 +74,5 @@ public:
 };
 
 #endif // GPU_PARTICLES_COLLISION_SDF_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

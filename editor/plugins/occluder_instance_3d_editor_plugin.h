@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef OCCLUDER_INSTANCE_3D_EDITOR_PLUGIN_H
 #define OCCLUDER_INSTANCE_3D_EDITOR_PLUGIN_H
 
@@ -64,3 +66,5 @@ public:
 };
 
 #endif // OCCLUDER_INSTANCE_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

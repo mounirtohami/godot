@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_mesh.h"
 
 #ifdef DEBUG_ENABLED
@@ -657,3 +659,5 @@ bool NavigationMesh::_get(const StringName &p_name, Variant &r_ret) const {
 	return false;
 }
 #endif // DISABLE_DEPRECATED
+
+#endif // _3D_DISABLED

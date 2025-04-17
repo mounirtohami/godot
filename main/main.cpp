@@ -732,8 +732,10 @@ Error Main::test_setup() {
 	// Default theme will be initialized later, after modules and ScriptServer are ready.
 	initialize_theme_db();
 
+#ifndef _3D_DISABLED
 	NavigationServer3DManager::initialize_server(); // 3D server first because 2D depends on it.
 	NavigationServer2DManager::initialize_server();
+#endif // _3D_DISABLED
 
 	register_scene_types();
 	register_driver_types();
@@ -817,8 +819,10 @@ void Main::test_cleanup() {
 
 	finalize_theme_db();
 
+#ifndef _3D_DISABLED
 	NavigationServer2DManager::finalize_server(); // 2D goes first as it uses the 3D server behind the scene.
 	NavigationServer3DManager::finalize_server();
+#endif // _3D_DISABLED
 
 	GDExtensionManager::get_singleton()->deinitialize_extensions(GDExtension::INITIALIZATION_LEVEL_SERVERS);
 	uninitialize_modules(MODULE_INITIALIZATION_LEVEL_SERVERS);
@@ -3397,8 +3401,10 @@ Error Main::setup2(bool p_show_boot_logo) {
 
 	MAIN_PRINT("Main: Load Navigation");
 
+#ifndef _3D_DISABLED
 	NavigationServer3DManager::initialize_server(); // 3D server first because 2D depends on it.
 	NavigationServer2DManager::initialize_server();
+#endif // _3D_DISABLED
 
 	register_scene_types();
 	register_driver_types();
@@ -4001,6 +4007,7 @@ int Main::start() {
 		if (debug_paths) {
 			sml->set_debug_paths_hint(true);
 		}
+#ifndef _3D_DISABLED
 		if (debug_navigation) {
 			sml->set_debug_navigation_hint(true);
 			NavigationServer3D::get_singleton()->set_debug_navigation_enabled(true);
@@ -4012,6 +4019,7 @@ int Main::start() {
 			NavigationServer3D::get_singleton()->set_active(true);
 			NavigationServer3D::get_singleton()->set_debug_enabled(true);
 		}
+#endif // _3D_DISABLED
 		if (debug_canvas_item_redraw) {
 			RenderingServer::get_singleton()->canvas_item_set_debug_redraw(true);
 		}
@@ -4454,10 +4462,10 @@ bool Main::iteration() {
 	// process all our active interfaces
 #ifndef _3D_DISABLED
 	XRServer::get_singleton()->_process();
-#endif // _3D_DISABLED
 
 	NavigationServer2D::get_singleton()->sync();
 	NavigationServer3D::get_singleton()->sync();
+#endif // _3D_DISABLED
 
 	for (int iters = 0; iters < advance.physics_steps; ++iters) {
 		if (Input::get_singleton()->is_agile_input_event_flushing()) {
@@ -4495,7 +4503,9 @@ bool Main::iteration() {
 
 		uint64_t navigation_begin = OS::get_singleton()->get_ticks_usec();
 
+#ifndef _3D_DISABLED
 		NavigationServer3D::get_singleton()->process(physics_step * time_scale);
+#endif // _3D_DISABLED
 
 		navigation_process_ticks = MAX(navigation_process_ticks, OS::get_singleton()->get_ticks_usec() - navigation_begin); // keep the largest one for reference
 		navigation_process_max = MAX(OS::get_singleton()->get_ticks_usec() - navigation_begin, navigation_process_max);
@@ -4734,9 +4744,11 @@ void Main::cleanup(bool p_force) {
 
 	finalize_theme_db();
 
+#ifndef _3D_DISABLED
 	// Before deinitializing server extensions, finalize servers which may be loaded as extensions.
 	NavigationServer2DManager::finalize_server(); // 2D goes first as it uses the 3D server behind the scene.
 	NavigationServer3DManager::finalize_server();
+#endif // _3D_DISABLED
 	finalize_physics();
 
 	GDExtensionManager::get_singleton()->deinitialize_extensions(GDExtension::INITIALIZATION_LEVEL_SERVERS);

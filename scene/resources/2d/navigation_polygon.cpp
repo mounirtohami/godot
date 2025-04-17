@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_polygon.h"
 
 #include "core/math/geometry_2d.h"
@@ -638,3 +640,5 @@ void NavigationPolygon::_validate_property(PropertyInfo &p_property) const {
 		}
 	}
 }
+
+#endif // _3D_DISABLED

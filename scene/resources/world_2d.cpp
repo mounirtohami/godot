@@ -53,6 +53,7 @@ RID World2D::get_space() const {
 }
 
 RID World2D::get_navigation_map() const {
+#ifndef _3D_DISABLED
 	if (navigation_map.is_null()) {
 		navigation_map = NavigationServer2D::get_singleton()->map_create();
 		NavigationServer2D::get_singleton()->map_set_active(navigation_map, true);
@@ -62,6 +63,7 @@ RID World2D::get_navigation_map() const {
 		NavigationServer2D::get_singleton()->map_set_link_connection_radius(navigation_map, GLOBAL_GET("navigation/2d/default_link_connection_radius"));
 	}
 	return navigation_map;
+#endif // _3D_DISABLED
 }
 
 PhysicsDirectSpaceState2D *World2D::get_direct_space_state() {
@@ -96,12 +98,16 @@ World2D::World2D() {
 World2D::~World2D() {
 	ERR_FAIL_NULL(RenderingServer::get_singleton());
 	ERR_FAIL_NULL(PhysicsServer2D::get_singleton());
+#ifndef _3D_DISABLED
 	ERR_FAIL_NULL(NavigationServer2D::get_singleton());
+#endif // _3D_DISABLED
 	RenderingServer::get_singleton()->free(canvas);
 	if (space.is_valid()) {
 		PhysicsServer2D::get_singleton()->free(space);
 	}
+#ifndef _3D_DISABLED
 	if (navigation_map.is_valid()) {
 		NavigationServer2D::get_singleton()->free(navigation_map);
 	}
+#endif // _3D_DISABLED
 }

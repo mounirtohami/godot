@@ -990,11 +990,7 @@ env["OBJPREFIX"] = env["object_prefix"]
 env["SHOBJPREFIX"] = env["object_prefix"]
 
 if env["disable_3d"]:
-    if env.editor_build:
-        print_error("Build option `disable_3d=yes` cannot be used for editor builds, only for export template builds.")
-        Exit(255)
-    else:
-        env.Append(CPPDEFINES=["_3D_DISABLED"])
+    env.Append(CPPDEFINES=["_3D_DISABLED"])
 if env["disable_advanced_gui"]:
     if env.editor_build:
         print_error(

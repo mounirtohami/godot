@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_link_2d.h"
 
 #include "core/math/geometry_2d.h"
@@ -445,3 +447,5 @@ NavigationLink2D::~NavigationLink2D() {
 	NavigationServer2D::get_singleton()->free(link);
 	link = RID();
 }
+
+#endif // _3D_DISABLED

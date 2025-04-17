@@ -131,7 +131,6 @@
 #include "scene/resources/mesh_data_tool.h"
 #include "scene/resources/mesh_texture.h"
 #include "scene/resources/multimesh.h"
-#include "scene/resources/navigation_mesh.h"
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/particle_process_material.h"
 #include "scene/resources/physics_material.h"
@@ -176,10 +175,6 @@
 #include "scene/2d/marker_2d.h"
 #include "scene/2d/mesh_instance_2d.h"
 #include "scene/2d/multimesh_instance_2d.h"
-#include "scene/2d/navigation_agent_2d.h"
-#include "scene/2d/navigation_link_2d.h"
-#include "scene/2d/navigation_obstacle_2d.h"
-#include "scene/2d/navigation_region_2d.h"
 #include "scene/2d/parallax_2d.h"
 #include "scene/2d/parallax_background.h"
 #include "scene/2d/parallax_layer.h"
@@ -212,8 +207,6 @@
 #include "scene/resources/2d/circle_shape_2d.h"
 #include "scene/resources/2d/concave_polygon_shape_2d.h"
 #include "scene/resources/2d/convex_polygon_shape_2d.h"
-#include "scene/resources/2d/navigation_mesh_source_geometry_data_2d.h"
-#include "scene/resources/2d/navigation_polygon.h"
 #include "scene/resources/2d/polygon_path_finder.h"
 #include "scene/resources/2d/rectangle_shape_2d.h"
 #include "scene/resources/2d/segment_shape_2d.h"
@@ -231,6 +224,14 @@
 #include "scene/resources/2d/world_boundary_shape_2d.h"
 
 #ifndef _3D_DISABLED
+#include "scene/2d/navigation_agent_2d.h"
+#include "scene/2d/navigation_link_2d.h"
+#include "scene/2d/navigation_obstacle_2d.h"
+#include "scene/2d/navigation_region_2d.h"
+#include "scene/resources/2d/navigation_mesh_source_geometry_data_2d.h"
+#include "scene/resources/2d/navigation_polygon.h"
+#include "scene/resources/navigation_mesh.h"
+
 #include "scene/3d/audio_listener_3d.h"
 #include "scene/3d/audio_stream_player_3d.h"
 #include "scene/3d/bone_attachment_3d.h"
@@ -1027,6 +1028,7 @@ void register_scene_types() {
 	GDREGISTER_CLASS(PathFollow2D);
 	GDREGISTER_CLASS(PolygonPathFinder);
 
+#ifndef _3D_DISABLED
 	GDREGISTER_CLASS(NavigationMesh);
 	GDREGISTER_CLASS(NavigationMeshSourceGeometryData2D);
 	GDREGISTER_CLASS(NavigationPolygon);
@@ -1034,10 +1036,12 @@ void register_scene_types() {
 	GDREGISTER_CLASS(NavigationAgent2D);
 	GDREGISTER_CLASS(NavigationObstacle2D);
 	GDREGISTER_CLASS(NavigationLink2D);
+#endif // _3D_DISABLED
 
 	OS::get_singleton()->yield(); // may take time to init
 
-	// 2D nodes that support navmesh baking need to server register their source geometry parsers.
+// 2D nodes that support navmesh baking need to server register their source geometry parsers.
+#ifndef _3D_DISABLED
 	MeshInstance2D::navmesh_parse_init();
 	MultiMeshInstance2D::navmesh_parse_init();
 	NavigationObstacle2D::navmesh_parse_init();
@@ -1045,13 +1049,12 @@ void register_scene_types() {
 	TileMap::navmesh_parse_init();
 	TileMapLayer::navmesh_parse_init();
 	StaticBody2D::navmesh_parse_init();
-#ifndef _3D_DISABLED
 	// 3D nodes that support navmesh baking need to server register their source geometry parsers.
 	MeshInstance3D::navmesh_parse_init();
 	MultiMeshInstance3D::navmesh_parse_init();
 	NavigationObstacle3D::navmesh_parse_init();
 	StaticBody3D::navmesh_parse_init();
-#endif
+#endif // _3D_DISABLED
 
 	OS::get_singleton()->yield(); // may take time to init
 

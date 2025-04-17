@@ -33,8 +33,10 @@
 
 #include "scene/2d/node_2d.h"
 
+#ifndef _3D_DISABLED
 class NavigationPolygon;
 class NavigationMeshSourceGeometryData2D;
+#endif // _3D_DISABLED
 
 class MeshInstance2D : public Node2D {
 	GDCLASS(MeshInstance2D, Node2D);
@@ -64,8 +66,10 @@ private:
 	static RID _navmesh_source_geometry_parser;
 
 public:
+#ifndef _3D_DISABLED
 	static void navmesh_parse_init();
 	static void navmesh_parse_source_geometry(const Ref<NavigationPolygon> &p_navigation_mesh, Ref<NavigationMeshSourceGeometryData2D> p_source_geometry_data, Node *p_node);
+#endif // _3D_DISABLED
 
 	MeshInstance2D();
 };

@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "skeleton_ik_3d_editor_plugin.h"
 
 #include "editor/editor_node.h"
@@ -85,3 +87,5 @@ SkeletonIK3DEditorPlugin::SkeletonIK3DEditorPlugin() {
 }
 
 SkeletonIK3DEditorPlugin::~SkeletonIK3DEditorPlugin() {}
+
+#endif // _3D_DISABLED

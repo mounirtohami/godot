@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_SERVER_2D_DUMMY_H
 #define NAVIGATION_SERVER_2D_DUMMY_H
 
@@ -184,3 +186,5 @@ public:
 };
 
 #endif // NAVIGATION_SERVER_2D_DUMMY_H
+
+#endif // _3D_DISABLED

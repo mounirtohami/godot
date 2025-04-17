@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_OBSTACLE_3D_EDITOR_PLUGIN_H
 #define NAVIGATION_OBSTACLE_3D_EDITOR_PLUGIN_H
 
@@ -135,3 +137,5 @@ public:
 };
 
 #endif // NAVIGATION_OBSTACLE_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

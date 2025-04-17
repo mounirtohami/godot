@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "occluder_instance_3d_editor_plugin.h"
 
 #include "editor/editor_node.h"
@@ -122,3 +124,5 @@ OccluderInstance3DEditorPlugin::OccluderInstance3DEditorPlugin() {
 
 OccluderInstance3DEditorPlugin::~OccluderInstance3DEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

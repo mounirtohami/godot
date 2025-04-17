@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_AGENT_2D_H
 #define NAVIGATION_AGENT_2D_H
 
@@ -262,3 +264,5 @@ private:
 };
 
 #endif // NAVIGATION_AGENT_2D_H
+
+#endif // _3D_DISABLED

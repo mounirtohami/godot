@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef PHYSICAL_BONE_3D_EDITOR_PLUGIN_H
 #define PHYSICAL_BONE_3D_EDITOR_PLUGIN_H
 
@@ -75,3 +77,5 @@ public:
 };
 
 #endif // PHYSICAL_BONE_3D_EDITOR_PLUGIN_H
+
+#endif // _3D_DISABLED

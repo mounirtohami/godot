@@ -33,7 +33,9 @@
 
 #include "scene/resources/2d/tile_set.h"
 
+#ifndef _3D_DISABLED
 class NavigationMeshSourceGeometryData2D;
+#endif // _3D_DISABLED
 class TileSetAtlasSource;
 class TileMap;
 
@@ -114,8 +116,10 @@ struct CellData {
 	// Physics.
 	LocalVector<RID> bodies;
 
+#ifndef _3D_DISABLED
 	// Navigation.
 	LocalVector<RID> navigation_regions;
+#endif // _3D_DISABLED
 
 	// Scenes.
 	String scene;
@@ -136,7 +140,9 @@ struct CellData {
 		cell = p_other.cell;
 		occluders = p_other.occluders;
 		bodies = p_other.bodies;
+#ifndef _3D_DISABLED
 		navigation_regions = p_other.navigation_regions;
+#endif // _3D_DISABLED
 		scene = p_other.scene;
 		runtime_tile_data_cache = p_other.runtime_tile_data_cache;
 	}
@@ -149,7 +155,9 @@ struct CellData {
 		cell = p_other.cell;
 		occluders = p_other.occluders;
 		bodies = p_other.bodies;
+#ifndef _3D_DISABLED
 		navigation_regions = p_other.navigation_regions;
+#endif // _3D_DISABLED
 		scene = p_other.scene;
 		runtime_tile_data_cache = p_other.runtime_tile_data_cache;
 	}
@@ -292,9 +300,11 @@ private:
 
 	bool occlusion_enabled = true;
 
+#ifndef _3D_DISABLED
 	bool navigation_enabled = true;
 	RID navigation_map_override;
 	DebugVisibilityMode navigation_visibility_mode = DEBUG_VISIBILITY_MODE_DEFAULT;
+#endif // _3D_DISABLED
 
 	// Internal.
 	bool pending_update = false;
@@ -354,6 +364,7 @@ private:
 	void _physics_draw_cell_debug(const RID &p_canvas_item, const Vector2 &p_quadrant_pos, const CellData &r_cell_data);
 #endif // DEBUG_ENABLED
 
+#ifndef _3D_DISABLED
 	bool _navigation_was_cleaned_up = false;
 	void _navigation_update(bool p_force_cleanup);
 	void _navigation_notification(int p_what);
@@ -362,6 +373,7 @@ private:
 #ifdef DEBUG_ENABLED
 	void _navigation_draw_cell_debug(const RID &p_canvas_item, const Vector2 &p_quadrant_pos, const CellData &r_cell_data);
 #endif // DEBUG_ENABLED
+#endif // _3D_DISABLED
 
 	bool _scenes_was_cleaned_up = false;
 	void _scenes_update(bool p_force_cleanup);
@@ -506,20 +518,24 @@ public:
 	void set_occlusion_enabled(bool p_enabled);
 	bool is_occlusion_enabled() const;
 
+#ifndef _3D_DISABLED
 	void set_navigation_enabled(bool p_enabled);
 	bool is_navigation_enabled() const;
 	void set_navigation_map(RID p_map);
 	RID get_navigation_map() const;
 	void set_navigation_visibility_mode(DebugVisibilityMode p_show_navigation);
 	DebugVisibilityMode get_navigation_visibility_mode() const;
+#endif // _3D_DISABLED
 
 private:
 	static Callable _navmesh_source_geometry_parsing_callback;
 	static RID _navmesh_source_geometry_parser;
 
 public:
+#ifndef _3D_DISABLED
 	static void navmesh_parse_init();
 	static void navmesh_parse_source_geometry(const Ref<NavigationPolygon> &p_navigation_mesh, Ref<NavigationMeshSourceGeometryData2D> p_source_geometry_data, Node *p_node);
+#endif // _3D_DISABLED
 
 	TileMapLayer();
 	~TileMapLayer();

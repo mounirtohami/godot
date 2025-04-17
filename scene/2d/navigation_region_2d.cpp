@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_region_2d.h"
 
 #include "scene/resources/world_2d.h"
@@ -676,3 +678,5 @@ void NavigationRegion2D::_update_bounds() {
 	}
 	bounds = new_bounds;
 }
+
+#endif // _3D_DISABLED

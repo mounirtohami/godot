@@ -385,6 +385,7 @@ public:
 	~TileDataTerrainsEditor();
 };
 
+#ifndef _3D_DISABLED
 class TileDataNavigationEditor : public TileDataDefaultEditor {
 	GDCLASS(TileDataNavigationEditor, TileDataDefaultEditor);
 
@@ -415,5 +416,6 @@ public:
 
 	TileDataNavigationEditor();
 };
+#endif // _3D_DISABLED
 
 #endif // TILE_DATA_EDITORS_H

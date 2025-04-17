@@ -31,6 +31,7 @@
 #ifndef EDITOR_DEBUGGER_PLUGIN_H
 #define EDITOR_DEBUGGER_PLUGIN_H
 
+#include "core/object/script_language.h"
 #include "scene/gui/control.h"
 
 class ScriptEditorDebugger;

@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "voxel_gi_editor_plugin.h"
 
 #include "editor/editor_interface.h"
@@ -206,3 +208,5 @@ VoxelGIEditorPlugin::VoxelGIEditorPlugin() {
 
 VoxelGIEditorPlugin::~VoxelGIEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

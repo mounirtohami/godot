@@ -1162,9 +1162,11 @@ void ProjectManager::_titlebar_resized() {
 ProjectManager::ProjectManager(bool p_custom_res) {
 	singleton = this;
 
+#ifndef _3D_DISABLED
 	// Turn off some servers we aren't going to be using in the Project Manager.
 	NavigationServer3D::get_singleton()->set_active(false);
 	PhysicsServer3D::get_singleton()->set_active(false);
+#endif // _3D_DISABLED
 	PhysicsServer2D::get_singleton()->set_active(false);
 
 	// Initialize settings.

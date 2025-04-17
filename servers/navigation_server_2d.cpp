@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "navigation_server_2d.h"
 #include "navigation_server_2d.compat.inc"
 
@@ -502,3 +504,5 @@ void NavigationServer2DManager::finalize_server() {
 	memdelete(navigation_server_2d);
 	navigation_server_2d = nullptr;
 }
+
+#endif // _3D_DISABLED

@@ -33,8 +33,10 @@
 
 #include "scene/2d/physics/physics_body_2d.h"
 
+#ifndef _3D_DISABLED
 class NavigationPolygon;
 class NavigationMeshSourceGeometryData2D;
+#endif // _3D_DISABLED
 
 class StaticBody2D : public PhysicsBody2D {
 	GDCLASS(StaticBody2D, PhysicsBody2D);
@@ -65,8 +67,10 @@ private:
 	static RID _navmesh_source_geometry_parser;
 
 public:
+#ifndef _3D_DISABLED
 	static void navmesh_parse_init();
 	static void navmesh_parse_source_geometry(const Ref<NavigationPolygon> &p_navigation_mesh, Ref<NavigationMeshSourceGeometryData2D> p_source_geometry_data, Node *p_node);
+#endif // _3D_DISABLED
 
 private:
 	void _reload_physics_characteristics();

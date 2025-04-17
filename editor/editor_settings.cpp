@@ -758,6 +758,7 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 
 	/* Editors */
 
+#ifndef _3D_DISABLED
 	// GridMap
 	// GridMapEditor
 	EDITOR_SETTING(Variant::FLOAT, PROPERTY_HINT_RANGE, "editors/grid_map/pick_distance", 5000.0, "1,8192,0.1,or_greater");
@@ -856,6 +857,7 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	// 3D: Manipulator
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_RANGE, "editors/3d/manipulator_gizmo_size", 80, "16,160,1");
 	EDITOR_SETTING_USAGE(Variant::FLOAT, PROPERTY_HINT_RANGE, "editors/3d/manipulator_gizmo_opacity", 0.9, "0,1,0.01", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED)
+#endif // _3D_DISABLED
 
 	// 2D
 	_initial_set("editors/2d/grid_color", Color(1.0, 1.0, 1.0, 0.07), true);
@@ -1442,6 +1444,9 @@ Variant _EDITOR_DEF(const String &p_setting, const Variant &p_default, bool p_re
 }
 
 Variant _EDITOR_GET(const String &p_setting) {
+	if (!EditorSettings::get_singleton() || !EditorSettings::get_singleton()->has_setting(p_setting)) {
+		print_line("ERROR: ", p_setting);
+	}
 	ERR_FAIL_COND_V(!EditorSettings::get_singleton() || !EditorSettings::get_singleton()->has_setting(p_setting), Variant());
 	return EditorSettings::get_singleton()->get(p_setting);
 }
@@ -2062,7 +2067,6 @@ void EditorSettings::notify_changes() {
 	root->propagate_notification(NOTIFICATION_EDITOR_SETTINGS_CHANGED);
 }
 
-#ifdef TOOLS_ENABLED
 void EditorSettings::get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const {
 	const String pf = p_function;
 	if (p_idx == 0) {
@@ -2089,7 +2093,6 @@ void EditorSettings::get_argument_options(const StringName &p_function, int p_id
 	}
 	Object::get_argument_options(p_function, p_idx, r_options);
 }
-#endif
 
 void EditorSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_setting", "name"), &EditorSettings::has_setting);

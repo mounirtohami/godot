@@ -49,7 +49,9 @@
 #include "scene/gui/separator.h"
 #include "scene/gui/spin_box.h"
 
+#ifndef _3D_DISABLED
 #include "servers/navigation_server_2d.h"
+#endif // _3D_DISABLED
 
 void TileDataEditor::_tile_set_changed_plan_update() {
 	_tile_set_changed_update_needed = true;
@@ -2911,6 +2913,7 @@ TileDataTerrainsEditor::~TileDataTerrainsEditor() {
 	memdelete(dummy_object);
 }
 
+#ifndef _3D_DISABLED
 Variant TileDataNavigationEditor::_get_painted_value() {
 	Ref<NavigationPolygon> nav_polygon;
 	nav_polygon.instantiate();
@@ -3039,3 +3042,4 @@ void TileDataNavigationEditor::draw_over_tile(CanvasItem *p_canvas_item, Transfo
 
 	RenderingServer::get_singleton()->canvas_item_add_set_transform(p_canvas_item->get_canvas_item(), Transform2D());
 }
+#endif // _3D_DISABLED

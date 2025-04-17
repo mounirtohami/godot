@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "camera_3d_editor_plugin.h"
 
 #include "core/config/project_settings.h"
@@ -129,3 +131,5 @@ Camera3DEditorPlugin::Camera3DEditorPlugin() {
 
 Camera3DEditorPlugin::~Camera3DEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

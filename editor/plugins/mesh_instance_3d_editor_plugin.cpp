@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #include "mesh_instance_3d_editor_plugin.h"
 
 #include "editor/editor_node.h"
@@ -733,3 +735,5 @@ MeshInstance3DEditorPlugin::MeshInstance3DEditorPlugin() {
 
 MeshInstance3DEditorPlugin::~MeshInstance3DEditorPlugin() {
 }
+
+#endif // _3D_DISABLED

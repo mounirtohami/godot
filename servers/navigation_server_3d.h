@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#ifndef _3D_DISABLED
+
 #ifndef NAVIGATION_SERVER_3D_H
 #define NAVIGATION_SERVER_3D_H
 
@@ -592,3 +594,5 @@ public:
 VARIANT_ENUM_CAST(NavigationServer3D::ProcessInfo);
 
 #endif // NAVIGATION_SERVER_3D_H
+
+#endif // _3D_DISABLED

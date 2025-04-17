@@ -74,6 +74,13 @@ void RenderingServerDefault::_draw(bool p_swap_buffers, double frame_step) {
 
 	RENDER_TIMESTAMP("Prepare Render Frame");
 	RSG::scene->update(); //update scenes stuff before updating instances
+	/*
+	#ifdef _3D_DISABLED
+		// Leave this here because at some point when we properly disable 3D the resource will never be updated because
+		// for some reason it is never called for 2D.
+		RSG::utilities->update_dirty_resources();
+	#endif // _3D_DISABLED
+	*/
 	RSG::canvas->update();
 
 	frame_setup_time = double(OS::get_singleton()->get_ticks_usec() - time_usec) / 1000.0;

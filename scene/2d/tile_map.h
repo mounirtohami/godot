@@ -36,7 +36,9 @@
 #include "scene/resources/2d/tile_set.h"
 
 class Control;
+#ifndef _3D_DISABLED
 class NavigationMeshSourceGeometryData2D;
+#endif // _3D_DISABLED
 class TileMapLayer;
 class TerrainConstraint;
 
@@ -69,7 +71,9 @@ private:
 	int rendering_quadrant_size = 16;
 	bool collision_animatable = false;
 	VisibilityMode collision_visibility_mode = VISIBILITY_MODE_DEFAULT;
+#ifndef _3D_DISABLED
 	VisibilityMode navigation_visibility_mode = VISIBILITY_MODE_DEFAULT;
+#endif // _3D_DISABLED
 
 	// Layers.
 	LocalVector<TileMapLayer *> layers;
@@ -105,7 +109,9 @@ protected:
 	void _set_quadrant_size_compat_81070(int p_quadrant_size);
 	int _get_quadrant_size_compat_81070() const;
 	VisibilityMode _get_collision_visibility_mode_bind_compat_87115();
+#ifndef _3D_DISABLED
 	VisibilityMode _get_navigation_visibility_mode_bind_compat_87115();
+#endif // _3D_DISABLED
 
 	static void _bind_compatibility_methods();
 #endif // DISABLE_DEPRECATED
@@ -144,10 +150,12 @@ public:
 	int get_layer_y_sort_origin(int p_layer) const;
 	void set_layer_z_index(int p_layer, int p_z_index);
 	int get_layer_z_index(int p_layer) const;
+#ifndef _3D_DISABLED
 	void set_layer_navigation_enabled(int p_layer, bool p_enabled);
 	bool is_layer_navigation_enabled(int p_layer) const;
 	void set_layer_navigation_map(int p_layer, RID p_map);
 	RID get_layer_navigation_map(int p_layer) const;
+#endif // _3D_DISABLED
 
 	void set_collision_animatable(bool p_collision_animatable);
 	bool is_collision_animatable() const;
@@ -156,8 +164,10 @@ public:
 	void set_collision_visibility_mode(VisibilityMode p_show_collision);
 	VisibilityMode get_collision_visibility_mode() const;
 
+#ifndef _3D_DISABLED
 	void set_navigation_visibility_mode(VisibilityMode p_show_navigation);
 	VisibilityMode get_navigation_visibility_mode() const;
+#endif // _3D_DISABLED
 
 	// Cells accessors.
 	void set_cell(int p_layer, const Vector2i &p_coords, int p_source_id = TileSet::INVALID_SOURCE, const Vector2i p_atlas_coords = TileSetSource::INVALID_ATLAS_COORDS, int p_alternative_tile = 0);
@@ -239,13 +249,17 @@ public:
 	// Configuration warnings.
 	PackedStringArray get_configuration_warnings() const override;
 
+#ifndef _3D_DISABLED
 private:
 	static Callable _navmesh_source_geometry_parsing_callback;
 	static RID _navmesh_source_geometry_parser;
+#endif // _3D_DISABLED
 
 public:
+#ifndef _3D_DISABLED
 	static void navmesh_parse_init();
 	static void navmesh_parse_source_geometry(const Ref<NavigationPolygon> &p_navigation_mesh, Ref<NavigationMeshSourceGeometryData2D> p_source_geometry_data, Node *p_node);
+#endif // _3D_DISABLED
 
 	TileMap();
 };
