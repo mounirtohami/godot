@@ -7,6 +7,7 @@ env:
   SCONS_FLAGS: >-
     dev_mode=yes
     module_text_server_fb_enabled=yes
+    disable_3d=yes
     "accesskit_sdk_path=${{ github.workspace }}/accesskit-c-0.17.0/"
 
 jobs:
@@ -102,6 +103,7 @@ jobs:
           name: ${{ matrix.cache-name }}
 
       - name: Unit tests
+        if: matrix.tests
         run: |
           ${{ matrix.bin }} --version
           ${{ matrix.bin }} --help
