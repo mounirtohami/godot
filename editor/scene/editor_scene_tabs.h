@@ -49,6 +49,7 @@ public:
 	enum {
 		SCENE_SHOW_IN_FILESYSTEM = 1000, // Prevents conflicts with EditorNode options.
 		SCENE_RUN,
+		SET_MAIN_SCENE,
 		SCENE_CLOSE_OTHERS,
 		SCENE_CLOSE_RIGHT,
 		SCENE_CLOSE_ALL,
