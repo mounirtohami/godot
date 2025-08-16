@@ -302,11 +302,6 @@ void EditorRunBar::_run_scene(const String &p_scene_path, const Vector<String> &
 		} break;
 
 		default: {
-			if (!EditorNode::get_singleton()->ensure_main_scene(false)) {
-				return;
-			}
-
-			run_filename = GLOBAL_GET("application/run/main_scene");
 		} break;
 	}
 

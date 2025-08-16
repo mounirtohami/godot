@@ -2158,11 +2158,11 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		OS::get_singleton()->add_logger(memnew(RotatedFileLogger(base_path, max_files)));
 	}
 
-	if (main_args.is_empty() && String(GLOBAL_GET("application/run/main_scene")) == "") {
+	if (main_args.is_empty() && String(GLOBAL_GET("application/run/main_scene")).is_empty() && String(GLOBAL_GET("application/run/main_loop_type")) == "SceneTree") {
 #ifdef TOOLS_ENABLED
 		if (!editor && !project_manager) {
 #endif
-			const String error_msg = "Error: Can't run project: no main scene defined in the project.\n";
+			const String error_msg = "Error: Can't run project: no main scene or custom main loop defined in the project.\n";
 			OS::get_singleton()->print("%s", error_msg.utf8().get_data());
 			OS::get_singleton()->alert(error_msg);
 			goto error;
@@ -3838,11 +3838,8 @@ int Main::start() {
 			positional_arg = E->get();
 
 			String scene_path = ResourceUID::ensure_path(E->get());
-			if (scene_path.ends_with(".scn") ||
-					scene_path.ends_with(".tscn") ||
-					scene_path.ends_with(".escn") ||
-					scene_path.ends_with(".res") ||
-					scene_path.ends_with(".tres")) {
+			String ext = scene_path.get_extension();
+			if (ext == "scn" || ext == "tscn" || ext == "escn" || ext == "res" || ext == "tres") {
 				// Only consider the positional argument to be a scene path if it ends with
 				// a file extension associated with Godot scenes. This makes it possible
 				// for projects to parse command-line arguments for custom CLI arguments
@@ -4083,8 +4080,12 @@ int Main::start() {
 		}
 	}
 
+	if (main_loop_type.is_empty()) {
+		main_loop_type = GLOBAL_GET("application/run/main_loop_type");
+	}
+
 #ifdef TOOLS_ENABLED
-	if (!editor && !project_manager && !cmdline_tool && script.is_empty() && game_path.is_empty()) {
+	if (!editor && !project_manager && !cmdline_tool && script.is_empty() && game_path.is_empty() && main_loop_type.is_empty()) {
 		// If we end up here, it means we didn't manage to detect what we want to run.
 		// Let's throw an error gently. The code leading to this is pretty brittle so
 		// this might end up triggered by valid usage, in which case we'll have to
@@ -4094,12 +4095,10 @@ int Main::start() {
 	}
 #endif
 
+	bool custom_scene_run = !game_path.is_empty() && game_path != ResourceUID::ensure_path(String(GLOBAL_GET("application/run/main_scene")));
 	MainLoop *main_loop = nullptr;
 	if (editor) {
 		main_loop = memnew(SceneTree);
-	}
-	if (main_loop_type.is_empty()) {
-		main_loop_type = GLOBAL_GET("application/run/main_loop_type");
 	}
 
 	if (!script.is_empty()) {
@@ -4122,13 +4121,15 @@ int Main::start() {
 				ERR_FAIL_V_MSG(EXIT_FAILURE, vformat("Can't load the script \"%s\" as it doesn't inherit from SceneTree or MainLoop.", script));
 			}
 
-			script_loop->set_script(script_res);
 			main_loop = script_loop;
+			OS::get_singleton()->set_main_loop(main_loop);
+			script_loop->set_script(script_res);
 		} else {
-			return EXIT_FAILURE;
+			OS::get_singleton()->alert(vformat("Can't instantiate script %s", script));
+			ERR_FAIL_V_MSG(EXIT_FAILURE, vformat("Can't instantiate script %s", script));
 		}
 	} else { // Not based on script path.
-		if (!editor && !ClassDB::class_exists(main_loop_type) && ScriptServer::is_global_class(main_loop_type)) {
+		if (!editor && !custom_scene_run && !ClassDB::class_exists(main_loop_type) && ScriptServer::is_global_class(main_loop_type)) {
 			String script_path = ScriptServer::get_global_class_path(main_loop_type);
 			Ref<Script> script_res = ResourceLoader::load(script_path);
 			if (script_res.is_null()) {
@@ -4145,12 +4146,13 @@ int Main::start() {
 				OS::get_singleton()->alert("Error: Invalid MainLoop script base type: " + script_base);
 				ERR_FAIL_V_MSG(EXIT_FAILURE, vformat("The global class %s does not inherit from SceneTree or MainLoop.", main_loop_type));
 			}
-			script_loop->set_script(script_res);
 			main_loop = script_loop;
+			OS::get_singleton()->set_main_loop(main_loop);
+			script_loop->set_script(script_res);
 		}
 	}
 
-	if (!main_loop && main_loop_type.is_empty()) {
+	if (!main_loop && (main_loop_type.is_empty() || custom_scene_run)) {
 		main_loop_type = "SceneTree";
 	}
 
@@ -4232,7 +4234,7 @@ int Main::start() {
 		ResourceSaver::add_custom_savers();
 
 		if (!project_manager && !editor) { // game
-			if (!game_path.is_empty() || !script.is_empty()) {
+			if (!game_path.is_empty() || !script.is_empty() || (!main_loop_type.is_empty() && (game_path.is_empty() || !custom_scene_run))) {
 				//autoload
 				OS::get_singleton()->benchmark_begin_measure("Startup", "Load Autoloads");
 				HashMap<StringName, ProjectSettings::AutoloadInfo> autoloads = ProjectSettings::get_singleton()->get_autoload_list();
@@ -4397,8 +4399,10 @@ int Main::start() {
 			sml->get_root()->set_content_scale_size(stretch_size);
 			sml->get_root()->set_content_scale_factor(stretch_scale);
 
-			sml->set_auto_accept_quit(GLOBAL_GET("application/config/auto_accept_quit"));
-			sml->set_quit_on_go_back(GLOBAL_GET("application/config/quit_on_go_back"));
+			if (!custom_scene_run) {
+				sml->set_auto_accept_quit(GLOBAL_GET("application/config/auto_accept_quit"));
+				sml->set_quit_on_go_back(GLOBAL_GET("application/config/quit_on_go_back"));
+			}
 			String appname = GLOBAL_GET("application/config/name");
 			appname = TranslationServer::get_singleton()->translate(appname);
 #ifdef DEBUG_ENABLED
@@ -4470,7 +4474,7 @@ int Main::start() {
 
 #ifdef TOOLS_ENABLED
 			if (editor) {
-				if (!recovery_mode && (game_path != ResourceUID::ensure_path(String(GLOBAL_GET("application/run/main_scene"))) || !editor_node->has_scenes_in_session())) {
+				if (!recovery_mode && (custom_scene_run || !editor_node->has_scenes_in_session())) {
 					Error serr = editor_node->load_scene(local_game_path);
 					if (serr != OK) {
 						ERR_PRINT("Failed to load scene");
@@ -4500,36 +4504,36 @@ int Main::start() {
 
 				ERR_FAIL_NULL_V_MSG(scene, EXIT_FAILURE, "Failed loading scene: " + local_game_path + ".");
 				sml->add_current_scene(scene);
+			}
 
 #ifdef MACOS_ENABLED
 #ifndef TOOLS_ENABLED
-				if ((FileAccess::exists(OS::get_singleton()->get_bundle_resource_dir().path_join("Assets.car")) && !OS::get_singleton()->get_bundle_icon_name().is_empty()) || (!OS::get_singleton()->get_bundle_icon_path().is_empty())) {
-					has_icon = true; // Bundle has embedded icon, do not override with project icon.
-				}
+			if ((FileAccess::exists(OS::get_singleton()->get_bundle_resource_dir().path_join("Assets.car")) && !OS::get_singleton()->get_bundle_icon_name().is_empty()) || (!OS::get_singleton()->get_bundle_icon_path().is_empty())) {
+				has_icon = true; // Bundle has embedded icon, do not override with project icon.
+			}
 #endif
-				String mac_icon_path = GLOBAL_GET("application/config/macos_native_icon");
-				if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_ICON) && !mac_icon_path.is_empty() && !has_icon) {
-					DisplayServer::get_singleton()->set_native_icon(mac_icon_path);
-					has_icon = true;
-				}
+			String mac_icon_path = GLOBAL_GET("application/config/macos_native_icon");
+			if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_ICON) && !mac_icon_path.is_empty() && !has_icon) {
+				DisplayServer::get_singleton()->set_native_icon(mac_icon_path);
+				has_icon = true;
+			}
 #endif
 
 #ifdef WINDOWS_ENABLED
-				String win_icon_path = GLOBAL_GET("application/config/windows_native_icon");
-				if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_ICON) && !win_icon_path.is_empty()) {
-					DisplayServer::get_singleton()->set_native_icon(win_icon_path);
-					has_icon = true;
-				}
+			String win_icon_path = GLOBAL_GET("application/config/windows_native_icon");
+			if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_ICON) && !win_icon_path.is_empty()) {
+				DisplayServer::get_singleton()->set_native_icon(win_icon_path);
+				has_icon = true;
+			}
 #endif
 
-				String icon_path = GLOBAL_GET("application/config/icon");
-				if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_ICON) && !icon_path.is_empty() && !has_icon) {
-					Ref<Image> icon;
-					icon.instantiate();
-					if (ImageLoader::load_image(icon_path, icon) == OK) {
-						DisplayServer::get_singleton()->set_icon(icon);
-						has_icon = true;
-					}
+			String icon_path = GLOBAL_GET("application/config/icon");
+			if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_ICON) && !icon_path.is_empty() && !has_icon) {
+				Ref<Image> icon;
+				icon.instantiate();
+				if (ImageLoader::load_image(icon_path, icon) == OK) {
+					DisplayServer::get_singleton()->set_icon(icon);
+					has_icon = true;
 				}
 			}
 

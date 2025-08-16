@@ -107,10 +107,6 @@ Error EditorRunNative::start_run_native(int p_id) {
 	int idx = p_id % 10000;
 	resume_id = p_id;
 
-	if (!EditorNode::get_singleton()->ensure_main_scene(true)) {
-		return OK;
-	}
-
 	Ref<EditorExportPlatform> eep = EditorExport::get_singleton()->get_export_platform(platform);
 	ERR_FAIL_COND_V(eep.is_null(), ERR_UNAVAILABLE);
 

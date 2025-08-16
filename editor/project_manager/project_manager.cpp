@@ -470,12 +470,6 @@ void ProjectManager::_run_project_confirm() {
 	Vector<ProjectList::Item> selected_list = project_list->get_selected_projects();
 
 	for (int i = 0; i < selected_list.size(); ++i) {
-		const String &selected_main = selected_list[i].main_scene;
-		if (selected_main.is_empty()) {
-			_show_error(TTRC("Can't run project: Project has no main scene defined.\nPlease edit the project and set the main scene in the Project Settings under the \"Application\" category."));
-			continue;
-		}
-
 		const String &path = selected_list[i].path;
 
 		// `.substr(6)` on `ProjectSettings::get_singleton()->get_imported_files_path()` strips away the leading "res://".
