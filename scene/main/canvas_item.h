@@ -195,6 +195,10 @@ protected:
 
 	GDVIRTUAL0(_draw)
 
+#ifdef DEBUG_ENABLED
+	GDVIRTUAL0RC(bool, _is_using_edit_rect)
+	GDVIRTUAL0RC(Rect2, _get_edit_rect)
+#endif // DEBUG_ENABLED
 public:
 	enum {
 		NOTIFICATION_TRANSFORM_CHANGED = SceneTree::NOTIFICATION_TRANSFORM_CHANGED, //unique
@@ -245,8 +249,8 @@ public:
 	virtual bool _edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const;
 
 	// Used to resize/move the node.
-	virtual bool _edit_use_rect() const { return false; } // Maybe replace with _edit_get_editmode().
-	virtual Rect2 _edit_get_rect() const { return Rect2(0, 0, 0, 0); }
+	virtual bool _edit_use_rect() const;
+	virtual Rect2 _edit_get_rect() const;
 #endif // DEBUG_ENABLED
 
 	void update_draw_order();
