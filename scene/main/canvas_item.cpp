@@ -51,6 +51,20 @@ bool CanvasItem::_edit_is_selected_on_click(const Point2 &p_point, double p_tole
 		return p_point.length() < p_tolerance;
 	}
 }
+
+bool CanvasItem::_edit_use_rect() const {
+	bool ret = false;
+	GDVIRTUAL_CALL(_is_using_edit_rect, ret);
+
+	return ret;
+}
+
+Rect2 CanvasItem::_edit_get_rect() const {
+	Rect2 ret = Rect2();
+	GDVIRTUAL_CALL(_get_edit_rect, ret);
+
+	return ret;
+}
 #endif // DEBUG_ENABLED
 
 #ifdef TOOLS_ENABLED
@@ -1334,6 +1348,11 @@ PackedStringArray CanvasItem::get_configuration_warnings() const {
 
 void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_top_level_raise_self"), &CanvasItem::_top_level_raise_self);
+
+#ifdef DEBUG_ENABLED
+	GDVIRTUAL_BIND(_is_using_edit_rect);
+	GDVIRTUAL_BIND(_get_edit_rect);
+#endif // DEBUG_ENABLED
 
 #ifdef TOOLS_ENABLED
 	ClassDB::bind_method(D_METHOD("_edit_set_state", "state"), &CanvasItem::_edit_set_state);
