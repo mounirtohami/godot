@@ -2394,8 +2394,7 @@ void FileSystemDock::_file_option(int p_option, const Vector<String> &p_selected
 			if (p_selected.size() == 1) {
 				ProjectSettings::get_singleton()->set("application/run/main_scene", ResourceUID::path_to_uid(p_selected[0]));
 				ProjectSettings::get_singleton()->save();
-				_update_tree(get_uncollapsed_paths());
-				_update_file_list(true);
+				update_all();
 			}
 		} break;
 

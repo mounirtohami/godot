@@ -3207,6 +3207,17 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 			project_run_bar->play_current_scene();
 		} break;
 
+		case EditorSceneTabs::SET_MAIN_SCENE: {
+			String path = editor_data.get_scene_path(editor_data.get_edited_scene());
+			if (path.is_empty()) {
+				return;
+			}
+
+			ProjectSettings::get_singleton()->set("application/run/main_scene", ResourceUID::path_to_uid(path));
+			ProjectSettings::get_singleton()->save();
+			FileSystemDock::get_singleton()->update_all();
+		} break;
+
 		case PROJECT_EXPORT: {
 			project_export->popup_export();
 		} break;
