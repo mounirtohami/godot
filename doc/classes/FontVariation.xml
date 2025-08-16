@@ -66,7 +66,7 @@
 		</member>
 		<member name="variation_embolden" type="float" setter="set_variation_embolden" getter="get_variation_embolden" default="0.0">
 			If is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness.
-			[b]Note:[/b] Emboldened fonts might have self-intersecting outlines, which will prevent MSDF fonts and [TextMesh] from working correctly.
+			[b]Note:[/b] Emboldened fonts might have self-intersecting outlines, which will prevent MSDF fonts from working correctly.
 		</member>
 		<member name="variation_face_index" type="int" setter="set_variation_face_index" getter="get_variation_face_index" default="0">
 			Active face index in the TrueType / OpenType collection file.

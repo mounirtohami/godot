@@ -93,7 +93,7 @@
 		<method name="commit_to_arrays">
 			<return type="Array" />
 			<description>
-				Commits the data to the same format used by [method ArrayMesh.add_surface_from_arrays], [method ImporterMesh.add_surface], and [method create_from_arrays]. This way you can further process the mesh data using the [ArrayMesh] or [ImporterMesh] APIs.
+				Commits the data to the same format used by [method ArrayMesh.add_surface_from_arrays], [method ImporterMesh.add_surface], and [method create_from_arrays]. This way you can further process the mesh data using the [ArrayMesh] or ImporterMesh APIs.
 			</description>
 		</method>
 		<method name="create_from">

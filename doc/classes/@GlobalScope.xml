@@ -1602,14 +1602,8 @@
 			The [NativeMenu] singleton.
 			[b]Note:[/b] Only implemented on macOS.
 		</member>
-		<member name="NavigationMeshGenerator" type="NavigationMeshGenerator" setter="" getter="">
-			The [NavigationMeshGenerator] singleton.
-		</member>
 		<member name="NavigationServer2D" type="NavigationServer2D" setter="" getter="">
 			The [NavigationServer2D] singleton.
-		</member>
-		<member name="NavigationServer3D" type="NavigationServer3D" setter="" getter="">
-			The [NavigationServer3D] singleton.
 		</member>
 		<member name="OS" type="OS" setter="" getter="">
 			The [OS] singleton.
@@ -1622,12 +1616,6 @@
 		</member>
 		<member name="PhysicsServer2DManager" type="PhysicsServer2DManager" setter="" getter="">
 			The [PhysicsServer2DManager] singleton.
-		</member>
-		<member name="PhysicsServer3D" type="PhysicsServer3D" setter="" getter="">
-			The [PhysicsServer3D] singleton.
-		</member>
-		<member name="PhysicsServer3DManager" type="PhysicsServer3DManager" setter="" getter="">
-			The [PhysicsServer3DManager] singleton.
 		</member>
 		<member name="ProjectSettings" type="ProjectSettings" setter="" getter="">
 			The [ProjectSettings] singleton.
@@ -1658,9 +1646,6 @@
 		</member>
 		<member name="WorkerThreadPool" type="WorkerThreadPool" setter="" getter="">
 			The [WorkerThreadPool] singleton.
-		</member>
-		<member name="XRServer" type="XRServer" setter="" getter="">
-			The [XRServer] singleton.
 		</member>
 	</members>
 	<constants>
@@ -2953,7 +2938,7 @@
 			[b]Note:[/b] A [Callable] cannot be properly serialized and stored in a file, so it is recommended to use [constant PROPERTY_USAGE_EDITOR] instead of [constant PROPERTY_USAGE_DEFAULT].
 		</constant>
 		<constant name="PROPERTY_HINT_ONESHOT" value="40" enum="PropertyHint">
-			Hints that a property will be changed on its own after setting, such as [member AudioStreamPlayer.playing] or [member GPUParticles3D.emitting].
+			Hints that a property will be changed on its own after setting, such as [member AudioStreamPlayer.playing] or [member GPUParticles2D.emitting].
 		</constant>
 		<constant name="PROPERTY_HINT_GROUP_ENABLE" value="42" enum="PropertyHint">
 			Hints that a boolean property will enable the feature associated with the group that it occurs in. The property will be displayed as a checkbox on the group header. Only works within a group or subgroup.

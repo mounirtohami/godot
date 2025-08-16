@@ -113,7 +113,6 @@
 #include "editor/gui/window_wrapper.h"
 #include "editor/import/audio_stream_import_settings.h"
 #include "editor/import/dynamic_font_import_settings.h"
-#include "editor/import/fbx_importer_manager.h"
 #include "editor/import/resource_importer_bitmask.h"
 #include "editor/import/resource_importer_bmfont.h"
 #include "editor/import/resource_importer_csv_translation.h"
@@ -190,6 +189,7 @@
 
 #ifndef _3D_DISABLED
 #include "editor/import/3d/editor_import_collada.h"
+#include "editor/import/3d/fbx_importer_manager.h"
 #include "editor/import/3d/resource_importer_obj.h"
 #include "editor/import/3d/resource_importer_scene.h"
 #include "editor/import/3d/scene_import_settings.h"
@@ -3470,9 +3470,11 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 			export_template_manager->popup_manager();
 		} break;
 		case EDITOR_CONFIGURE_FBX_IMPORTER: {
+#ifndef _3D_DISABLED
 #if !defined(ANDROID_ENABLED) && !defined(WEB_ENABLED)
 			fbx_importer_manager->show_dialog();
-#endif
+#endif // !ANDROID_ENABLED && !WEB_ENABLED
+#endif // _3D_DISABLED
 		} break;
 		case EDITOR_MANAGE_FEATURE_PROFILES: {
 			feature_profile_manager->popup_centered_clamped(Size2(900, 800) * EDSCALE, 0.8);
@@ -8108,10 +8110,12 @@ EditorNode::EditorNode() {
 	gui_base->add_child(about);
 	feature_profile_manager->connect("current_feature_profile_changed", callable_mp(this, &EditorNode::_feature_profile_changed));
 
+#ifndef _3D_DISABLED
 #if !defined(ANDROID_ENABLED) && !defined(WEB_ENABLED)
 	fbx_importer_manager = memnew(FBXImporterManager);
 	gui_base->add_child(fbx_importer_manager);
-#endif
+#endif // !ANDROID_ENABLED && !WEB_ENABLED
+#endif // _3D_DISABLED
 
 	warning = memnew(AcceptDialog);
 	warning->set_unparent_when_invisible(true);

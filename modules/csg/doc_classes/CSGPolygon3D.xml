@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		An array of 2D points is extruded to quickly and easily create a variety of 3D meshes. See also [CSGMesh3D] for using 3D meshes as CSG nodes.
-		[b]Note:[/b] CSG nodes are intended to be used for level prototyping. Creating CSG nodes has a significant CPU cost compared to creating a [MeshInstance3D] with a [PrimitiveMesh]. Moving a CSG node within another CSG node also has a significant CPU cost, so it should be avoided during gameplay.
+		[b]Note:[/b] CSG nodes are intended to be used for level prototyping. Creating CSG nodes has a significant CPU cost compared to creating a MeshInstance3D with a PrimitiveMesh. Moving a CSG node within another CSG node also has a significant CPU cost, so it should be avoided during gameplay.
 	</description>
 	<tutorials>
 		<link title="Prototyping levels with CSG">$DOCS_URL/tutorials/3d/csg_tools.html</link>
@@ -36,7 +36,7 @@
 			When [member mode] is [constant MODE_PATH], if [code]true[/code] the [Transform3D] of the [CSGPolygon3D] is used as the starting point for the extrusions, not the [Transform3D] of the [member path_node].
 		</member>
 		<member name="path_node" type="NodePath" setter="set_path_node" getter="get_path_node">
-			When [member mode] is [constant MODE_PATH], the location of the [Path3D] object used to extrude the [member polygon].
+			When [member mode] is [constant MODE_PATH], the location of the Path3D object used to extrude the [member polygon].
 		</member>
 		<member name="path_rotation" type="int" setter="set_path_rotation" getter="get_path_rotation" enum="CSGPolygon3D.PathRotation">
 			When [member mode] is [constant MODE_PATH], the path rotation method used to rotate the [member polygon] as it is extruded.
@@ -72,7 +72,7 @@
 			The [member polygon] shape is extruded by rotating it around the Y axis.
 		</constant>
 		<constant name="MODE_PATH" value="2" enum="Mode">
-			The [member polygon] shape is extruded along the [Path3D] specified in [member path_node].
+			The [member polygon] shape is extruded along the Path3D specified in [member path_node].
 		</constant>
 		<constant name="PATH_ROTATION_POLYGON" value="0" enum="PathRotation">
 			The [member polygon] shape is not rotated.

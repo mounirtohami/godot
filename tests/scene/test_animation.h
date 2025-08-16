@@ -80,15 +80,18 @@ TEST_CASE("[Animation] Create value track") {
 	CHECK(animation->track_get_key_value(1, -1).is_null());
 	CHECK(animation->track_get_key_transition(1, 0) == doctest::Approx(real_t(-1.0)));
 
+#ifndef _3D_DISABLED
 	// This is a value track, so the methods below should return errors.
 	CHECK(animation->try_position_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
 	CHECK(animation->try_rotation_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
 	CHECK(animation->try_scale_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
 	CHECK(animation->bezier_track_interpolate(0, 0.0) == doctest::Approx(0.0));
 	CHECK(animation->try_blend_shape_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
+#endif // _3D_DISABLED
 	ERR_PRINT_ON;
 }
 
+#ifndef _3D_DISABLED
 TEST_CASE("[Animation] Create 3D position track") {
 	Ref<Animation> animation = memnew(Animation);
 	const int track_index = animation->add_track(Animation::TYPE_POSITION_3D);
@@ -277,6 +280,7 @@ TEST_CASE("[Animation] Create blend shape track") {
 	CHECK(animation->bezier_track_interpolate(0, 0.0) == doctest::Approx(0.0));
 	ERR_PRINT_ON;
 }
+#endif // _3D_DISABLED
 
 TEST_CASE("[Animation] Create Bezier track") {
 	Ref<Animation> animation = memnew(Animation);
@@ -298,6 +302,7 @@ TEST_CASE("[Animation] Create Bezier track") {
 	CHECK(animation->bezier_track_interpolate(0, 0.5) == doctest::Approx(real_t(1.0)));
 	CHECK(animation->bezier_track_interpolate(0, 0.6) == doctest::Approx(real_t(1.0)));
 
+#ifndef _3D_DISABLED
 	// This is a bezier track, so the methods below should return errors.
 	ERR_PRINT_OFF;
 	CHECK(animation->value_track_interpolate(0, 0.0).is_null());
@@ -306,6 +311,7 @@ TEST_CASE("[Animation] Create Bezier track") {
 	CHECK(animation->try_scale_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
 	CHECK(animation->try_blend_shape_track_interpolate(0, 0.0, nullptr) == ERR_INVALID_PARAMETER);
 	ERR_PRINT_ON;
+#endif // _3D_DISABLED
 }
 
 } // namespace TestAnimation

@@ -147,6 +147,7 @@ bool AnimationTrackKeyEdit::_set(const StringName &p_name, const Variant &p_valu
 
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 		case Animation::TYPE_POSITION_3D:
 		case Animation::TYPE_ROTATION_3D:
 		case Animation::TYPE_SCALE_3D: {
@@ -181,6 +182,7 @@ bool AnimationTrackKeyEdit::_set(const StringName &p_name, const Variant &p_valu
 
 		} break;
 		case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
 		case Animation::TYPE_VALUE: {
 			if (name == "value") {
 				Variant value = p_value;
@@ -446,6 +448,7 @@ bool AnimationTrackKeyEdit::_get(const StringName &p_name, Variant &r_ret) const
 	}
 
 	switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 		case Animation::TYPE_POSITION_3D:
 		case Animation::TYPE_ROTATION_3D:
 		case Animation::TYPE_SCALE_3D: {
@@ -455,6 +458,7 @@ bool AnimationTrackKeyEdit::_get(const StringName &p_name, Variant &r_ret) const
 			}
 		} break;
 		case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
 		case Animation::TYPE_VALUE: {
 			if (name == "value") {
 				r_ret = animation->track_get_key_value(track, key);
@@ -558,6 +562,7 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 	ERR_FAIL_COND(key == -1);
 
 	switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 		case Animation::TYPE_POSITION_3D: {
 			p_list->push_back(PropertyInfo(Variant::VECTOR3, PNAME("position")));
 		} break;
@@ -570,6 +575,7 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 		case Animation::TYPE_BLEND_SHAPE: {
 			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("value")));
 		} break;
+#endif // _3D_DISABLED
 		case Animation::TYPE_VALUE: {
 			Variant v = animation->track_get_key_value(track, key);
 
@@ -775,6 +781,7 @@ bool AnimationMultiTrackKeyEdit::_set(const StringName &p_name, const Variant &p
 
 			EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 			switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 				case Animation::TYPE_POSITION_3D:
 				case Animation::TYPE_ROTATION_3D:
 				case Animation::TYPE_SCALE_3D: {
@@ -803,6 +810,7 @@ bool AnimationMultiTrackKeyEdit::_set(const StringName &p_name, const Variant &p
 					update_obj = true;
 				} break;
 				case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
 				case Animation::TYPE_VALUE: {
 					if (name == "value") {
 						Variant value = p_value;
@@ -1022,6 +1030,7 @@ bool AnimationMultiTrackKeyEdit::_get(const StringName &p_name, Variant &r_ret) 
 			}
 
 			switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 				case Animation::TYPE_POSITION_3D:
 				case Animation::TYPE_ROTATION_3D:
 				case Animation::TYPE_SCALE_3D: {
@@ -1032,6 +1041,7 @@ bool AnimationMultiTrackKeyEdit::_get(const StringName &p_name, Variant &r_ret) 
 
 				} break;
 				case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
 				case Animation::TYPE_VALUE: {
 					if (name == "value") {
 						r_ret = animation->track_get_key_value(track, key);
@@ -1167,6 +1177,7 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 
 	if (same_track_type) {
 		switch (animation->track_get_type(first_track)) {
+#ifndef _3D_DISABLED
 			case Animation::TYPE_POSITION_3D: {
 				p_list->push_back(PropertyInfo(Variant::VECTOR3, "position"));
 			} break;
@@ -1179,6 +1190,7 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 			case Animation::TYPE_BLEND_SHAPE: {
 				p_list->push_back(PropertyInfo(Variant::FLOAT, "value"));
 			} break;
+#endif // _3D_DISABLED
 			case Animation::TYPE_VALUE: {
 				if (same_key_type) {
 					Variant v = animation->track_get_key_value(first_track, first_key);
@@ -2398,7 +2410,11 @@ void AnimationTrackEdit::_notification(int p_what) {
 					interp_mode_rect.position.y = Math::round((get_size().height - icon->get_height()) / 2);
 					interp_mode_rect.size = icon->get_size();
 
-					if (!animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
+					if (!animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE
+#ifndef _3D_DISABLED
+																		  || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D
+#endif // _3D_DISABLED
+																		  )) {
 						draw_texture(icon, interp_mode_rect.position);
 					}
 					// Make it easier to click.
@@ -2408,7 +2424,11 @@ void AnimationTrackEdit::_notification(int p_what) {
 					ofs += icon->get_width() + h_separation / 2;
 					interp_mode_rect.size.x += h_separation / 2;
 
-					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
+					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE
+#ifndef _3D_DISABLED
+																						|| animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D
+#endif // _3D_DISABLED
+																						)) {
 						draw_texture(down_icon, Vector2(ofs, (get_size().height - down_icon->get_height()) / 2).round());
 						interp_mode_rect.size.x += down_icon->get_width();
 					} else {
@@ -2431,7 +2451,11 @@ void AnimationTrackEdit::_notification(int p_what) {
 					loop_wrap_rect.position.y = Math::round((get_size().height - icon->get_height()) / 2);
 					loop_wrap_rect.size = icon->get_size();
 
-					if (!animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
+					if (!animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE
+#ifndef _3D_DISABLED
+																		  || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D
+#endif // _3D_DISABLED
+																		  )) {
 						draw_texture(icon, loop_wrap_rect.position);
 					}
 
@@ -2441,7 +2465,11 @@ void AnimationTrackEdit::_notification(int p_what) {
 					ofs += icon->get_width() + h_separation / 2;
 					loop_wrap_rect.size.x += h_separation / 2;
 
-					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
+					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE
+#ifndef _3D_DISABLED
+																						|| animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D
+#endif // _3D_DISABLED
+																						)) {
 						draw_texture(down_icon, Vector2(ofs, (get_size().height - down_icon->get_height()) / 2).round());
 						loop_wrap_rect.size.x += down_icon->get_width();
 					} else {
@@ -2879,6 +2907,7 @@ String AnimationTrackEdit::get_tooltip(const Point2 &p_pos) const {
 		if (key_idx != -1) {
 			String text = TTR("Time (s):") + " " + TS->format_number(rtos(Math::snapped(animation->track_get_key_time(track, key_idx), SECOND_DECIMAL))) + "\n";
 			switch (animation->track_get_type(track)) {
+#ifndef _3D_DISABLED
 				case Animation::TYPE_POSITION_3D: {
 					Vector3 t = animation->track_get_key_value(track, key_idx);
 					text += TTR("Position:") + " " + String(t) + "\n";
@@ -2895,6 +2924,7 @@ String AnimationTrackEdit::get_tooltip(const Point2 &p_pos) const {
 					float t = animation->track_get_key_value(track, key_idx);
 					text += TTR("Blend Shape:") + " " + itos(t) + "\n";
 				} break;
+#endif // _3D_DISABLED
 				case Animation::TYPE_VALUE: {
 					const Variant &v = animation->track_get_key_value(track, key_idx);
 					text += TTR("Type:") + " " + Variant::get_type_name(v.get_type()) + "\n";
@@ -4207,16 +4237,13 @@ void AnimationTrackEditor::set_anim_pos(float p_pos) {
 static bool track_type_is_resettable(Animation::TrackType p_type) {
 	switch (p_type) {
 		case Animation::TYPE_VALUE:
-			[[fallthrough]];
-		case Animation::TYPE_BLEND_SHAPE:
-			[[fallthrough]];
 		case Animation::TYPE_BEZIER:
-			[[fallthrough]];
+#ifndef _3D_DISABLED
+		case Animation::TYPE_BLEND_SHAPE:
 		case Animation::TYPE_POSITION_3D:
-			[[fallthrough]];
 		case Animation::TYPE_ROTATION_3D:
-			[[fallthrough]];
 		case Animation::TYPE_SCALE_3D:
+#endif // _3D_DISABLED
 			return true;
 		default:
 			return false;
@@ -4822,10 +4849,12 @@ AnimationTrackEditor::TrackIndices AnimationTrackEditor::_confirm_insert(InsertD
 	Variant value;
 
 	switch (p_id.type) {
+#ifndef _3D_DISABLED
 		case Animation::TYPE_POSITION_3D:
 		case Animation::TYPE_ROTATION_3D:
 		case Animation::TYPE_SCALE_3D:
 		case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
 		case Animation::TYPE_VALUE:
 		case Animation::TYPE_AUDIO:
 		case Animation::TYPE_ANIMATION: {
@@ -5435,6 +5464,7 @@ void AnimationTrackEditor::_new_track_node_selected(NodePath p_path) {
 	ERR_FAIL_NULL(node);
 	NodePath path_to = root->get_path_to(node, true);
 
+#ifndef _3D_DISABLED
 	if (adding_track_type == Animation::TYPE_BLEND_SHAPE && !node->is_class("MeshInstance3D")) {
 		EditorNode::get_singleton()->show_warning(TTR("Blend Shape tracks only apply to MeshInstance3D nodes."));
 		return;
@@ -5444,6 +5474,7 @@ void AnimationTrackEditor::_new_track_node_selected(NodePath p_path) {
 		EditorNode::get_singleton()->show_warning(TTR("Position/Rotation/Scale 3D tracks only apply to 3D-based nodes."));
 		return;
 	}
+#endif // _3D_DISABLED
 
 	switch (adding_track_type) {
 		case Animation::TYPE_VALUE: {
@@ -5451,6 +5482,7 @@ void AnimationTrackEditor::_new_track_node_selected(NodePath p_path) {
 			prop_selector->set_type_filter(Vector<Variant::Type>());
 			prop_selector->select_property_from_instance(node);
 		} break;
+#ifndef _3D_DISABLED
 		case Animation::TYPE_BLEND_SHAPE: {
 			adding_track_path = path_to;
 			Vector<Variant::Type> filter;
@@ -5461,6 +5493,7 @@ void AnimationTrackEditor::_new_track_node_selected(NodePath p_path) {
 		case Animation::TYPE_POSITION_3D:
 		case Animation::TYPE_ROTATION_3D:
 		case Animation::TYPE_SCALE_3D:
+#endif // _3D_DISABLED
 		case Animation::TYPE_METHOD: {
 			EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 			undo_redo->create_action(TTR("Add Track"));
@@ -5533,6 +5566,7 @@ void AnimationTrackEditor::_add_track(int p_type) {
 	adding_track_type = p_type;
 	Vector<StringName> valid_types;
 	switch (adding_track_type) {
+#ifndef _3D_DISABLED
 		case Animation::TYPE_BLEND_SHAPE: {
 			// Blend Shape is a property of MeshInstance3D.
 			valid_types.push_back(SNAME("MeshInstance3D"));
@@ -5543,6 +5577,7 @@ void AnimationTrackEditor::_add_track(int p_type) {
 			// 3D Properties come from nodes inheriting Node3D.
 			valid_types.push_back(SNAME("Node3D"));
 		} break;
+#endif // _3D_DISABLED
 		case Animation::TYPE_AUDIO: {
 			valid_types.push_back(SNAME("AudioStreamPlayer"));
 			valid_types.push_back(SNAME("AudioStreamPlayer2D"));
@@ -5648,7 +5683,11 @@ void AnimationTrackEditor::_new_track_property_selected(const String &p_name) {
 		}
 		undo_redo->commit_action();
 	} else {
+#ifndef _3D_DISABLED
 		bool is_blend_shape = adding_track_type == Animation::TYPE_BLEND_SHAPE;
+#else
+		bool is_blend_shape = false;
+#endif // _3D_DISABLED
 		if (is_blend_shape) {
 			PackedStringArray split = p_name.split("/");
 			if (!split.is_empty()) {
@@ -6563,14 +6602,20 @@ bool AnimationTrackEditor::_is_track_compatible(int p_target_track_idx, Variant:
 	if (animation.is_valid()) {
 		Animation::TrackType target_track_type = animation->track_get_type(p_target_track_idx);
 		bool track_types_equal = target_track_type == p_source_track_type;
+#ifndef _3D_DISABLED
 		bool is_source_vector3_type = p_source_track_type == Animation::TYPE_POSITION_3D || p_source_track_type == Animation::TYPE_SCALE_3D || p_source_track_type == Animation::TYPE_ROTATION_3D;
+#else
+		bool is_source_vector3_type = false;
+#endif // _3D_DISABLED
 		bool is_source_bezier = p_source_track_type == Animation::TYPE_BEZIER;
 		switch (target_track_type) {
+#ifndef _3D_DISABLED
 			case Animation::TYPE_POSITION_3D:
 			case Animation::TYPE_SCALE_3D:
 				return p_source_value_type == Variant::VECTOR3;
 			case Animation::TYPE_ROTATION_3D:
 				return p_source_value_type == Variant::QUATERNION;
+#endif // _3D_DISABLED
 			case Animation::TYPE_BEZIER:
 				return track_types_equal || p_source_value_type == Variant::FLOAT;
 			case Animation::TYPE_VALUE:
@@ -6723,6 +6768,7 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 
 				String track_type;
 				switch (animation->track_get_type(i)) {
+#ifndef _3D_DISABLED
 					case Animation::TYPE_POSITION_3D:
 						track_type = TTR("Position");
 						break;
@@ -6735,6 +6781,7 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 					case Animation::TYPE_BLEND_SHAPE:
 						track_type = TTR("BlendShape");
 						break;
+#endif // _3D_DISABLED
 					case Animation::TYPE_METHOD:
 						track_type = TTR("Methods");
 						break;
@@ -7038,11 +7085,13 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 			}
 			for (int i = 0; i < tracks.size(); i++) {
 				switch (animation->track_get_type(tracks[i])) {
-					case Animation::TYPE_VALUE:
+#ifndef _3D_DISABLED
 					case Animation::TYPE_POSITION_3D:
 					case Animation::TYPE_ROTATION_3D:
 					case Animation::TYPE_SCALE_3D:
-					case Animation::TYPE_BLEND_SHAPE: {
+					case Animation::TYPE_BLEND_SHAPE:
+#endif // _3D_DISABLED
+					case Animation::TYPE_VALUE: {
 						Vector<int> keys;
 						for (const KeyValue<SelectedKey, KeyInfo> &E : selection) {
 							if (E.key.track == tracks[i]) {
@@ -7277,8 +7326,10 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 			undo_redo->create_action(TTR("Bake Animation as Linear Keys"));
 
 			int track_len = animation->get_track_count();
+#ifndef _3D_DISABLED
 			bool b_trs = bake_trs->is_pressed();
 			bool b_bs = bake_blendshape->is_pressed();
+#endif // _3D_DISABLED
 			bool b_v = bake_value->is_pressed();
 
 			double anim_len = animation->get_length() + CMP_EPSILON; // For end key.
@@ -7288,8 +7339,10 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 			for (int i = 0; i < track_len; i++) {
 				bool do_bake = false;
 				Animation::TrackType type = animation->track_get_type(i);
+#ifndef _3D_DISABLED
 				do_bake |= b_trs && (type == Animation::TYPE_POSITION_3D || type == Animation::TYPE_ROTATION_3D || type == Animation::TYPE_SCALE_3D);
 				do_bake |= b_bs && type == Animation::TYPE_BLEND_SHAPE;
+#endif // _3D_DISABLED
 				do_bake |= b_v && type == Animation::TYPE_VALUE;
 				if (do_bake && !animation->track_is_compressed(i)) {
 					Animation::InterpolationType it = animation->track_get_interpolation_type(i);
@@ -7304,6 +7357,7 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 					Vector<Pair<real_t, Variant>> insert_queue_new;
 
 					switch (type) {
+#ifndef _3D_DISABLED
 						case Animation::TYPE_POSITION_3D: {
 							for (double delta_t = 0.0; delta_t <= anim_len; delta_t += dur_step) {
 								Pair<real_t, Variant> keydata;
@@ -7344,6 +7398,7 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 								insert_queue_new.append(keydata);
 							}
 						} break;
+#endif // _3D_DISABLED
 						case Animation::TYPE_VALUE: {
 							for (double delta_t = 0.0; delta_t < anim_len; delta_t += dur_step) {
 								Pair<real_t, Variant> keydata;
@@ -8228,12 +8283,14 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	GridContainer *bake_grid = memnew(GridContainer);
 	bake_grid->set_columns(2);
 	bake_dialog->add_child(bake_grid);
+#ifndef _3D_DISABLED
 	bake_trs = memnew(CheckBox);
 	bake_trs->set_accessibility_name(TTRC("3D Pos/Rot/Scl Track:"));
 	bake_trs->set_pressed(true);
 	bake_blendshape = memnew(CheckBox);
 	bake_blendshape->set_accessibility_name(TTRC("Blendshape Track:"));
 	bake_blendshape->set_pressed(true);
+#endif // _3D_DISABLED
 	bake_value = memnew(CheckBox);
 	bake_value->set_accessibility_name(TTRC("Value Track:"));
 	bake_value->set_pressed(true);
@@ -8243,10 +8300,12 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	bake_fps->set_max(999);
 	bake_fps->set_step(FPS_DECIMAL);
 	bake_fps->set_value(30); // Default
+#ifndef _3D_DISABLED
 	bake_grid->add_child(memnew(Label(TTR("3D Pos/Rot/Scl Track:"))));
 	bake_grid->add_child(bake_trs);
 	bake_grid->add_child(memnew(Label(TTR("Blendshape Track:"))));
 	bake_grid->add_child(bake_blendshape);
+#endif // _3D_DISABLED
 	bake_grid->add_child(memnew(Label(TTR("Value Track:"))));
 	bake_grid->add_child(bake_value);
 	bake_grid->add_child(memnew(Label(TTR("FPS:"))));

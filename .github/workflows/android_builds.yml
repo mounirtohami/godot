@@ -9,6 +9,7 @@ env:
     module_text_server_fb_enabled=yes
     tests=no
     swappy=yes
+    disable_3d=yes
 
 jobs:
   build-android:

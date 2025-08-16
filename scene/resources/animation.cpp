@@ -85,7 +85,7 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 
 		if (tracks.size() == track && what == "type") {
 			String type = p_value;
-
+#ifndef _3D_DISABLED
 			if (type == "position_3d") {
 				add_track(TYPE_POSITION_3D);
 			} else if (type == "rotation_3d") {
@@ -94,19 +94,21 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 				add_track(TYPE_SCALE_3D);
 			} else if (type == "blend_shape") {
 				add_track(TYPE_BLEND_SHAPE);
-			} else if (type == "value") {
-				add_track(TYPE_VALUE);
-			} else if (type == "method") {
-				add_track(TYPE_METHOD);
-			} else if (type == "bezier") {
-				add_track(TYPE_BEZIER);
-			} else if (type == "audio") {
-				add_track(TYPE_AUDIO);
-			} else if (type == "animation") {
-				add_track(TYPE_ANIMATION);
-			} else {
-				return false;
-			}
+			} else
+#endif // _3D_DISABLED
+				if (type == "value") {
+					add_track(TYPE_VALUE);
+				} else if (type == "method") {
+					add_track(TYPE_METHOD);
+				} else if (type == "bezier") {
+					add_track(TYPE_BEZIER);
+				} else if (type == "audio") {
+					add_track(TYPE_AUDIO);
+				} else if (type == "animation") {
+					add_track(TYPE_ANIMATION);
+				} else {
+					return false;
+				}
 
 			return true;
 		}
@@ -115,6 +117,7 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 
 		if (what == "path") {
 			track_set_path(track, p_value);
+#ifndef _3D_DISABLED
 		} else if (what == "compressed_track") {
 			int index = p_value;
 			ERR_FAIL_COND_V(!compression.enabled, false);
@@ -143,6 +146,7 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 				}
 			}
 			return true;
+#endif // _3D_DISABLED
 		} else if (what == "use_blend") {
 			if (track_get_type(track) == TYPE_AUDIO) {
 				audio_track_set_use_blend(track, p_value);
@@ -156,6 +160,7 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 		} else if (what == "enabled") {
 			track_set_enabled(track, p_value);
 		} else if (what == "keys" || what == "key_values") {
+#ifndef _3D_DISABLED
 			if (track_get_type(track) == TYPE_POSITION_3D) {
 				PositionTrack *tt = static_cast<PositionTrack *>(tracks[track]);
 				Vector<real_t> values = p_value;
@@ -243,208 +248,210 @@ bool Animation::_set(const StringName &p_name, const Variant &p_value) {
 					sk.value = ofs[2];
 				}
 
-			} else if (track_get_type(track) == TYPE_VALUE) {
-				ValueTrack *vt = static_cast<ValueTrack *>(tracks[track]);
-				Dictionary d = p_value;
-				ERR_FAIL_COND_V(!d.has("times"), false);
-				ERR_FAIL_COND_V(!d.has("values"), false);
-				if (d.has("cont")) {
-					bool v = d["cont"];
-					vt->update_mode = v ? UPDATE_CONTINUOUS : UPDATE_DISCRETE;
-				}
-
-				if (d.has("update")) {
-					int um = d["update"];
-					if (um < 0) {
-						um = 0;
-					} else if (um > 3) {
-						um = 3;
-					}
-					vt->update_mode = UpdateMode(um);
-				}
-				capture_included = capture_included || (vt->update_mode == UPDATE_CAPTURE);
-
-				Vector<real_t> times = d["times"];
-				Array values = d["values"];
-
-				ERR_FAIL_COND_V(times.size() != values.size(), false);
-
-				if (times.size()) {
-					int valcount = times.size();
-
-					const real_t *rt = times.ptr();
-
-					vt->values.resize(valcount);
-
-					for (int i = 0; i < valcount; i++) {
-						vt->values.write[i].time = rt[i];
-						vt->values.write[i].value = values[i];
+			} else
+#endif // _3D_DISABLED
+				if (track_get_type(track) == TYPE_VALUE) {
+					ValueTrack *vt = static_cast<ValueTrack *>(tracks[track]);
+					Dictionary d = p_value;
+					ERR_FAIL_COND_V(!d.has("times"), false);
+					ERR_FAIL_COND_V(!d.has("values"), false);
+					if (d.has("cont")) {
+						bool v = d["cont"];
+						vt->update_mode = v ? UPDATE_CONTINUOUS : UPDATE_DISCRETE;
 					}
 
-					if (d.has("transitions")) {
-						Vector<real_t> transitions = d["transitions"];
-						ERR_FAIL_COND_V(transitions.size() != valcount, false);
+					if (d.has("update")) {
+						int um = d["update"];
+						if (um < 0) {
+							um = 0;
+						} else if (um > 3) {
+							um = 3;
+						}
+						vt->update_mode = UpdateMode(um);
+					}
+					capture_included = capture_included || (vt->update_mode == UPDATE_CAPTURE);
 
-						const real_t *rtr = transitions.ptr();
+					Vector<real_t> times = d["times"];
+					Array values = d["values"];
+
+					ERR_FAIL_COND_V(times.size() != values.size(), false);
+
+					if (times.size()) {
+						int valcount = times.size();
+
+						const real_t *rt = times.ptr();
+
+						vt->values.resize(valcount);
 
 						for (int i = 0; i < valcount; i++) {
-							vt->values.write[i].transition = rtr[i];
+							vt->values.write[i].time = rt[i];
+							vt->values.write[i].value = values[i];
+						}
+
+						if (d.has("transitions")) {
+							Vector<real_t> transitions = d["transitions"];
+							ERR_FAIL_COND_V(transitions.size() != valcount, false);
+
+							const real_t *rtr = transitions.ptr();
+
+							for (int i = 0; i < valcount; i++) {
+								vt->values.write[i].transition = rtr[i];
+							}
 						}
 					}
-				}
 
-				return true;
+					return true;
 
-			} else if (track_get_type(track) == TYPE_METHOD) {
-				while (track_get_key_count(track)) {
-					track_remove_key(track, 0); //well shouldn't be set anyway
-				}
-
-				Dictionary d = p_value;
-				ERR_FAIL_COND_V(!d.has("times"), false);
-				ERR_FAIL_COND_V(!d.has("values"), false);
-
-				Vector<real_t> times = d["times"];
-				Array values = d["values"];
-
-				ERR_FAIL_COND_V(times.size() != values.size(), false);
-
-				if (times.size()) {
-					int valcount = times.size();
-
-					const real_t *rt = times.ptr();
-
-					for (int i = 0; i < valcount; i++) {
-						track_insert_key(track, rt[i], values[i]);
+				} else if (track_get_type(track) == TYPE_METHOD) {
+					while (track_get_key_count(track)) {
+						track_remove_key(track, 0); //well shouldn't be set anyway
 					}
 
-					if (d.has("transitions")) {
-						Vector<real_t> transitions = d["transitions"];
-						ERR_FAIL_COND_V(transitions.size() != valcount, false);
+					Dictionary d = p_value;
+					ERR_FAIL_COND_V(!d.has("times"), false);
+					ERR_FAIL_COND_V(!d.has("values"), false);
 
-						const real_t *rtr = transitions.ptr();
+					Vector<real_t> times = d["times"];
+					Array values = d["values"];
+
+					ERR_FAIL_COND_V(times.size() != values.size(), false);
+
+					if (times.size()) {
+						int valcount = times.size();
+
+						const real_t *rt = times.ptr();
 
 						for (int i = 0; i < valcount; i++) {
-							track_set_key_transition(track, i, rtr[i]);
+							track_insert_key(track, rt[i], values[i]);
+						}
+
+						if (d.has("transitions")) {
+							Vector<real_t> transitions = d["transitions"];
+							ERR_FAIL_COND_V(transitions.size() != valcount, false);
+
+							const real_t *rtr = transitions.ptr();
+
+							for (int i = 0; i < valcount; i++) {
+								track_set_key_transition(track, i, rtr[i]);
+							}
 						}
 					}
-				}
-			} else if (track_get_type(track) == TYPE_BEZIER) {
-				BezierTrack *bt = static_cast<BezierTrack *>(tracks[track]);
-				Dictionary d = p_value;
-				ERR_FAIL_COND_V(!d.has("times"), false);
-				ERR_FAIL_COND_V(!d.has("points"), false);
-				Vector<real_t> times = d["times"];
-				Vector<real_t> values = d["points"];
+				} else if (track_get_type(track) == TYPE_BEZIER) {
+					BezierTrack *bt = static_cast<BezierTrack *>(tracks[track]);
+					Dictionary d = p_value;
+					ERR_FAIL_COND_V(!d.has("times"), false);
+					ERR_FAIL_COND_V(!d.has("points"), false);
+					Vector<real_t> times = d["times"];
+					Vector<real_t> values = d["points"];
 #ifdef TOOLS_ENABLED
-				Vector<int> handle_modes;
-				if (d.has("handle_modes")) {
-					handle_modes = d["handle_modes"];
+					Vector<int> handle_modes;
+					if (d.has("handle_modes")) {
+						handle_modes = d["handle_modes"];
+					} else {
+						handle_modes.resize_initialized(times.size());
+					}
+#endif // TOOLS_ENABLED
+
+					ERR_FAIL_COND_V(times.size() * 5 != values.size(), false);
+
+					if (times.size()) {
+						int valcount = times.size();
+
+						const real_t *rt = times.ptr();
+						const real_t *rv = values.ptr();
+#ifdef TOOLS_ENABLED
+						const int *rh = handle_modes.ptr();
+#endif // TOOLS_ENABLED
+
+						bt->values.resize(valcount);
+
+						for (int i = 0; i < valcount; i++) {
+							bt->values.write[i].time = rt[i];
+							bt->values.write[i].transition = 0; //unused in bezier
+							bt->values.write[i].value.value = rv[i * 5 + 0];
+							bt->values.write[i].value.in_handle.x = rv[i * 5 + 1];
+							bt->values.write[i].value.in_handle.y = rv[i * 5 + 2];
+							bt->values.write[i].value.out_handle.x = rv[i * 5 + 3];
+							bt->values.write[i].value.out_handle.y = rv[i * 5 + 4];
+#ifdef TOOLS_ENABLED
+							bt->values.write[i].value.handle_mode = static_cast<HandleMode>(rh[i]);
+#endif // TOOLS_ENABLED
+						}
+					}
+
+					return true;
+				} else if (track_get_type(track) == TYPE_AUDIO) {
+					AudioTrack *ad = static_cast<AudioTrack *>(tracks[track]);
+					Dictionary d = p_value;
+					ERR_FAIL_COND_V(!d.has("times"), false);
+					ERR_FAIL_COND_V(!d.has("clips"), false);
+
+					Vector<real_t> times = d["times"];
+					Array clips = d["clips"];
+
+					ERR_FAIL_COND_V(clips.size() != times.size(), false);
+
+					if (times.size()) {
+						int valcount = times.size();
+
+						const real_t *rt = times.ptr();
+
+						ad->values.clear();
+
+						for (int i = 0; i < valcount; i++) {
+							Dictionary d2 = clips[i];
+							if (!d2.has("start_offset")) {
+								continue;
+							}
+							if (!d2.has("end_offset")) {
+								continue;
+							}
+							if (!d2.has("stream")) {
+								continue;
+							}
+
+							TKey<AudioKey> ak;
+							ak.time = rt[i];
+							ak.value.start_offset = d2["start_offset"];
+							ak.value.end_offset = d2["end_offset"];
+							ak.value.stream = d2["stream"];
+
+							ad->values.push_back(ak);
+						}
+					}
+
+					return true;
+				} else if (track_get_type(track) == TYPE_ANIMATION) {
+					AnimationTrack *an = static_cast<AnimationTrack *>(tracks[track]);
+					Dictionary d = p_value;
+					ERR_FAIL_COND_V(!d.has("times"), false);
+					ERR_FAIL_COND_V(!d.has("clips"), false);
+
+					Vector<real_t> times = d["times"];
+					Vector<String> clips = d["clips"];
+
+					ERR_FAIL_COND_V(clips.size() != times.size(), false);
+
+					if (times.size()) {
+						int valcount = times.size();
+
+						const real_t *rt = times.ptr();
+						const String *rc = clips.ptr();
+
+						an->values.resize(valcount);
+
+						for (int i = 0; i < valcount; i++) {
+							TKey<StringName> ak;
+							ak.time = rt[i];
+							ak.value = rc[i];
+							an->values.write[i] = ak;
+						}
+					}
+
+					return true;
 				} else {
-					handle_modes.resize_initialized(times.size());
+					return false;
 				}
-#endif // TOOLS_ENABLED
-
-				ERR_FAIL_COND_V(times.size() * 5 != values.size(), false);
-
-				if (times.size()) {
-					int valcount = times.size();
-
-					const real_t *rt = times.ptr();
-					const real_t *rv = values.ptr();
-#ifdef TOOLS_ENABLED
-					const int *rh = handle_modes.ptr();
-#endif // TOOLS_ENABLED
-
-					bt->values.resize(valcount);
-
-					for (int i = 0; i < valcount; i++) {
-						bt->values.write[i].time = rt[i];
-						bt->values.write[i].transition = 0; //unused in bezier
-						bt->values.write[i].value.value = rv[i * 5 + 0];
-						bt->values.write[i].value.in_handle.x = rv[i * 5 + 1];
-						bt->values.write[i].value.in_handle.y = rv[i * 5 + 2];
-						bt->values.write[i].value.out_handle.x = rv[i * 5 + 3];
-						bt->values.write[i].value.out_handle.y = rv[i * 5 + 4];
-#ifdef TOOLS_ENABLED
-						bt->values.write[i].value.handle_mode = static_cast<HandleMode>(rh[i]);
-#endif // TOOLS_ENABLED
-					}
-				}
-
-				return true;
-			} else if (track_get_type(track) == TYPE_AUDIO) {
-				AudioTrack *ad = static_cast<AudioTrack *>(tracks[track]);
-				Dictionary d = p_value;
-				ERR_FAIL_COND_V(!d.has("times"), false);
-				ERR_FAIL_COND_V(!d.has("clips"), false);
-
-				Vector<real_t> times = d["times"];
-				Array clips = d["clips"];
-
-				ERR_FAIL_COND_V(clips.size() != times.size(), false);
-
-				if (times.size()) {
-					int valcount = times.size();
-
-					const real_t *rt = times.ptr();
-
-					ad->values.clear();
-
-					for (int i = 0; i < valcount; i++) {
-						Dictionary d2 = clips[i];
-						if (!d2.has("start_offset")) {
-							continue;
-						}
-						if (!d2.has("end_offset")) {
-							continue;
-						}
-						if (!d2.has("stream")) {
-							continue;
-						}
-
-						TKey<AudioKey> ak;
-						ak.time = rt[i];
-						ak.value.start_offset = d2["start_offset"];
-						ak.value.end_offset = d2["end_offset"];
-						ak.value.stream = d2["stream"];
-
-						ad->values.push_back(ak);
-					}
-				}
-
-				return true;
-			} else if (track_get_type(track) == TYPE_ANIMATION) {
-				AnimationTrack *an = static_cast<AnimationTrack *>(tracks[track]);
-				Dictionary d = p_value;
-				ERR_FAIL_COND_V(!d.has("times"), false);
-				ERR_FAIL_COND_V(!d.has("clips"), false);
-
-				Vector<real_t> times = d["times"];
-				Vector<String> clips = d["clips"];
-
-				ERR_FAIL_COND_V(clips.size() != times.size(), false);
-
-				if (times.size()) {
-					int valcount = times.size();
-
-					const real_t *rt = times.ptr();
-					const String *rc = clips.ptr();
-
-					an->values.resize(valcount);
-
-					for (int i = 0; i < valcount; i++) {
-						TKey<StringName> ak;
-						ak.time = rt[i];
-						ak.value = rc[i];
-						an->values.write[i] = ak;
-					}
-				}
-
-				return true;
-			} else {
-				return false;
-			}
 		} else {
 			return false;
 		}
@@ -512,6 +519,7 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 		ERR_FAIL_INDEX_V(track, tracks.size(), false);
 		if (what == "type") {
 			switch (track_get_type(track)) {
+#ifndef _3D_DISABLED
 				case TYPE_POSITION_3D:
 					r_ret = "position_3d";
 					break;
@@ -524,6 +532,7 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 				case TYPE_BLEND_SHAPE:
 					r_ret = "blend_shape";
 					break;
+#endif // _3D_DISABLED
 				case TYPE_VALUE:
 					r_ret = "value";
 					break;
@@ -546,6 +555,7 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 		} else if (what == "path") {
 			r_ret = track_get_path(track);
 		} else if (what == "compressed_track") {
+#ifndef _3D_DISABLED
 			ERR_FAIL_COND_V(!compression.enabled, false);
 			Track *t = tracks[track];
 			switch (t->type) {
@@ -572,6 +582,10 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 			}
 
 			return true;
+#else
+			r_ret = Variant();
+			return false;
+#endif // _3D_DISABLED
 		} else if (what == "use_blend") {
 			if (track_get_type(track) == TYPE_AUDIO) {
 				r_ret = audio_track_is_use_blend(track);
@@ -585,6 +599,7 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 		} else if (what == "enabled") {
 			r_ret = track_is_enabled(track);
 		} else if (what == "keys") {
+#ifndef _3D_DISABLED
 			if (track_get_type(track) == TYPE_POSITION_3D) {
 				Vector<real_t> keys;
 				int kk = track_get_key_count(track);
@@ -669,192 +684,194 @@ bool Animation::_get(const StringName &p_name, Variant &r_ret) const {
 
 				r_ret = keys;
 				return true;
-			} else if (track_get_type(track) == TYPE_VALUE) {
-				const ValueTrack *vt = static_cast<const ValueTrack *>(tracks[track]);
-
-				Dictionary d;
-
-				Vector<real_t> key_times;
-				Vector<real_t> key_transitions;
-				Array key_values;
-
-				int kk = vt->values.size();
-
-				key_times.resize(kk);
-				key_transitions.resize(kk);
-				key_values.resize(kk);
-
-				real_t *wti = key_times.ptrw();
-				real_t *wtr = key_transitions.ptrw();
-
-				int idx = 0;
-
-				const TKey<Variant> *vls = vt->values.ptr();
-
-				for (int i = 0; i < kk; i++) {
-					wti[idx] = vls[i].time;
-					wtr[idx] = vls[i].transition;
-					key_values[idx] = vls[i].value;
-					idx++;
-				}
-
-				d["times"] = key_times;
-				d["transitions"] = key_transitions;
-				d["values"] = key_values;
+			} else
+#endif // _3D_DISABLED
 				if (track_get_type(track) == TYPE_VALUE) {
-					d["update"] = value_track_get_update_mode(track);
-				}
+					const ValueTrack *vt = static_cast<const ValueTrack *>(tracks[track]);
 
-				r_ret = d;
+					Dictionary d;
 
-				return true;
+					Vector<real_t> key_times;
+					Vector<real_t> key_transitions;
+					Array key_values;
 
-			} else if (track_get_type(track) == TYPE_METHOD) {
-				Dictionary d;
+					int kk = vt->values.size();
 
-				Vector<real_t> key_times;
-				Vector<real_t> key_transitions;
-				Array key_values;
+					key_times.resize(kk);
+					key_transitions.resize(kk);
+					key_values.resize(kk);
 
-				int kk = track_get_key_count(track);
+					real_t *wti = key_times.ptrw();
+					real_t *wtr = key_transitions.ptrw();
 
-				key_times.resize(kk);
-				key_transitions.resize(kk);
-				key_values.resize(kk);
+					int idx = 0;
 
-				real_t *wti = key_times.ptrw();
-				real_t *wtr = key_transitions.ptrw();
+					const TKey<Variant> *vls = vt->values.ptr();
 
-				int idx = 0;
-				for (int i = 0; i < track_get_key_count(track); i++) {
-					wti[idx] = track_get_key_time(track, i);
-					wtr[idx] = track_get_key_transition(track, i);
-					key_values[idx] = track_get_key_value(track, i);
-					idx++;
-				}
+					for (int i = 0; i < kk; i++) {
+						wti[idx] = vls[i].time;
+						wtr[idx] = vls[i].transition;
+						key_values[idx] = vls[i].value;
+						idx++;
+					}
 
-				d["times"] = key_times;
-				d["transitions"] = key_transitions;
-				d["values"] = key_values;
-				if (track_get_type(track) == TYPE_VALUE) {
-					d["update"] = value_track_get_update_mode(track);
-				}
+					d["times"] = key_times;
+					d["transitions"] = key_transitions;
+					d["values"] = key_values;
+					if (track_get_type(track) == TYPE_VALUE) {
+						d["update"] = value_track_get_update_mode(track);
+					}
 
-				r_ret = d;
+					r_ret = d;
 
-				return true;
-			} else if (track_get_type(track) == TYPE_BEZIER) {
-				const BezierTrack *bt = static_cast<const BezierTrack *>(tracks[track]);
+					return true;
 
-				Dictionary d;
+				} else if (track_get_type(track) == TYPE_METHOD) {
+					Dictionary d;
 
-				Vector<real_t> key_times;
-				Vector<real_t> key_points;
+					Vector<real_t> key_times;
+					Vector<real_t> key_transitions;
+					Array key_values;
 
-				int kk = bt->values.size();
+					int kk = track_get_key_count(track);
 
-				key_times.resize(kk);
-				key_points.resize(kk * 5);
+					key_times.resize(kk);
+					key_transitions.resize(kk);
+					key_values.resize(kk);
 
-				real_t *wti = key_times.ptrw();
-				real_t *wpo = key_points.ptrw();
+					real_t *wti = key_times.ptrw();
+					real_t *wtr = key_transitions.ptrw();
+
+					int idx = 0;
+					for (int i = 0; i < track_get_key_count(track); i++) {
+						wti[idx] = track_get_key_time(track, i);
+						wtr[idx] = track_get_key_transition(track, i);
+						key_values[idx] = track_get_key_value(track, i);
+						idx++;
+					}
+
+					d["times"] = key_times;
+					d["transitions"] = key_transitions;
+					d["values"] = key_values;
+					if (track_get_type(track) == TYPE_VALUE) {
+						d["update"] = value_track_get_update_mode(track);
+					}
+
+					r_ret = d;
+
+					return true;
+				} else if (track_get_type(track) == TYPE_BEZIER) {
+					const BezierTrack *bt = static_cast<const BezierTrack *>(tracks[track]);
+
+					Dictionary d;
+
+					Vector<real_t> key_times;
+					Vector<real_t> key_points;
+
+					int kk = bt->values.size();
+
+					key_times.resize(kk);
+					key_points.resize(kk * 5);
+
+					real_t *wti = key_times.ptrw();
+					real_t *wpo = key_points.ptrw();
 
 #ifdef TOOLS_ENABLED
-				Vector<int> handle_modes;
-				handle_modes.resize(kk);
-				int *whm = handle_modes.ptrw();
+					Vector<int> handle_modes;
+					handle_modes.resize(kk);
+					int *whm = handle_modes.ptrw();
 #endif // TOOLS_ENABLED
 
-				int idx = 0;
+					int idx = 0;
 
-				const TKey<BezierKey> *vls = bt->values.ptr();
+					const TKey<BezierKey> *vls = bt->values.ptr();
 
-				for (int i = 0; i < kk; i++) {
-					wti[idx] = vls[i].time;
-					wpo[idx * 5 + 0] = vls[i].value.value;
-					wpo[idx * 5 + 1] = vls[i].value.in_handle.x;
-					wpo[idx * 5 + 2] = vls[i].value.in_handle.y;
-					wpo[idx * 5 + 3] = vls[i].value.out_handle.x;
-					wpo[idx * 5 + 4] = vls[i].value.out_handle.y;
+					for (int i = 0; i < kk; i++) {
+						wti[idx] = vls[i].time;
+						wpo[idx * 5 + 0] = vls[i].value.value;
+						wpo[idx * 5 + 1] = vls[i].value.in_handle.x;
+						wpo[idx * 5 + 2] = vls[i].value.in_handle.y;
+						wpo[idx * 5 + 3] = vls[i].value.out_handle.x;
+						wpo[idx * 5 + 4] = vls[i].value.out_handle.y;
 #ifdef TOOLS_ENABLED
-					whm[idx] = static_cast<int>(vls[i].value.handle_mode);
+						whm[idx] = static_cast<int>(vls[i].value.handle_mode);
 #endif // TOOLS_ENABLED
-					idx++;
-				}
+						idx++;
+					}
 
-				d["times"] = key_times;
-				d["points"] = key_points;
+					d["times"] = key_times;
+					d["points"] = key_points;
 #ifdef TOOLS_ENABLED
-				d["handle_modes"] = handle_modes;
+					d["handle_modes"] = handle_modes;
 #endif // TOOLS_ENABLED
 
-				r_ret = d;
+					r_ret = d;
 
-				return true;
-			} else if (track_get_type(track) == TYPE_AUDIO) {
-				const AudioTrack *ad = static_cast<const AudioTrack *>(tracks[track]);
+					return true;
+				} else if (track_get_type(track) == TYPE_AUDIO) {
+					const AudioTrack *ad = static_cast<const AudioTrack *>(tracks[track]);
 
-				Dictionary d;
+					Dictionary d;
 
-				Vector<real_t> key_times;
-				Array clips;
+					Vector<real_t> key_times;
+					Array clips;
 
-				int kk = ad->values.size();
+					int kk = ad->values.size();
 
-				key_times.resize(kk);
+					key_times.resize(kk);
 
-				real_t *wti = key_times.ptrw();
+					real_t *wti = key_times.ptrw();
 
-				int idx = 0;
+					int idx = 0;
 
-				const TKey<AudioKey> *vls = ad->values.ptr();
+					const TKey<AudioKey> *vls = ad->values.ptr();
 
-				for (int i = 0; i < kk; i++) {
-					wti[idx] = vls[i].time;
-					Dictionary clip;
-					clip["start_offset"] = vls[i].value.start_offset;
-					clip["end_offset"] = vls[i].value.end_offset;
-					clip["stream"] = vls[i].value.stream;
-					clips.push_back(clip);
-					idx++;
+					for (int i = 0; i < kk; i++) {
+						wti[idx] = vls[i].time;
+						Dictionary clip;
+						clip["start_offset"] = vls[i].value.start_offset;
+						clip["end_offset"] = vls[i].value.end_offset;
+						clip["stream"] = vls[i].value.stream;
+						clips.push_back(clip);
+						idx++;
+					}
+
+					d["times"] = key_times;
+					d["clips"] = clips;
+
+					r_ret = d;
+
+					return true;
+				} else if (track_get_type(track) == TYPE_ANIMATION) {
+					const AnimationTrack *an = static_cast<const AnimationTrack *>(tracks[track]);
+
+					Dictionary d;
+
+					Vector<real_t> key_times;
+					Vector<String> clips;
+
+					int kk = an->values.size();
+
+					key_times.resize(kk);
+					clips.resize(kk);
+
+					real_t *wti = key_times.ptrw();
+					String *wcl = clips.ptrw();
+
+					const TKey<StringName> *vls = an->values.ptr();
+
+					for (int i = 0; i < kk; i++) {
+						wti[i] = vls[i].time;
+						wcl[i] = vls[i].value;
+					}
+
+					d["times"] = key_times;
+					d["clips"] = clips;
+
+					r_ret = d;
+
+					return true;
 				}
-
-				d["times"] = key_times;
-				d["clips"] = clips;
-
-				r_ret = d;
-
-				return true;
-			} else if (track_get_type(track) == TYPE_ANIMATION) {
-				const AnimationTrack *an = static_cast<const AnimationTrack *>(tracks[track]);
-
-				Dictionary d;
-
-				Vector<real_t> key_times;
-				Vector<String> clips;
-
-				int kk = an->values.size();
-
-				key_times.resize(kk);
-				clips.resize(kk);
-
-				real_t *wti = key_times.ptrw();
-				String *wcl = clips.ptrw();
-
-				const TKey<StringName> *vls = an->values.ptr();
-
-				for (int i = 0; i < kk; i++) {
-					wti[i] = vls[i].time;
-					wcl[i] = vls[i].value;
-				}
-
-				d["times"] = key_times;
-				d["clips"] = clips;
-
-				r_ret = d;
-
-				return true;
-			}
 		} else {
 			return false;
 		}
@@ -898,6 +915,7 @@ int Animation::add_track(TrackType p_type, int p_at_pos) {
 	}
 
 	switch (p_type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = memnew(PositionTrack);
 			tracks.insert(p_at_pos, tt);
@@ -914,6 +932,7 @@ int Animation::add_track(TrackType p_type, int p_at_pos) {
 			BlendShapeTrack *bst = memnew(BlendShapeTrack);
 			tracks.insert(p_at_pos, bst);
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			tracks.insert(p_at_pos, memnew(ValueTrack));
 
@@ -947,6 +966,7 @@ void Animation::remove_track(int p_track) {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			ERR_FAIL_COND_MSG(tt->compressed_track >= 0, "Compressed tracks can't be manually removed. Call clear() to get rid of compression first.");
@@ -971,6 +991,7 @@ void Animation::remove_track(int p_track) {
 			bst->blend_shapes.clear();
 
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			vt->values.clear();
@@ -1055,9 +1076,11 @@ Animation::TrackType Animation::get_cache_type(TrackType p_type) {
 	if (p_type == Animation::TYPE_BEZIER) {
 		return Animation::TYPE_VALUE;
 	}
+#ifndef _3D_DISABLED
 	if (p_type == Animation::TYPE_ROTATION_3D || p_type == Animation::TYPE_SCALE_3D) {
 		return Animation::TYPE_POSITION_3D; // Reference them as position3D tracks, even if they modify rotation or scale.
 	}
+#endif // _3D_DISABLED
 	return p_type;
 }
 
@@ -1139,8 +1162,7 @@ int Animation::_marker_insert(double p_time, Vector<MarkerKey> &p_keys, const Ma
 	return -1;
 }
 
-////
-
+#ifndef _3D_DISABLED
 int Animation::position_track_insert_key(int p_track, double p_time, const Vector3 &p_position) {
 	ERR_FAIL_INDEX_V(p_track, tracks.size(), -1);
 	Track *t = tracks[p_track];
@@ -1458,8 +1480,7 @@ float Animation::blend_shape_track_interpolate(int p_track, double p_time, bool 
 	ERR_FAIL_COND_V_MSG(err, ret, "Blend Shape Track: '" + String(tracks[p_track]->path) + "' is unavailable.");
 	return ret;
 }
-
-////
+#endif // _3D_DISABLED
 
 void Animation::track_remove_key_at_time(int p_track, double p_time) {
 	int idx = track_find_key(p_track, p_time, FIND_MODE_APPROX);
@@ -1472,6 +1493,7 @@ void Animation::track_remove_key(int p_track, int p_idx) {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 
@@ -1508,6 +1530,7 @@ void Animation::track_remove_key(int p_track, int p_idx) {
 			bst->blend_shapes.remove_at(p_idx);
 
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX(p_idx, vt->values.size());
@@ -1548,6 +1571,7 @@ int Animation::track_find_key(int p_track, double p_time, FindMode p_find_mode, 
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 
@@ -1656,6 +1680,7 @@ int Animation::track_find_key(int p_track, double p_time, FindMode p_find_mode, 
 			return k;
 
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			int k = _find(vt->values, p_time, p_backward, p_limit);
@@ -1728,6 +1753,7 @@ int Animation::track_insert_key(int p_track, double p_time, const Variant &p_key
 	int ret = -1;
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			ERR_FAIL_COND_V((p_key.get_type() != Variant::VECTOR3) && (p_key.get_type() != Variant::VECTOR3I), -1);
 			ret = position_track_insert_key(p_track, p_time, p_key);
@@ -1752,6 +1778,7 @@ int Animation::track_insert_key(int p_track, double p_time, const Variant &p_key
 			track_set_key_transition(p_track, ret, p_transition);
 
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 
@@ -1843,6 +1870,7 @@ int Animation::track_get_key_count(int p_track) const {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			if (tt->compressed_track >= 0) {
@@ -1871,6 +1899,7 @@ int Animation::track_get_key_count(int p_track) const {
 			}
 			return bst->blend_shapes.size();
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			return vt->values.size();
@@ -1902,6 +1931,7 @@ Variant Animation::track_get_key_value(int p_track, int p_key_idx) const {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			Vector3 value;
 			position_track_get_key(p_track, p_key_idx, &value);
@@ -1922,6 +1952,7 @@ Variant Animation::track_get_key_value(int p_track, int p_key_idx) const {
 			blend_shape_track_get_key(p_track, p_key_idx, &value);
 			return value;
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX_V(p_key_idx, vt->values.size(), Variant());
@@ -1979,6 +2010,7 @@ double Animation::track_get_key_time(int p_track, int p_key_idx) const {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			if (tt->compressed_track >= 0) {
@@ -2027,6 +2059,7 @@ double Animation::track_get_key_time(int p_track, int p_key_idx) const {
 			ERR_FAIL_INDEX_V(p_key_idx, bst->blend_shapes.size(), -1);
 			return bst->blend_shapes[p_key_idx].time;
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX_V(p_key_idx, vt->values.size(), -1);
@@ -2067,6 +2100,7 @@ void Animation::track_set_key_time(int p_track, int p_key_idx, double p_time) {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			ERR_FAIL_COND(tt->compressed_track >= 0);
@@ -2076,7 +2110,7 @@ void Animation::track_set_key_time(int p_track, int p_key_idx, double p_time) {
 			tt->positions.remove_at(p_key_idx);
 			_insert(p_time, tt->positions, key);
 			return;
-		}
+		} break;
 		case TYPE_ROTATION_3D: {
 			RotationTrack *tt = static_cast<RotationTrack *>(t);
 			ERR_FAIL_COND(tt->compressed_track >= 0);
@@ -2086,7 +2120,7 @@ void Animation::track_set_key_time(int p_track, int p_key_idx, double p_time) {
 			tt->rotations.remove_at(p_key_idx);
 			_insert(p_time, tt->rotations, key);
 			return;
-		}
+		} break;
 		case TYPE_SCALE_3D: {
 			ScaleTrack *tt = static_cast<ScaleTrack *>(t);
 			ERR_FAIL_COND(tt->compressed_track >= 0);
@@ -2096,7 +2130,7 @@ void Animation::track_set_key_time(int p_track, int p_key_idx, double p_time) {
 			tt->scales.remove_at(p_key_idx);
 			_insert(p_time, tt->scales, key);
 			return;
-		}
+		} break;
 		case TYPE_BLEND_SHAPE: {
 			BlendShapeTrack *tt = static_cast<BlendShapeTrack *>(t);
 			ERR_FAIL_COND(tt->compressed_track >= 0);
@@ -2106,7 +2140,8 @@ void Animation::track_set_key_time(int p_track, int p_key_idx, double p_time) {
 			tt->blend_shapes.remove_at(p_key_idx);
 			_insert(p_time, tt->blend_shapes, key);
 			return;
-		}
+		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX(p_key_idx, vt->values.size());
@@ -2162,6 +2197,7 @@ real_t Animation::track_get_key_transition(int p_track, int p_key_idx) const {
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			if (tt->compressed_track >= 0) {
@@ -2194,6 +2230,7 @@ real_t Animation::track_get_key_transition(int p_track, int p_key_idx) const {
 			ERR_FAIL_INDEX_V(p_key_idx, bst->blend_shapes.size(), -1);
 			return bst->blend_shapes[p_key_idx].transition;
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX_V(p_key_idx, vt->values.size(), -1);
@@ -2222,6 +2259,7 @@ real_t Animation::track_get_key_transition(int p_track, int p_key_idx) const {
 
 bool Animation::track_is_compressed(int p_track) const {
 	ERR_FAIL_INDEX_V(p_track, tracks.size(), false);
+#ifndef _3D_DISABLED
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
@@ -2245,6 +2283,9 @@ bool Animation::track_is_compressed(int p_track) const {
 			return false; // Animation does not really use transitions.
 		} break;
 	}
+#else
+	return false;
+#endif // _3D_DISABLED
 }
 
 void Animation::track_set_key_value(int p_track, int p_key_idx, const Variant &p_value) {
@@ -2252,6 +2293,7 @@ void Animation::track_set_key_value(int p_track, int p_key_idx, const Variant &p
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			ERR_FAIL_COND((p_value.get_type() != Variant::VECTOR3) && (p_value.get_type() != Variant::VECTOR3I));
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
@@ -2288,6 +2330,7 @@ void Animation::track_set_key_value(int p_track, int p_key_idx, const Variant &p
 			bst->blend_shapes.write[p_key_idx].value = p_value;
 
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX(p_key_idx, vt->values.size());
@@ -2354,6 +2397,7 @@ void Animation::track_set_key_transition(int p_track, int p_key_idx, real_t p_tr
 	Track *t = tracks[p_track];
 
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			PositionTrack *tt = static_cast<PositionTrack *>(t);
 			ERR_FAIL_COND(tt->compressed_track >= 0);
@@ -2378,6 +2422,7 @@ void Animation::track_set_key_transition(int p_track, int p_key_idx, real_t p_tr
 			ERR_FAIL_INDEX(p_key_idx, bst->blend_shapes.size());
 			bst->blend_shapes.write[p_key_idx].transition = p_transition;
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			ValueTrack *vt = static_cast<ValueTrack *>(t);
 			ERR_FAIL_INDEX(p_key_idx, vt->values.size());
@@ -2866,6 +2911,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 				double anim_start = -CMP_EPSILON;
 
 				switch (t->type) {
+#ifndef _3D_DISABLED
 					case TYPE_POSITION_3D: {
 						const PositionTrack *tt = static_cast<const PositionTrack *>(t);
 						if (tt->compressed_track >= 0) {
@@ -2926,6 +2972,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 							}
 						}
 					} break;
+#endif // _3D_DISABLED
 					case TYPE_VALUE: {
 						const ValueTrack *vt = static_cast<const ValueTrack *>(t);
 						if (!is_backward) {
@@ -3006,6 +3053,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 			if (p_looped_flag == Animation::LOOPED_FLAG_START) {
 				// Handle loop by splitting.
 				switch (t->type) {
+#ifndef _3D_DISABLED
 					case TYPE_POSITION_3D: {
 						const PositionTrack *tt = static_cast<const PositionTrack *>(t);
 						if (tt->compressed_track >= 0) {
@@ -3046,6 +3094,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 							_track_get_key_indices_in_range(bst->blend_shapes, 0, to_time, p_indices, false);
 						}
 					} break;
+#endif // _3D_DISABLED
 					case TYPE_VALUE: {
 						const ValueTrack *vt = static_cast<const ValueTrack *>(t);
 						_track_get_key_indices_in_range(vt->values, 0, from_time, p_indices, true);
@@ -3077,6 +3126,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 			if (p_looped_flag == Animation::LOOPED_FLAG_END) {
 				// Handle loop by splitting.
 				switch (t->type) {
+#ifndef _3D_DISABLED
 					case TYPE_POSITION_3D: {
 						const PositionTrack *tt = static_cast<const PositionTrack *>(t);
 						if (tt->compressed_track >= 0) {
@@ -3117,6 +3167,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 							_track_get_key_indices_in_range(bst->blend_shapes, to_time, length, p_indices, true);
 						}
 					} break;
+#endif // _3D_DISABLED
 					case TYPE_VALUE: {
 						const ValueTrack *vt = static_cast<const ValueTrack *>(t);
 						_track_get_key_indices_in_range(vt->values, from_time, length, p_indices, false);
@@ -3155,6 +3206,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 		} break;
 	}
 	switch (t->type) {
+#ifndef _3D_DISABLED
 		case TYPE_POSITION_3D: {
 			const PositionTrack *tt = static_cast<const PositionTrack *>(t);
 			if (tt->compressed_track >= 0) {
@@ -3187,6 +3239,7 @@ void Animation::track_get_key_indices_in_range(int p_track, double p_time, doubl
 				_track_get_key_indices_in_range(bst->blend_shapes, from_time, to_time, p_indices, is_backward);
 			}
 		} break;
+#endif // _3D_DISABLED
 		case TYPE_VALUE: {
 			const ValueTrack *vt = static_cast<const ValueTrack *>(t);
 			_track_get_key_indices_in_range(vt->values, from_time, to_time, p_indices, is_backward);
@@ -3977,6 +4030,7 @@ void Animation::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("track_set_enabled", "track_idx", "enabled"), &Animation::track_set_enabled);
 	ClassDB::bind_method(D_METHOD("track_is_enabled", "track_idx"), &Animation::track_is_enabled);
 
+#ifndef _3D_DISABLED
 	ClassDB::bind_method(D_METHOD("position_track_insert_key", "track_idx", "time", "position"), &Animation::position_track_insert_key);
 	ClassDB::bind_method(D_METHOD("rotation_track_insert_key", "track_idx", "time", "rotation"), &Animation::rotation_track_insert_key);
 	ClassDB::bind_method(D_METHOD("scale_track_insert_key", "track_idx", "time", "scale"), &Animation::scale_track_insert_key);
@@ -3986,6 +4040,7 @@ void Animation::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("rotation_track_interpolate", "track_idx", "time_sec", "backward"), &Animation::rotation_track_interpolate, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("scale_track_interpolate", "track_idx", "time_sec", "backward"), &Animation::scale_track_interpolate, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("blend_shape_track_interpolate", "track_idx", "time_sec", "backward"), &Animation::blend_shape_track_interpolate, DEFVAL(false));
+#endif // _3D_DISABLED
 
 	ClassDB::bind_method(D_METHOD("track_insert_key", "track_idx", "time", "key", "transition"), &Animation::track_insert_key, DEFVAL(1));
 	ClassDB::bind_method(D_METHOD("track_remove_key", "track_idx", "key_idx"), &Animation::track_remove_key);
@@ -4066,7 +4121,9 @@ void Animation::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("copy_track", "track_idx", "to_animation"), &Animation::copy_track);
 
 	ClassDB::bind_method(D_METHOD("optimize", "allowed_velocity_err", "allowed_angular_err", "precision"), &Animation::optimize, DEFVAL(0.01), DEFVAL(0.01), DEFVAL(3));
+#ifndef _3D_DISABLED
 	ClassDB::bind_method(D_METHOD("compress", "page_size", "fps", "split_tolerance"), &Animation::compress, DEFVAL(8192), DEFVAL(120), DEFVAL(4.0));
+#endif // _3D_DISABLED
 
 	ClassDB::bind_method(D_METHOD("is_capture_included"), &Animation::is_capture_included);
 
@@ -4076,10 +4133,12 @@ void Animation::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "capture_included", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "", "is_capture_included");
 
 	BIND_ENUM_CONSTANT(TYPE_VALUE);
+#ifndef _3D_DISABLED
 	BIND_ENUM_CONSTANT(TYPE_POSITION_3D);
 	BIND_ENUM_CONSTANT(TYPE_ROTATION_3D);
 	BIND_ENUM_CONSTANT(TYPE_SCALE_3D);
 	BIND_ENUM_CONSTANT(TYPE_BLEND_SHAPE);
+#endif // _3D_DISABLED
 	BIND_ENUM_CONSTANT(TYPE_METHOD);
 	BIND_ENUM_CONSTANT(TYPE_BEZIER);
 	BIND_ENUM_CONSTANT(TYPE_AUDIO);
@@ -4259,6 +4318,7 @@ bool Animation::_quaternion_track_optimize_key(const TKey<Quaternion> t0, const 
 	return false;
 }
 
+#ifndef _3D_DISABLED
 void Animation::_position_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_err, real_t p_allowed_precision_error) {
 	ERR_FAIL_INDEX(p_idx, tracks.size());
 	ERR_FAIL_COND(tracks[p_idx]->type != TYPE_POSITION_3D);
@@ -4379,6 +4439,7 @@ void Animation::_blend_shape_track_optimize(int p_idx, real_t p_allowed_velocity
 		}
 	}
 }
+#endif // _3D_DISABLED
 
 void Animation::_value_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_err, real_t p_allowed_precision_error) {
 	ERR_FAIL_INDEX(p_idx, tracks.size());
@@ -4508,6 +4569,7 @@ void Animation::_value_track_optimize(int p_idx, real_t p_allowed_velocity_err, 
 void Animation::optimize(real_t p_allowed_velocity_err, real_t p_allowed_angular_err, int p_precision) {
 	real_t precision = Math::pow(0.1, p_precision);
 	for (int i = 0; i < tracks.size(); i++) {
+#ifndef _3D_DISABLED
 		if (track_is_compressed(i)) {
 			continue; //not possible to optimize compressed track
 		}
@@ -4519,9 +4581,11 @@ void Animation::optimize(real_t p_allowed_velocity_err, real_t p_allowed_angular
 			_scale_track_optimize(i, p_allowed_velocity_err, p_allowed_angular_err, precision);
 		} else if (tracks[i]->type == TYPE_BLEND_SHAPE) {
 			_blend_shape_track_optimize(i, p_allowed_velocity_err, precision);
-		} else if (tracks[i]->type == TYPE_VALUE) {
-			_value_track_optimize(i, p_allowed_velocity_err, p_allowed_angular_err, precision);
-		}
+		} else
+#endif // _3D_DISABLED
+			if (tracks[i]->type == TYPE_VALUE) {
+				_value_track_optimize(i, p_allowed_velocity_err, p_allowed_angular_err, precision);
+			}
 	}
 }
 
@@ -4784,6 +4848,7 @@ struct AnimationCompressionTimeState {
 	bool needs_start_frame = false;
 };
 
+#ifndef _3D_DISABLED
 Vector3i Animation::_compress_key(uint32_t p_track, const AABB &p_bounds, int32_t p_key, float p_time) {
 	Vector3i values;
 	TrackType tt = track_get_type(p_track);
@@ -4847,6 +4912,7 @@ Vector3i Animation::_compress_key(uint32_t p_track, const AABB &p_bounds, int32_
 
 	return values;
 }
+#endif // _3D_DISABLED
 
 struct AnimationCompressionBufferBitsRead {
 	uint32_t buffer = 0;
@@ -4873,6 +4939,7 @@ struct AnimationCompressionBufferBitsRead {
 	}
 };
 
+#ifndef _3D_DISABLED
 void Animation::compress(uint32_t p_page_size, uint32_t p_fps, float p_split_tolerance) {
 	ERR_FAIL_COND_MSG(compression.enabled, "This animation is already compressed");
 
@@ -5670,6 +5737,7 @@ bool Animation::_fetch_compressed_by_index(uint32_t p_compressed_track, int p_in
 
 	return false;
 }
+#endif // _3D_DISABLED
 
 // Helper math functions for Variant.
 bool Animation::is_variant_interpolatable(const Variant p_value) {

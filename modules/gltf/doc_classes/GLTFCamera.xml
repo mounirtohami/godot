@@ -23,7 +23,7 @@
 			<return type="GLTFCamera" />
 			<param index="0" name="camera_node" type="Camera3D" />
 			<description>
-				Create a new GLTFCamera instance from the given Godot [Camera3D] node.
+				Create a new GLTFCamera instance from the given Godot Camera3D node.
 			</description>
 		</method>
 		<method name="to_dictionary" qualifiers="const">
@@ -35,7 +35,7 @@
 		<method name="to_node" qualifiers="const">
 			<return type="Camera3D" />
 			<description>
-				Converts this GLTFCamera instance into a Godot [Camera3D] node.
+				Converts this GLTFCamera instance into a Godot Camera3D node.
 			</description>
 		</method>
 	</methods>

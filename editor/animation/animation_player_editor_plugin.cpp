@@ -1966,14 +1966,7 @@ bool AnimationPlayerEditor::_validate_tracks(const Ref<Animation> p_anim) {
 	int len = p_anim->get_track_count();
 	for (int i = 0; i < len; i++) {
 		Animation::TrackType ttype = p_anim->track_get_type(i);
-		if (ttype == Animation::TYPE_ROTATION_3D) {
-			int key_len = p_anim->track_get_key_count(i);
-			for (int j = 0; j < key_len; j++) {
-				Quaternion q;
-				p_anim->rotation_track_get_key(i, j, &q);
-				ERR_BREAK_EDMSG(!q.is_normalized(), "AnimationPlayer: '" + player->get_name() + "', Animation: '" + player->get_current_animation() + "', 3D Rotation Track:  '" + String(p_anim->track_get_path(i)) + "' contains unnormalized Quaternion key.");
-			}
-		} else if (ttype == Animation::TYPE_VALUE) {
+		if (ttype == Animation::TYPE_VALUE) {
 			int key_len = p_anim->track_get_key_count(i);
 			if (key_len == 0) {
 				continue;
@@ -2000,6 +1993,15 @@ bool AnimationPlayerEditor::_validate_tracks(const Ref<Animation> p_anim) {
 				default: {
 				} break;
 			}
+#ifndef _3D_DISABLED
+		} else if (ttype == Animation::TYPE_ROTATION_3D) {
+			int key_len = p_anim->track_get_key_count(i);
+			for (int j = 0; j < key_len; j++) {
+				Quaternion q;
+				p_anim->rotation_track_get_key(i, j, &q);
+				ERR_BREAK_EDMSG(!q.is_normalized(), "AnimationPlayer: '" + player->get_name() + "', Animation: '" + player->get_current_animation() + "', 3D Rotation Track:  '" + String(p_anim->track_get_path(i)) + "' contains unnormalized Quaternion key.");
+			}
+#endif // _3D_DISABLED
 		}
 	}
 	return is_valid;

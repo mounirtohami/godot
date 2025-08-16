@@ -47,30 +47,6 @@ var test_bit_flag_2d_render_packed32: PackedInt32Array
   hint=TYPE_STRING hint_string="<int>/<LAYERS_2D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
 var test_bit_flag_2d_render_packed64: PackedInt64Array
   hint=TYPE_STRING hint_string="<int>/<LAYERS_2D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_nav: Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_NAVIGATION>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_nav_packed_byte: PackedByteArray
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_NAVIGATION>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_nav_packed32: PackedInt32Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_NAVIGATION>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_nav_packed64: PackedInt64Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_NAVIGATION>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_phys: Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_PHYSICS>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_phys_packed_byte: PackedByteArray
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_PHYSICS>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_phys_packed32: PackedInt32Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_PHYSICS>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_phys_packed64: PackedInt64Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_PHYSICS>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_render: Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_render_packed_byte: PackedByteArray
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_render_packed32: PackedInt32Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
-var test_bit_flag_3d_render_packed64: PackedInt64Array
-  hint=TYPE_STRING hint_string="<int>/<LAYERS_3D_RENDER>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
 var test_multiline: Array
   hint=TYPE_STRING hint_string="<String>/<MULTILINE_TEXT>:" usage=DEFAULT|SCRIPT_VARIABLE class_name=&""
 var test_multiline_packed: PackedStringArray

@@ -36,7 +36,7 @@
 			An array of Material objects representing the materials used in the mesh.
 		</member>
 		<member name="mesh" type="ImporterMesh" setter="set_mesh" getter="get_mesh">
-			The [ImporterMesh] object representing the mesh itself.
+			The ImporterMesh object representing the mesh itself.
 		</member>
 		<member name="original_name" type="String" setter="set_original_name" getter="get_original_name" default="&quot;&quot;">
 			The original name of the mesh.

@@ -5,10 +5,10 @@
 	</brief_description>
 	<description>
 		GridMap lets you place meshes on a grid interactively. It works both from the editor and from scripts, which can help you create in-game level editors.
-		GridMaps use a [MeshLibrary] which contains a list of tiles. Each tile is a mesh with materials plus optional collision and navigation shapes.
-		A GridMap contains a collection of cells. Each grid cell refers to a tile in the [MeshLibrary]. All cells in the map have the same dimensions.
+		GridMaps use a MeshLibrary which contains a list of tiles. Each tile is a mesh with materials plus optional collision and navigation shapes.
+		A GridMap contains a collection of cells. Each grid cell refers to a tile in the MeshLibrary. All cells in the map have the same dimensions.
 		Internally, a GridMap is split into a sparse collection of octants for efficient rendering and physics processing. Every octant has the same dimensions and can contain several cells.
-		[b]Note:[/b] GridMap doesn't extend [VisualInstance3D] and therefore can't be hidden or cull masked based on [member VisualInstance3D.layers]. If you make a light not affect the first layer, the whole GridMap won't be lit by the light in question.
+		[b]Note:[/b] GridMap doesn't extend VisualInstance3D and therefore can't be hidden or cull masked based on [member VisualInstance3D.layers]. If you make a light not affect the first layer, the whole GridMap won't be lit by the light in question.
 	</description>
 	<tutorials>
 		<link title="Using gridmaps">$DOCS_URL/tutorials/3d/using_gridmaps.html</link>
@@ -53,7 +53,7 @@
 			<return type="int" />
 			<param index="0" name="position" type="Vector3i" />
 			<description>
-				The [MeshLibrary] item index located at the given grid coordinates. If the cell is empty, [constant INVALID_CELL_ITEM] will be returned.
+				The MeshLibrary item index located at the given grid coordinates. If the cell is empty, [constant INVALID_CELL_ITEM] will be returned.
 			</description>
 		</method>
 		<method name="get_cell_item_basis" qualifiers="const">
@@ -129,8 +129,8 @@
 			<param index="0" name="gen_lightmap_uv" type="bool" default="false" />
 			<param index="1" name="lightmap_uv_texel_size" type="float" default="0.1" />
 			<description>
-				Generates a baked mesh that represents all meshes in the assigned [MeshLibrary] for use with [LightmapGI]. If [param gen_lightmap_uv] is [code]true[/code], UV2 data will be generated for each mesh currently used in the [GridMap]. Otherwise, only meshes that already have UV2 data present will be able to use baked lightmaps. When generating UV2, [param lightmap_uv_texel_size] controls the texel density for lightmaps, with lower values resulting in more detailed lightmaps. [param lightmap_uv_texel_size] is ignored if [param gen_lightmap_uv] is [code]false[/code]. See also [method get_bake_meshes], which relies on the output of this method.
-				[b]Note:[/b] Calling this method will not actually bake lightmaps, as lightmap baking is performed using the [LightmapGI] node.
+				Generates a baked mesh that represents all meshes in the assigned MeshLibrary for use with LightmapGI. If [param gen_lightmap_uv] is [code]true[/code], UV2 data will be generated for each mesh currently used in the [GridMap]. Otherwise, only meshes that already have UV2 data present will be able to use baked lightmaps. When generating UV2, [param lightmap_uv_texel_size] controls the texel density for lightmaps, with lower values resulting in more detailed lightmaps. [param lightmap_uv_texel_size] is ignored if [param gen_lightmap_uv] is [code]false[/code]. See also [method get_bake_meshes], which relies on the output of this method.
+				[b]Note:[/b] Calling this method will not actually bake lightmaps, as lightmap baking is performed using the LightmapGI node.
 			</description>
 		</method>
 		<method name="map_to_local" qualifiers="const">
@@ -184,7 +184,7 @@
 	</methods>
 	<members>
 		<member name="bake_navigation" type="bool" setter="set_bake_navigation" getter="is_baking_navigation" default="false">
-			If [code]true[/code], this GridMap creates a navigation region for each cell that uses a [member mesh_library] item with a navigation mesh. The created navigation region will use the navigation layers bitmask assigned to the [MeshLibrary]'s item.
+			If [code]true[/code], this GridMap creates a navigation region for each cell that uses a [member mesh_library] item with a navigation mesh. The created navigation region will use the navigation layers bitmask assigned to the MeshLibrary's item.
 		</member>
 		<member name="cell_center_x" type="bool" setter="set_center_x" getter="get_center_x" default="true">
 			If [code]true[/code], grid items are centered on the X axis.
@@ -217,7 +217,7 @@
 			The priority used to solve colliding when occurring penetration. The higher the priority is, the lower the penetration into the object will be. This can for example be used to prevent the player from breaking through the boundaries of a level.
 		</member>
 		<member name="mesh_library" type="MeshLibrary" setter="set_mesh_library" getter="get_mesh_library">
-			The assigned [MeshLibrary].
+			The assigned MeshLibrary.
 		</member>
 		<member name="physics_material" type="PhysicsMaterial" setter="set_physics_material" getter="get_physics_material">
 			Overrides the default friction and bounce physics properties for the whole [GridMap].
@@ -232,7 +232,7 @@
 		</signal>
 		<signal name="changed">
 			<description>
-				Emitted when the [MeshLibrary] of this GridMap changes.
+				Emitted when the MeshLibrary of this GridMap changes.
 			</description>
 		</signal>
 	</signals>

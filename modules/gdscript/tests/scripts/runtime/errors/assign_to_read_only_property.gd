@@ -5,7 +5,7 @@ func subtest_variable_index(state, prop):
 	state[prop].x = 1.0
 
 func test():
-	var state = PhysicsDirectBodyState3DExtension.new()
+	var state = PhysicsDirectBodyState2DExtension.new()
 	subtest_attribute(state)
 	subtest_variable_index(state, &"center_of_mass")
 	state.free()

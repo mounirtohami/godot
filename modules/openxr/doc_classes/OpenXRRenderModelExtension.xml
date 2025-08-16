@@ -72,7 +72,7 @@
 			<return type="Transform3D" />
 			<param index="0" name="render_model" type="RID" />
 			<description>
-				Returns the root transform of a render model. This is the tracked position relative to our [XROrigin3D] node.
+				Returns the root transform of a render model. This is the tracked position relative to our XROrigin3D node.
 			</description>
 		</method>
 		<method name="render_model_get_subaction_paths">
@@ -102,7 +102,7 @@
 			<return type="Node3D" />
 			<param index="0" name="render_model" type="RID" />
 			<description>
-				Returns an instance of a subscene that contains all [MeshInstance3D] nodes that allow you to visualize the render model.
+				Returns an instance of a subscene that contains all MeshInstance3D nodes that allow you to visualize the render model.
 			</description>
 		</method>
 	</methods>

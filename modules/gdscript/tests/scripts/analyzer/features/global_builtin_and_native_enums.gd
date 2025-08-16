@@ -8,9 +8,9 @@ extends Node
 @export var test_side_2 := Side.SIDE_RIGHT
 @export var test_side_3: Side
 
-@export var test_axis_1 := Vector3.AXIS_Y
-@export var test_axis_2 := Vector3.Axis.AXIS_Y
-@export var test_axis_3: Vector3.Axis
+@export var test_axis_1 := Vector2.AXIS_Y
+@export var test_axis_2 := Vector2.Axis.AXIS_Y
+@export var test_axis_3: Vector2.Axis
 
 @export var test_mode_1 := Node.PROCESS_MODE_ALWAYS
 @export var test_mode_2 := Node.ProcessMode.PROCESS_MODE_ALWAYS
@@ -23,6 +23,7 @@ func test():
 
 func test_no_exec():
 	# GH-99309
-	var sprite: Sprite3D = $Sprite3D
-	sprite.axis = Vector3.AXIS_Y # No warning.
-	sprite.set_axis(Vector3.AXIS_Y) # No warning.
+	# var sprite: Sprite3D = $Sprite3D
+	# sprite.axis = Vector3.AXIS_Y # No warning.
+	# sprite.set_axis(Vector3.AXIS_Y) # No warning.
+	pass
