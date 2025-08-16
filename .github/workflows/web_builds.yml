@@ -8,6 +8,7 @@ env:
     dev_mode=yes
     tests=no
     debug_symbols=no
+    disable_3d=yes
     use_closure_compiler=yes
   EM_VERSION: 4.0.11
 

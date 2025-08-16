@@ -46,15 +46,17 @@ public:
 	static constexpr real_t DEFAULT_STEP = 1.0 / 30;
 
 	enum TrackType : uint8_t {
-		TYPE_VALUE, // Set a value in a property, can be interpolated.
-		TYPE_POSITION_3D, // Position 3D track, can be compressed.
-		TYPE_ROTATION_3D, // Rotation 3D track, can be compressed.
-		TYPE_SCALE_3D, // Scale 3D track, can be compressed.
-		TYPE_BLEND_SHAPE, // Blend Shape track, can be compressed.
-		TYPE_METHOD, // Call any method on a specific node.
-		TYPE_BEZIER, // Bezier curve.
-		TYPE_AUDIO,
-		TYPE_ANIMATION,
+		TYPE_VALUE = 0, // Set a value in a property, can be interpolated.
+#ifndef _3D_DISABLED
+		TYPE_POSITION_3D = 1, // Position 3D track, can be compressed.
+		TYPE_ROTATION_3D = 2, // Rotation 3D track, can be compressed.
+		TYPE_SCALE_3D = 3, // Scale 3D track, can be compressed.
+		TYPE_BLEND_SHAPE = 4, // Blend Shape track, can be compressed.
+#endif // _3D_DISABLED
+		TYPE_METHOD = 5, // Call any method on a specific node.
+		TYPE_BEZIER = 6, // Bezier curve.
+		TYPE_AUDIO = 7,
+		TYPE_ANIMATION = 8,
 	};
 
 	enum InterpolationType : uint8_t {
@@ -132,6 +134,7 @@ private:
 	const int32_t SCALE_TRACK_SIZE = 5;
 	const int32_t BLEND_SHAPE_TRACK_SIZE = 3;
 
+#ifndef _3D_DISABLED
 	/* POSITION TRACK */
 
 	struct PositionTrack : public Track {
@@ -163,6 +166,7 @@ private:
 		int32_t compressed_track = -1;
 		BlendShapeTrack() { type = TYPE_BLEND_SHAPE; }
 	};
+#endif // _3D_DISABLED
 
 	/* PROPERTY VALUE TRACK */
 
@@ -355,6 +359,7 @@ private:
 		bool enabled = false;
 	} compression;
 
+#ifndef _3D_DISABLED
 	Vector3i _compress_key(uint32_t p_track, const AABB &p_bounds, int32_t p_key = -1, float p_time = 0.0);
 	bool _rotation_interpolate_compressed(uint32_t p_compressed_track, double p_time, Quaternion &r_ret) const;
 	bool _pos_scale_interpolate_compressed(uint32_t p_compressed_track, double p_time, Vector3 &r_ret) const;
@@ -369,6 +374,7 @@ private:
 	_FORCE_INLINE_ Quaternion _uncompress_quaternion(const Vector3i &p_value) const;
 	_FORCE_INLINE_ Vector3 _uncompress_pos_scale(uint32_t p_compressed_track, const Vector3i &p_value) const;
 	_FORCE_INLINE_ float _uncompress_blend_shape(const Vector3i &p_value) const;
+#endif // _3D_DISABLED
 
 	// bind helpers
 private:
@@ -377,10 +383,12 @@ private:
 	bool _vector3_track_optimize_key(const TKey<Vector3> t0, const TKey<Vector3> t1, const TKey<Vector3> t2, real_t p_allowed_velocity_err, real_t p_allowed_angular_error, real_t p_allowed_precision_error, bool p_is_nearest);
 	bool _quaternion_track_optimize_key(const TKey<Quaternion> t0, const TKey<Quaternion> t1, const TKey<Quaternion> t2, real_t p_allowed_velocity_err, real_t p_allowed_angular_error, real_t p_allowed_precision_error, bool p_is_nearest);
 
+#ifndef _3D_DISABLED
 	void _position_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_err, real_t p_allowed_precision_error);
 	void _rotation_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_error, real_t p_allowed_precision_error);
 	void _scale_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_err, real_t p_allowed_precision_error);
 	void _blend_shape_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_precision_error);
+#endif // _3D_DISABLED
 	void _value_track_optimize(int p_idx, real_t p_allowed_velocity_err, real_t p_allowed_angular_err, real_t p_allowed_precision_error);
 
 protected:
@@ -447,6 +455,7 @@ public:
 	real_t track_get_key_transition(int p_track, int p_key_idx) const;
 	bool track_is_compressed(int p_track) const;
 
+#ifndef _3D_DISABLED
 	int position_track_insert_key(int p_track, double p_time, const Vector3 &p_position);
 	Error position_track_get_key(int p_track, int p_key, Vector3 *r_position) const;
 	Error try_position_track_interpolate(int p_track, double p_time, Vector3 *r_interpolation, bool p_backward = false) const;
@@ -466,6 +475,7 @@ public:
 	Error blend_shape_track_get_key(int p_track, int p_key, float *r_blend) const;
 	Error try_blend_shape_track_interpolate(int p_track, double p_time, float *r_blend, bool p_backward = false) const;
 	float blend_shape_track_interpolate(int p_track, double p_time, bool p_backward = false) const;
+#endif // _3D_DISABLED
 
 	void track_set_interpolation_type(int p_track, InterpolationType p_interp);
 	InterpolationType track_get_interpolation_type(int p_track) const;
@@ -538,7 +548,9 @@ public:
 	void clear();
 
 	void optimize(real_t p_allowed_velocity_err = 0.01, real_t p_allowed_angular_err = 0.01, int p_precision = 3);
+#ifndef _3D_DISABLED
 	void compress(uint32_t p_page_size = 8192, uint32_t p_fps = 120, float p_split_tolerance = 4.0); // 4.0 seems to be the split tolerance sweet spot from many tests.
+#endif // _3D_DISABLED
 
 	// Helper functions for Variant.
 	static bool is_variant_interpolatable(const Variant p_value);

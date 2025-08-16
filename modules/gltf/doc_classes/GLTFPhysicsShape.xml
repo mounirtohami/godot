@@ -23,14 +23,14 @@
 			<return type="GLTFPhysicsShape" />
 			<param index="0" name="shape_node" type="CollisionShape3D" />
 			<description>
-				Creates a new GLTFPhysicsShape instance from the given Godot [CollisionShape3D] node.
+				Creates a new GLTFPhysicsShape instance from the given Godot CollisionShape3D node.
 			</description>
 		</method>
 		<method name="from_resource" qualifiers="static">
 			<return type="GLTFPhysicsShape" />
 			<param index="0" name="shape_resource" type="Shape3D" />
 			<description>
-				Creates a new GLTFPhysicsShape instance from the given Godot [Shape3D] resource.
+				Creates a new GLTFPhysicsShape instance from the given Godot Shape3D resource.
 			</description>
 		</method>
 		<method name="to_dictionary" qualifiers="const">
@@ -43,14 +43,14 @@
 			<return type="CollisionShape3D" />
 			<param index="0" name="cache_shapes" type="bool" default="false" />
 			<description>
-				Converts this GLTFPhysicsShape instance into a Godot [CollisionShape3D] node.
+				Converts this GLTFPhysicsShape instance into a Godot CollisionShape3D node.
 			</description>
 		</method>
 		<method name="to_resource">
 			<return type="Shape3D" />
 			<param index="0" name="cache_shapes" type="bool" default="false" />
 			<description>
-				Converts this GLTFPhysicsShape instance into a Godot [Shape3D] resource.
+				Converts this GLTFPhysicsShape instance into a Godot Shape3D resource.
 			</description>
 		</method>
 	</methods>
@@ -59,10 +59,10 @@
 			The height of the shape, in meters. This is only used when the shape type is [code]"capsule"[/code] or [code]"cylinder"[/code]. This value should not be negative, and for [code]"capsule"[/code] it should be at least twice the radius.
 		</member>
 		<member name="importer_mesh" type="ImporterMesh" setter="set_importer_mesh" getter="get_importer_mesh">
-			The [ImporterMesh] resource of the shape. This is only used when the shape type is [code]"hull"[/code] (convex hull) or [code]"trimesh"[/code] (concave trimesh).
+			The ImporterMesh resource of the shape. This is only used when the shape type is [code]"hull"[/code] (convex hull) or [code]"trimesh"[/code] (concave trimesh).
 		</member>
 		<member name="is_trigger" type="bool" setter="set_is_trigger" getter="get_is_trigger" default="false">
-			If [code]true[/code], indicates that this shape is a trigger. For Godot, this means that the shape should be a child of an [Area3D] node.
+			If [code]true[/code], indicates that this shape is a trigger. For Godot, this means that the shape should be a child of an Area3D node.
 			This is the only variable not used in the [method to_node] method, it's intended to be used alongside when deciding where to add the generated node as a child.
 		</member>
 		<member name="mesh_index" type="int" setter="set_mesh_index" getter="get_mesh_index" default="-1">

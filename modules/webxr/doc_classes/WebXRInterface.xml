@@ -89,7 +89,7 @@
 			OS.alert("Failed to initialize: " + message)
 		[/codeblock]
 		There are a couple ways to handle "controller" input:
-		- Using [XRController3D] nodes and their [signal XRController3D.button_pressed] and [signal XRController3D.button_released] signals. This is how controllers are typically handled in XR apps in Godot, however, this will only work with advanced VR controllers like the Oculus Touch or Index controllers, for example.
+		- Using XRController3D nodes and their [signal XRController3D.button_pressed] and [signal XRController3D.button_released] signals. This is how controllers are typically handled in XR apps in Godot, however, this will only work with advanced VR controllers like the Oculus Touch or Index controllers, for example.
 		- Using the [signal select], [signal squeeze] and related signals. This method will work for both advanced VR controllers, and non-traditional input sources like a tap on the screen, a spoken voice command or a button press on the device itself.
 		You can use both methods to allow your game or app to support a wider or narrower set of devices and input methods, or to allow more advanced interactions with more advanced devices.
 	</description>
@@ -121,8 +121,8 @@
 			<return type="XRControllerTracker" />
 			<param index="0" name="input_source_id" type="int" />
 			<description>
-				Gets an [XRControllerTracker] for the given [param input_source_id].
-				In the context of WebXR, an input source can be an advanced VR controller like the Oculus Touch or Index controllers, or even a tap on the screen, a spoken voice command or a button press on the device itself. When a non-traditional input source is used, interpret the position and orientation of the [XRPositionalTracker] as a ray pointing at the object the user wishes to interact with.
+				Gets an XRControllerTracker for the given [param input_source_id].
+				In the context of WebXR, an input source can be an advanced VR controller like the Oculus Touch or Index controllers, or even a tap on the screen, a spoken voice command or a button press on the device itself. When a non-traditional input source is used, interpret the position and orientation of the XRPositionalTracker as a ray pointing at the object the user wishes to interact with.
 				Use this method to get information about the input source that triggered one of these signals:
 				- [signal selectstart]
 				- [signal select]

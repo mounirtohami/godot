@@ -275,7 +275,9 @@ private:
 	ProjectExportDialog *project_export = nullptr;
 	ProjectSettingsEditor *project_settings_editor = nullptr;
 
+#ifndef _3D_DISABLED
 	FBXImporterManager *fbx_importer_manager = nullptr;
+#endif // _3D_DISABLED
 
 	Vector<EditorPlugin *> editor_plugins;
 	bool _initializing_plugins = false;

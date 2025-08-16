@@ -144,7 +144,9 @@ protected:
 	uint64_t process_pass = 1;
 
 	struct TrackCache {
+#ifndef _3D_DISABLED
 		bool root_motion = false;
+#endif // _3D_DISABLED
 		uint64_t setup_pass = 0;
 		Animation::TrackType type = Animation::TrackType::TYPE_ANIMATION;
 		NodePath path;
@@ -154,7 +156,9 @@ protected:
 
 		TrackCache() = default;
 		TrackCache(const TrackCache &p_other) :
+#ifndef _3D_DISABLED
 				root_motion(p_other.root_motion),
+#endif // _3D_DISABLED
 				setup_pass(p_other.setup_pass),
 				type(p_other.type),
 				object_id(p_other.object_id),
@@ -163,10 +167,9 @@ protected:
 		virtual ~TrackCache() {}
 	};
 
-	struct TrackCacheTransform : public TrackCache {
 #ifndef _3D_DISABLED
+	struct TrackCacheTransform : public TrackCache {
 		ObjectID skeleton_id;
-#endif // _3D_DISABLED
 		int bone_idx = -1;
 		bool loc_used = false;
 		bool rot_used = false;
@@ -180,9 +183,7 @@ protected:
 
 		TrackCacheTransform(const TrackCacheTransform &p_other) :
 				TrackCache(p_other),
-#ifndef _3D_DISABLED
 				skeleton_id(p_other.skeleton_id),
-#endif
 				bone_idx(p_other.bone_idx),
 				loc_used(p_other.loc_used),
 				rot_used(p_other.rot_used),
@@ -219,6 +220,7 @@ protected:
 
 		TrackCacheBlendShape() { type = Animation::TYPE_BLEND_SHAPE; }
 	};
+#endif // _3D_DISABLED
 
 	struct TrackCacheValue : public TrackCache {
 		Variant init_value;
@@ -303,7 +305,9 @@ protected:
 		}
 	};
 
+#ifndef _3D_DISABLED
 	RootMotionCache root_motion_cache;
+#endif // _3D_DISABLED
 	AHashMap<Animation::TypeHash, TrackCache *, HashHasher> track_cache;
 	AHashMap<Ref<Animation>, LocalVector<TrackCache *>> animation_track_num_to_track_cache;
 	HashSet<TrackCache *> playing_caches;
@@ -313,7 +317,9 @@ protected:
 	void _clear_caches();
 	void _clear_audio_streams();
 	void _clear_playing_caches();
+#ifndef _3D_DISABLED
 	void _init_root_motion_cache();
+#endif // _3D_DISABLED
 	bool _update_caches();
 	void _create_track_num_to_track_cache_for_animation(Ref<Animation> &p_animation);
 
@@ -327,6 +333,7 @@ protected:
 	bool deterministic = false;
 
 	/* ---- Root motion accumulator for Skeleton3D ---- */
+#ifndef _3D_DISABLED
 	NodePath root_motion_track;
 	bool root_motion_local = false;
 	Vector3 root_motion_position = Vector3(0, 0, 0);
@@ -335,6 +342,7 @@ protected:
 	Vector3 root_motion_position_accumulator = Vector3(0, 0, 0);
 	Quaternion root_motion_rotation_accumulator = Quaternion(0, 0, 0, 1);
 	Vector3 root_motion_scale_accumulator = Vector3(1, 1, 1);
+#endif // _3D_DISABLED
 
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
@@ -439,6 +447,7 @@ public:
 	int get_audio_max_polyphony() const;
 
 	/* ---- Root motion accumulator for Skeleton3D ---- */
+#ifndef _3D_DISABLED
 	void set_root_motion_track(const NodePath &p_track);
 	NodePath get_root_motion_track() const;
 
@@ -452,6 +461,7 @@ public:
 	Vector3 get_root_motion_position_accumulator() const;
 	Quaternion get_root_motion_rotation_accumulator() const;
 	Vector3 get_root_motion_scale_accumulator() const;
+#endif // _3D_DISABLED
 
 	/* ---- Blending processor ---- */
 	void make_animation_instance(const StringName &p_name, const PlaybackInfo p_playback_info);

@@ -848,7 +848,7 @@
 			<param index="1" name="keep_global_transform" type="bool" default="true" />
 			<description>
 				Changes the parent of this [Node] to the [param new_parent]. The node needs to already have a parent. The node's [member owner] is preserved if its owner is still reachable from the new location (i.e., the node is still a descendant of the new parent after the operation).
-				If [param keep_global_transform] is [code]true[/code], the node's global transform will be preserved if supported. [Node2D], [Node3D] and [Control] support this argument (but [Control] keeps only position).
+				If [param keep_global_transform] is [code]true[/code], the node's global transform will be preserved if supported. [Node2D], Node3D and [Control] support this argument (but [Control] keeps only position).
 			</description>
 		</method>
 		<method name="replace_by">
@@ -1058,7 +1058,7 @@
 		<member name="physics_interpolation_mode" type="int" setter="set_physics_interpolation_mode" getter="get_physics_interpolation_mode" enum="Node.PhysicsInterpolationMode" default="0">
 			The physics interpolation mode to use for this node. Only effective if [member ProjectSettings.physics/common/physics_interpolation] or [member SceneTree.physics_interpolation] is [code]true[/code].
 			By default, nodes inherit the physics interpolation mode from their parent. This property can enable or disable physics interpolation individually for each node, regardless of their parents' physics interpolation mode.
-			[b]Note:[/b] Some node types like [VehicleWheel3D] have physics interpolation disabled by default, as they rely on their own custom solution.
+			[b]Note:[/b] Some node types like VehicleWheel3D have physics interpolation disabled by default, as they rely on their own custom solution.
 			[b]Note:[/b] When teleporting a node to a distant position, it's recommended to temporarily disable interpolation with [method Node.reset_physics_interpolation] [i]after[/i] moving the node. This avoids creating a visual streak between the old and new positions.
 		</member>
 		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Node.ProcessMode" default="0">

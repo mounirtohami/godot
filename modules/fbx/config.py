@@ -1,6 +1,7 @@
 def can_build(env, platform):
+    if env["disable_3d"]:
+        return False
     env.module_add_dependencies("fbx", ["gltf"])
-    return not env["disable_3d"]
 
 
 def configure(env):

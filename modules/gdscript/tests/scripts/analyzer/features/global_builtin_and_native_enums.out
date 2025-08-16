@@ -11,12 +11,12 @@ var test_side_2: Side = 2
   hint=ENUM hint_string="Side Left:0,Side Top:1,Side Right:2,Side Bottom:3" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Side"
 var test_side_3: Side = 0
   hint=ENUM hint_string="Side Left:0,Side Top:1,Side Right:2,Side Bottom:3" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Side"
-var test_axis_1: Vector3.Axis = 1
-  hint=ENUM hint_string="Axis X:0,Axis Y:1,Axis Z:2" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector3.Axis"
-var test_axis_2: Vector3.Axis = 1
-  hint=ENUM hint_string="Axis X:0,Axis Y:1,Axis Z:2" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector3.Axis"
-var test_axis_3: Vector3.Axis = 0
-  hint=ENUM hint_string="Axis X:0,Axis Y:1,Axis Z:2" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector3.Axis"
+var test_axis_1: Vector2.Axis = 1
+  hint=ENUM hint_string="Axis X:0,Axis Y:1" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector2.Axis"
+var test_axis_2: Vector2.Axis = 1
+  hint=ENUM hint_string="Axis X:0,Axis Y:1" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector2.Axis"
+var test_axis_3: Vector2.Axis = 0
+  hint=ENUM hint_string="Axis X:0,Axis Y:1" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Vector2.Axis"
 var test_mode_1: Node.ProcessMode = 3
   hint=ENUM hint_string="Process Mode Inherit:0,Process Mode Pausable:1,Process Mode When Paused:2,Process Mode Always:3,Process Mode Disabled:4" usage=DEFAULT|SCRIPT_VARIABLE|CLASS_IS_ENUM class_name=&"Node.ProcessMode"
 var test_mode_2: Node.ProcessMode = 3

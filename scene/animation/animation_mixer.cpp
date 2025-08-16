@@ -120,9 +120,11 @@ void AnimationMixer::_validate_property(PropertyInfo &p_property) const {
 		p_property.usage |= PROPERTY_USAGE_READ_ONLY;
 	}
 #endif // TOOLS_ENABLED
+#ifndef _3D_DISABLED
 	if (root_motion_track.is_empty() && p_property.name == "root_motion_local") {
 		p_property.usage = PROPERTY_USAGE_NONE;
 	}
+#endif // _3D_DISABLED
 }
 
 /* -------------------------------------------- */
@@ -562,7 +564,9 @@ bool AnimationMixer::is_dummy() const {
 /* -------------------------------------------- */
 
 void AnimationMixer::_clear_caches() {
+#ifndef _3D_DISABLED
 	_init_root_motion_cache();
+#endif // _3D_DISABLED
 	_clear_audio_streams();
 	_clear_playing_caches();
 	for (KeyValue<Animation::TypeHash, TrackCache *> &K : track_cache) {
@@ -594,6 +598,7 @@ void AnimationMixer::_clear_playing_caches() {
 	playing_caches.clear();
 }
 
+#ifndef _3D_DISABLED
 void AnimationMixer::_init_root_motion_cache() {
 	root_motion_cache.loc = Vector3(0, 0, 0);
 	root_motion_cache.rot = Quaternion(0, 0, 0, 1);
@@ -605,6 +610,7 @@ void AnimationMixer::_init_root_motion_cache() {
 	root_motion_rotation_accumulator = Quaternion(0, 0, 0, 1);
 	root_motion_scale_accumulator = Vector3(1, 1, 1);
 }
+#endif // _3D_DISABLED
 
 void AnimationMixer::_create_track_num_to_track_cache_for_animation(Ref<Animation> &p_animation) {
 	if (animation_track_num_to_track_cache.has(p_animation)) {
@@ -629,9 +635,11 @@ void AnimationMixer::_create_track_num_to_track_cache_for_animation(Ref<Animatio
 bool AnimationMixer::_update_caches() {
 	setup_pass++;
 
+#ifndef _3D_DISABLED
 	root_motion_cache.loc = Vector3(0, 0, 0);
 	root_motion_cache.rot = Quaternion(0, 0, 0, 1);
 	root_motion_cache.scale = Vector3(1, 1, 1);
+#endif // _3D_DISABLED
 
 	List<StringName> sname_list;
 	get_animation_list(&sname_list);
@@ -753,10 +761,10 @@ bool AnimationMixer::_update_caches() {
 							}
 						}
 					} break;
+#ifndef _3D_DISABLED
 					case Animation::TYPE_POSITION_3D:
 					case Animation::TYPE_ROTATION_3D:
 					case Animation::TYPE_SCALE_3D: {
-#ifndef _3D_DISABLED
 						Node3D *node_3d = Object::cast_to<Node3D>(child);
 
 						if (!node_3d) {
@@ -821,10 +829,8 @@ bool AnimationMixer::_update_caches() {
 								}
 							}
 						}
-#endif // _3D_DISABLED
 					} break;
 					case Animation::TYPE_BLEND_SHAPE: {
-#ifndef _3D_DISABLED
 						if (path.get_subname_count() != 1) {
 							ERR_PRINT(mixer_name + ": '" + String(E) + "', blend shape track does not contain a blend shape subname:  '" + String(path) + "'.");
 							continue;
@@ -855,8 +861,8 @@ bool AnimationMixer::_update_caches() {
 								track_bshape->init_value = reset_anim->track_get_key_value(rt, 0);
 							}
 						}
-#endif
 					} break;
+#endif // _3D_DISABLED
 					case Animation::TYPE_METHOD: {
 						TrackCacheMethod *track_method = memnew(TrackCacheMethod);
 
@@ -896,6 +902,7 @@ bool AnimationMixer::_update_caches() {
 				}
 				track->path = path;
 				track_cache[thash] = track;
+#ifndef _3D_DISABLED
 			} else if (track_cache_type == Animation::TYPE_POSITION_3D) {
 				TrackCacheTransform *track_xform = static_cast<TrackCacheTransform *>(track);
 				if (track->setup_pass != setup_pass) {
@@ -916,6 +923,7 @@ bool AnimationMixer::_update_caches() {
 					default: {
 					}
 				}
+#endif // _3D_DISABLED
 			} else if (track_cache_type == Animation::TYPE_VALUE) {
 				TrackCacheValue *track_value = static_cast<TrackCacheValue *>(track);
 				// If it has at least one angle interpolation, it also uses angle interpolation for blending.
@@ -1024,12 +1032,14 @@ Variant AnimationMixer::post_process_key_value(const Ref<Animation> &p_anim, int
 
 void AnimationMixer::_blend_init() {
 	// Check all tracks, see if they need modification.
+#ifndef _3D_DISABLED
 	root_motion_position = Vector3(0, 0, 0);
 	root_motion_rotation = Quaternion(0, 0, 0, 1);
 	root_motion_scale = Vector3(0, 0, 0);
 	root_motion_position_accumulator = Vector3(0, 0, 0);
 	root_motion_rotation_accumulator = Quaternion(0, 0, 0, 1);
 	root_motion_scale_accumulator = Vector3(1, 1, 1);
+#endif // _3D_DISABLED
 
 	if (!cache_valid) {
 		if (!_update_caches()) {
@@ -1044,6 +1054,7 @@ void AnimationMixer::_blend_init() {
 		track->total_weight = 0.0;
 
 		switch (track->type) {
+#ifndef _3D_DISABLED
 			case Animation::TYPE_POSITION_3D: {
 				TrackCacheTransform *t = static_cast<TrackCacheTransform *>(track);
 				if (track->root_motion) {
@@ -1059,6 +1070,7 @@ void AnimationMixer::_blend_init() {
 				TrackCacheBlendShape *t = static_cast<TrackCacheBlendShape *>(track);
 				t->value = t->init_value;
 			} break;
+#endif // _3D_DISABLED
 			case Animation::TYPE_VALUE: {
 				TrackCacheValue *t = static_cast<TrackCacheValue *>(track);
 				t->value = Animation::cast_to_blendwise(t->init_value);
@@ -1210,10 +1222,12 @@ void AnimationMixer::_blend_process(double p_delta, bool p_update_only) {
 				blend = blend / track->total_weight;
 			}
 			Animation::TrackType ttype = animation_track->type;
-			track->root_motion = root_motion_track == animation_track->path;
-			switch (ttype) {
-				case Animation::TYPE_POSITION_3D: {
 #ifndef _3D_DISABLED
+			track->root_motion = root_motion_track == animation_track->path;
+#endif // _3D_DISABLED
+			switch (ttype) {
+#ifndef _3D_DISABLED
+				case Animation::TYPE_POSITION_3D: {
 					if (Math::is_zero_approx(blend)) {
 						continue; // Nothing to blend.
 					}
@@ -1353,10 +1367,8 @@ void AnimationMixer::_blend_process(double p_delta, bool p_update_only) {
 						loc = post_process_key_value(a, i, loc, t->object_id, t->bone_idx);
 						t->loc += (loc - t->init_loc) * blend;
 					}
-#endif // _3D_DISABLED
 				} break;
 				case Animation::TYPE_ROTATION_3D: {
-#ifndef _3D_DISABLED
 					if (Math::is_zero_approx(blend)) {
 						continue; // Nothing to blend.
 					}
@@ -1441,10 +1453,8 @@ void AnimationMixer::_blend_process(double p_delta, bool p_update_only) {
 						rot = post_process_key_value(a, i, rot, t->object_id, t->bone_idx);
 						t->rot = (t->rot * Quaternion().slerp(t->init_rot.inverse() * rot, blend)).normalized();
 					}
-#endif // _3D_DISABLED
 				} break;
 				case Animation::TYPE_SCALE_3D: {
-#ifndef _3D_DISABLED
 					if (Math::is_zero_approx(blend)) {
 						continue; // Nothing to blend.
 					}
@@ -1529,10 +1539,8 @@ void AnimationMixer::_blend_process(double p_delta, bool p_update_only) {
 						scale = post_process_key_value(a, i, scale, t->object_id, t->bone_idx);
 						t->scale += (scale - t->init_scale) * blend;
 					}
-#endif // _3D_DISABLED
 				} break;
 				case Animation::TYPE_BLEND_SHAPE: {
-#ifndef _3D_DISABLED
 					if (Math::is_zero_approx(blend)) {
 						continue; // Nothing to blend.
 					}
@@ -1545,8 +1553,8 @@ void AnimationMixer::_blend_process(double p_delta, bool p_update_only) {
 					}
 					value = post_process_key_value(a, i, value, t->object_id, t->shape_index);
 					t->value += (value - t->init_value) * blend;
-#endif // _3D_DISABLED
 				} break;
+#endif // _3D_DISABLED
 				case Animation::TYPE_BEZIER:
 				case Animation::TYPE_VALUE: {
 					if (Math::is_zero_approx(blend)) {
@@ -1855,8 +1863,8 @@ void AnimationMixer::_blend_apply() {
 			continue;
 		}
 		switch (track->type) {
-			case Animation::TYPE_POSITION_3D: {
 #ifndef _3D_DISABLED
+			case Animation::TYPE_POSITION_3D: {
 				TrackCacheTransform *t = static_cast<TrackCacheTransform *>(track);
 
 				if (t->root_motion) {
@@ -1896,18 +1904,16 @@ void AnimationMixer::_blend_apply() {
 						t_node_3d->set_scale(t->scale);
 					}
 				}
-#endif // _3D_DISABLED
 			} break;
 			case Animation::TYPE_BLEND_SHAPE: {
-#ifndef _3D_DISABLED
 				TrackCacheBlendShape *t = static_cast<TrackCacheBlendShape *>(track);
 
 				MeshInstance3D *t_mesh_3d = ObjectDB::get_instance<MeshInstance3D>(t->object_id);
 				if (t_mesh_3d) {
 					t_mesh_3d->set_blend_shape_value(t->shape_index, t->value);
 				}
-#endif // _3D_DISABLED
 			} break;
+#endif // _3D_DISABLED
 			case Animation::TYPE_VALUE: {
 				TrackCacheValue *t = static_cast<TrackCacheValue *>(track);
 
@@ -2063,6 +2069,7 @@ void AnimationMixer::clear_caches() {
 /* -- Root motion ----------------------------- */
 /* -------------------------------------------- */
 
+#ifndef _3D_DISABLED
 void AnimationMixer::set_root_motion_track(const NodePath &p_track) {
 	root_motion_track = p_track;
 	notify_property_list_changed();
@@ -2103,6 +2110,7 @@ Quaternion AnimationMixer::get_root_motion_rotation_accumulator() const {
 Vector3 AnimationMixer::get_root_motion_scale_accumulator() const {
 	return root_motion_scale_accumulator;
 }
+#endif // _3D_DISABLED
 
 /* -------------------------------------------- */
 /* -- Reset on save --------------------------- */
@@ -2125,8 +2133,8 @@ void AnimationMixer::_build_backup_track_cache() {
 		TrackCache *track = K.value;
 		track->total_weight = 1.0;
 		switch (track->type) {
-			case Animation::TYPE_POSITION_3D: {
 #ifndef _3D_DISABLED
+			case Animation::TYPE_POSITION_3D: {
 				TrackCacheTransform *t = static_cast<TrackCacheTransform *>(track);
 				if (t->root_motion) {
 					// Do nothing.
@@ -2159,17 +2167,15 @@ void AnimationMixer::_build_backup_track_cache() {
 						t->scale = t_node_3d->get_scale();
 					}
 				}
-#endif // _3D_DISABLED
 			} break;
 			case Animation::TYPE_BLEND_SHAPE: {
-#ifndef _3D_DISABLED
 				TrackCacheBlendShape *t = static_cast<TrackCacheBlendShape *>(track);
 				MeshInstance3D *t_mesh_3d = ObjectDB::get_instance<MeshInstance3D>(t->object_id);
 				if (t_mesh_3d) {
 					t->value = t_mesh_3d->get_blend_shape_value(t->shape_index);
 				}
-#endif // _3D_DISABLED
 			} break;
+#endif // _3D_DISABLED
 			case Animation::TYPE_VALUE: {
 				TrackCacheValue *t = static_cast<TrackCacheValue *>(track);
 				Object *t_obj = ObjectDB::get_instance(t->object_id);
@@ -2423,6 +2429,7 @@ void AnimationMixer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_audio_max_polyphony"), &AnimationMixer::get_audio_max_polyphony);
 
 	/* ---- Root motion accumulator for Skeleton3D ---- */
+#ifndef _3D_DISABLED
 	ClassDB::bind_method(D_METHOD("set_root_motion_track", "path"), &AnimationMixer::set_root_motion_track);
 	ClassDB::bind_method(D_METHOD("get_root_motion_track"), &AnimationMixer::get_root_motion_track);
 	ClassDB::bind_method(D_METHOD("set_root_motion_local", "enabled"), &AnimationMixer::set_root_motion_local);
@@ -2434,6 +2441,7 @@ void AnimationMixer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root_motion_position_accumulator"), &AnimationMixer::get_root_motion_position_accumulator);
 	ClassDB::bind_method(D_METHOD("get_root_motion_rotation_accumulator"), &AnimationMixer::get_root_motion_rotation_accumulator);
 	ClassDB::bind_method(D_METHOD("get_root_motion_scale_accumulator"), &AnimationMixer::get_root_motion_scale_accumulator);
+#endif // _3D_DISABLED
 
 	/* ---- Blending processor ---- */
 	ClassDB::bind_method(D_METHOD("clear_caches"), &AnimationMixer::clear_caches);
@@ -2452,9 +2460,11 @@ void AnimationMixer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reset_on_save", PROPERTY_HINT_NONE, ""), "set_reset_on_save_enabled", "is_reset_on_save_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "root_node"), "set_root_node", "get_root_node");
 
+#ifndef _3D_DISABLED
 	ADD_GROUP("Root Motion", "root_motion_");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "root_motion_track"), "set_root_motion_track", "get_root_motion_track");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "root_motion_local"), "set_root_motion_local", "is_root_motion_local");
+#endif // _3D_DISABLED
 
 	ADD_GROUP("Audio", "audio_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "audio_max_polyphony", PROPERTY_HINT_RANGE, "1,127,1"), "set_audio_max_polyphony", "get_audio_max_polyphony");
@@ -2534,19 +2544,21 @@ AnimationMixer::TrackCache *AnimatedValuesBackup::get_cache_copy(AnimationMixer:
 			return tc;
 		}
 
+#ifndef _3D_DISABLED
 		case Animation::TYPE_POSITION_3D:
 		case Animation::TYPE_ROTATION_3D:
 		case Animation::TYPE_SCALE_3D: {
 			AnimationMixer::TrackCacheTransform *src = static_cast<AnimationMixer::TrackCacheTransform *>(p_cache);
 			AnimationMixer::TrackCacheTransform *tc = memnew(AnimationMixer::TrackCacheTransform(*src));
 			return tc;
-		}
+		} break;
 
 		case Animation::TYPE_BLEND_SHAPE: {
 			AnimationMixer::TrackCacheBlendShape *src = static_cast<AnimationMixer::TrackCacheBlendShape *>(p_cache);
 			AnimationMixer::TrackCacheBlendShape *tc = memnew(AnimationMixer::TrackCacheBlendShape(*src));
 			return tc;
-		}
+		} break;
+#endif // _3D_DISABLED
 
 		case Animation::TYPE_AUDIO: {
 			AnimationMixer::TrackCacheAudio *src = static_cast<AnimationMixer::TrackCacheAudio *>(p_cache);

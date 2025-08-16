@@ -24,7 +24,7 @@
 			The width of the display in centimeters.
 		</member>
 		<member name="eye_height" type="float" setter="set_eye_height" getter="get_eye_height" default="1.85">
-			The height at which the camera is placed in relation to the ground (i.e. [XROrigin3D] node).
+			The height at which the camera is placed in relation to the ground (i.e. XROrigin3D node).
 		</member>
 		<member name="iod" type="float" setter="set_iod" getter="get_iod" default="6.0">
 			The interocular distance, also known as the interpupillary distance. The distance between the pupils of the left and right eye.
