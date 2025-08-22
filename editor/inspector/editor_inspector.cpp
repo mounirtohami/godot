@@ -3569,7 +3569,7 @@ void EditorInspector::_parse_added_editors(VBoxContainer *current_vbox, EditorIn
 
 		if (ep) {
 			ep->object = object;
-			ep->connect("property_changed", callable_mp(this, &EditorInspector::_property_changed).bind(false));
+			ep->connect("property_changed", callable_mp(this, &EditorInspector::_property_changed).bind(false, false));
 			ep->connect("property_keyed", callable_mp(this, &EditorInspector::_property_keyed));
 			ep->connect("property_deleted", callable_mp(this, &EditorInspector::_property_deleted), CONNECT_DEFERRED);
 			ep->connect("property_keyed_with_value", callable_mp(this, &EditorInspector::_property_keyed_with_value));
@@ -3577,7 +3577,7 @@ void EditorInspector::_parse_added_editors(VBoxContainer *current_vbox, EditorIn
 			ep->connect("property_favorited", callable_mp(this, &EditorInspector::_set_property_favorited), CONNECT_DEFERRED);
 			ep->connect("property_pinned", callable_mp(this, &EditorInspector::_property_pinned));
 			ep->connect("selected", callable_mp(this, &EditorInspector::_property_selected));
-			ep->connect("multiple_properties_changed", callable_mp(this, &EditorInspector::_multiple_properties_changed));
+			ep->connect("multiple_properties_changed", callable_mp(this, &EditorInspector::_multiple_properties_changed).bind(false));
 			ep->connect("resource_selected", callable_mp(get_root_inspector(), &EditorInspector::_resource_selected), CONNECT_DEFERRED);
 			ep->connect("object_id_selected", callable_mp(this, &EditorInspector::_object_id_selected), CONNECT_DEFERRED);
 
@@ -4465,7 +4465,8 @@ void EditorInspector::update_tree() {
 			if (ep) {
 				// Eventually, set other properties/signals after the property editor got added to the tree.
 				bool update_all = (p.usage & PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED);
-				ep->connect("property_changed", callable_mp(this, &EditorInspector::_property_changed).bind(update_all));
+				bool no_undo = (p.usage & PROPERTY_USAGE_NO_UNDO);
+				ep->connect("property_changed", callable_mp(this, &EditorInspector::_property_changed).bind(update_all, no_undo));
 				ep->connect("property_keyed", callable_mp(this, &EditorInspector::_property_keyed));
 				ep->connect("property_deleted", callable_mp(this, &EditorInspector::_property_deleted), CONNECT_DEFERRED);
 				ep->connect("property_keyed_with_value", callable_mp(this, &EditorInspector::_property_keyed_with_value));
@@ -4473,7 +4474,7 @@ void EditorInspector::update_tree() {
 				ep->connect("property_checked", callable_mp(this, &EditorInspector::_property_checked));
 				ep->connect("property_pinned", callable_mp(this, &EditorInspector::_property_pinned));
 				ep->connect("selected", callable_mp(this, &EditorInspector::_property_selected));
-				ep->connect("multiple_properties_changed", callable_mp(this, &EditorInspector::_multiple_properties_changed));
+				ep->connect("multiple_properties_changed", callable_mp(this, &EditorInspector::_multiple_properties_changed).bind(no_undo));
 				ep->connect("resource_selected", callable_mp(get_root_inspector(), &EditorInspector::_resource_selected), CONNECT_DEFERRED);
 				ep->connect("object_id_selected", callable_mp(this, &EditorInspector::_object_id_selected), CONNECT_DEFERRED);
 
@@ -4967,7 +4968,7 @@ void EditorInspector::_edit_request_change(Object *p_object, const String &p_pro
 	}
 }
 
-void EditorInspector::_edit_set(const String &p_name, const Variant &p_value, bool p_refresh_all, const String &p_changed_field) {
+void EditorInspector::_edit_set(const String &p_name, const Variant &p_value, bool p_refresh_all, const String &p_changed_field, bool p_no_undo) {
 	if (autoclear && editor_property_map.has(p_name)) {
 		for (EditorProperty *E : editor_property_map[p_name]) {
 			if (E->is_checkable()) {
@@ -4977,7 +4978,7 @@ void EditorInspector::_edit_set(const String &p_name, const Variant &p_value, bo
 	}
 
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
-	if (bool(object->call("_dont_undo_redo"))) {
+	if (bool(object->call("_dont_undo_redo")) || p_no_undo) {
 		object->set(p_name, p_value);
 		if (p_refresh_all) {
 			_edit_request_change(object, "");
@@ -5077,14 +5078,14 @@ void EditorInspector::_edit_set(const String &p_name, const Variant &p_value, bo
 	}
 }
 
-void EditorInspector::_property_changed(const String &p_path, const Variant &p_value, const String &p_name, bool p_changing, bool p_update_all) {
+void EditorInspector::_property_changed(const String &p_path, const Variant &p_value, const String &p_name, bool p_changing, bool p_update_all, bool p_no_undo) {
 	// The "changing" variable must be true for properties that trigger events as typing occurs,
 	// like "text_changed" signal. E.g. text property of Label, Button, RichTextLabel, etc.
 	if (p_changing) {
 		changing++;
 	}
 
-	_edit_set(p_path, p_value, p_update_all, p_name);
+	_edit_set(p_path, p_value, p_update_all, p_name, p_no_undo);
 
 	if (p_changing) {
 		changing--;
@@ -5095,7 +5096,7 @@ void EditorInspector::_property_changed(const String &p_path, const Variant &p_v
 	}
 }
 
-void EditorInspector::_multiple_properties_changed(const Vector<String> &p_paths, const Array &p_values, bool p_changing) {
+void EditorInspector::_multiple_properties_changed(const Vector<String> &p_paths, const Array &p_values, bool p_changing, bool p_no_undo) {
 	ERR_FAIL_COND(p_paths.is_empty() || p_values.is_empty());
 	ERR_FAIL_COND(p_paths.size() != p_values.size());
 	String names;
@@ -5109,7 +5110,7 @@ void EditorInspector::_multiple_properties_changed(const Vector<String> &p_paths
 	// TRANSLATORS: This is describing a change to multiple properties at once. The parameter is a list of property names.
 	undo_redo->create_action(vformat(TTR("Set Multiple: %s"), names), UndoRedo::MERGE_ENDS);
 	for (int i = 0; i < p_paths.size(); i++) {
-		_edit_set(p_paths[i], p_values[i], false, "");
+		_edit_set(p_paths[i], p_values[i], false, "", p_no_undo);
 		if (restart_request_props.has(p_paths[i])) {
 			emit_signal(SNAME("restart_requested"));
 		}
