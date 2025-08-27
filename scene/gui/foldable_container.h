@@ -47,11 +47,11 @@ public:
 
 private:
 	bool folded = false;
-	String title;
+	String text;
 	Ref<FoldableGroup> foldable_group;
 	String language;
-	TextDirection title_text_direction = TEXT_DIRECTION_AUTO;
-	HorizontalAlignment title_alignment = HORIZONTAL_ALIGNMENT_LEFT;
+	TextDirection text_direction = TEXT_DIRECTION_AUTO;
+	HorizontalAlignment text_alignment = HORIZONTAL_ALIGNMENT_LEFT;
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 	TitlePosition title_position = POSITION_TOP;
 
@@ -74,6 +74,10 @@ private:
 		Color title_hovered_font_color;
 		Color title_collapsed_font_color;
 		Color title_font_outline_color;
+
+		Color arrow_normal_color;
+		Color arrow_hover_color;
+		Color arrow_collapsed_color;
 
 		Ref<Font> title_font;
 		int title_font_size = 0;
@@ -114,17 +118,17 @@ public:
 	void set_foldable_group(const Ref<FoldableGroup> &p_group);
 	Ref<FoldableGroup> get_foldable_group() const;
 
-	void set_title(const String &p_text);
-	String get_title() const;
+	void set_text(const String &p_text);
+	String get_text() const;
 
-	void set_title_alignment(HorizontalAlignment p_alignment);
-	HorizontalAlignment get_title_alignment() const;
+	void set_text_alignment(HorizontalAlignment p_alignment);
+	HorizontalAlignment get_text_alignment() const;
 
-	void set_title_text_direction(TextDirection p_text_direction);
-	TextDirection get_title_text_direction() const;
+	void set_text_direction(TextDirection p_text_direction);
+	TextDirection get_text_direction() const;
 
-	void set_title_text_overrun_behavior(TextServer::OverrunBehavior p_overrun_behavior);
-	TextServer::OverrunBehavior get_title_text_overrun_behavior() const;
+	void set_text_overrun_behavior(TextServer::OverrunBehavior p_overrun_behavior);
+	TextServer::OverrunBehavior get_text_overrun_behavior() const;
 
 	void set_language(const String &p_language);
 	String get_language() const;
