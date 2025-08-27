@@ -110,23 +110,23 @@ Ref<FoldableGroup> FoldableContainer::get_foldable_group() const {
 	return foldable_group;
 }
 
-void FoldableContainer::set_title(const String &p_text) {
-	if (title == p_text) {
+void FoldableContainer::set_text(const String &p_text) {
+	if (text == p_text) {
 		return;
 	}
-	title = p_text;
+	text = p_text;
 	_shape();
 	update_minimum_size();
 	queue_redraw();
 }
 
-String FoldableContainer::get_title() const {
-	return title;
+String FoldableContainer::get_text() const {
+	return text;
 }
 
-void FoldableContainer::set_title_alignment(HorizontalAlignment p_alignment) {
+void FoldableContainer::set_text_alignment(HorizontalAlignment p_alignment) {
 	ERR_FAIL_INDEX((int)p_alignment, 3);
-	title_alignment = p_alignment;
+	text_alignment = p_alignment;
 
 	if (_get_actual_alignment() != text_buf->get_horizontal_alignment()) {
 		_shape();
@@ -134,8 +134,8 @@ void FoldableContainer::set_title_alignment(HorizontalAlignment p_alignment) {
 	}
 }
 
-HorizontalAlignment FoldableContainer::get_title_alignment() const {
-	return title_alignment;
+HorizontalAlignment FoldableContainer::get_text_alignment() const {
+	return text_alignment;
 }
 
 void FoldableContainer::set_language(const String &p_language) {
@@ -152,21 +152,21 @@ String FoldableContainer::get_language() const {
 	return language;
 }
 
-void FoldableContainer::set_title_text_direction(TextDirection p_text_direction) {
+void FoldableContainer::set_text_direction(TextDirection p_text_direction) {
 	ERR_FAIL_INDEX(int(p_text_direction), 4);
-	if (title_text_direction == p_text_direction) {
+	if (text_direction == p_text_direction) {
 		return;
 	}
-	title_text_direction = p_text_direction;
+	text_direction = p_text_direction;
 	_shape();
 	queue_redraw();
 }
 
-Control::TextDirection FoldableContainer::get_title_text_direction() const {
-	return title_text_direction;
+Control::TextDirection FoldableContainer::get_text_direction() const {
+	return text_direction;
 }
 
-void FoldableContainer::set_title_text_overrun_behavior(TextServer::OverrunBehavior p_overrun_behavior) {
+void FoldableContainer::set_text_overrun_behavior(TextServer::OverrunBehavior p_overrun_behavior) {
 	if (overrun_behavior == p_overrun_behavior) {
 		return;
 	}
@@ -176,7 +176,7 @@ void FoldableContainer::set_title_text_overrun_behavior(TextServer::OverrunBehav
 	queue_redraw();
 }
 
-TextServer::OverrunBehavior FoldableContainer::get_title_text_overrun_behavior() const {
+TextServer::OverrunBehavior FoldableContainer::get_text_overrun_behavior() const {
 	return overrun_behavior;
 }
 
@@ -295,7 +295,14 @@ void FoldableContainer::_notification(int p_what) {
 				icon_pos.x = title_style->get_margin(SIDE_LEFT);
 				title_text_pos.x += icon->get_width() + h_separation;
 			}
-			icon->draw(ci, title_rect.position + icon_pos);
+
+			Color arrow_color;
+			if (is_hovering) {
+				arrow_color = theme_cache.arrow_hover_color;
+			} else {
+				arrow_color = folded ? theme_cache.arrow_collapsed_color : theme_cache.arrow_normal_color;
+			}
+			icon->draw(ci, title_rect.position + icon_pos, arrow_color);
 
 			Color font_color = folded ? theme_cache.title_collapsed_font_color : theme_cache.title_font_color;
 			if (is_hovering) {
@@ -440,7 +447,7 @@ void FoldableContainer::_update_title_min_size() const {
 	title_minimum_size = title_ms;
 	title_minimum_size.width += icon->get_width();
 
-	if (!title.is_empty()) {
+	if (!text.is_empty()) {
 		title_minimum_size.width += h_separation;
 		Size2 text_size = text_buf->get_size();
 		title_minimum_size.height += MAX(text_size.height, icon->get_height());
@@ -481,25 +488,25 @@ void FoldableContainer::_shape() {
 	text_buf->clear();
 	text_buf->set_width(-1);
 
-	if (title_text_direction == TEXT_DIRECTION_INHERITED) {
+	if (text_direction == TEXT_DIRECTION_INHERITED) {
 		text_buf->set_direction(is_layout_rtl() ? TextServer::DIRECTION_RTL : TextServer::DIRECTION_LTR);
 	} else {
-		text_buf->set_direction((TextServer::Direction)title_text_direction);
+		text_buf->set_direction((TextServer::Direction)text_direction);
 	}
 	text_buf->set_horizontal_alignment(_get_actual_alignment());
 	text_buf->set_text_overrun_behavior(overrun_behavior);
-	text_buf->add_string(atr(title), font, font_size, language);
+	text_buf->add_string(atr(text), font, font_size, language);
 }
 
 HorizontalAlignment FoldableContainer::_get_actual_alignment() const {
 	if (is_layout_rtl()) {
-		if (title_alignment == HORIZONTAL_ALIGNMENT_RIGHT) {
+		if (text_alignment == HORIZONTAL_ALIGNMENT_RIGHT) {
 			return HORIZONTAL_ALIGNMENT_LEFT;
-		} else if (title_alignment == HORIZONTAL_ALIGNMENT_LEFT) {
+		} else if (text_alignment == HORIZONTAL_ALIGNMENT_LEFT) {
 			return HORIZONTAL_ALIGNMENT_RIGHT;
 		}
 	}
-	return title_alignment;
+	return text_alignment;
 }
 
 void FoldableContainer::_update_group() {
@@ -530,16 +537,16 @@ void FoldableContainer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_folded"), &FoldableContainer::is_folded);
 	ClassDB::bind_method(D_METHOD("set_foldable_group", "button_group"), &FoldableContainer::set_foldable_group);
 	ClassDB::bind_method(D_METHOD("get_foldable_group"), &FoldableContainer::get_foldable_group);
-	ClassDB::bind_method(D_METHOD("set_title", "text"), &FoldableContainer::set_title);
-	ClassDB::bind_method(D_METHOD("get_title"), &FoldableContainer::get_title);
-	ClassDB::bind_method(D_METHOD("set_title_alignment", "alignment"), &FoldableContainer::set_title_alignment);
-	ClassDB::bind_method(D_METHOD("get_title_alignment"), &FoldableContainer::get_title_alignment);
+	ClassDB::bind_method(D_METHOD("set_text", "text"), &FoldableContainer::set_text);
+	ClassDB::bind_method(D_METHOD("get_text"), &FoldableContainer::get_text);
+	ClassDB::bind_method(D_METHOD("set_text_alignment", "alignment"), &FoldableContainer::set_text_alignment);
+	ClassDB::bind_method(D_METHOD("get_text_alignment"), &FoldableContainer::get_text_alignment);
 	ClassDB::bind_method(D_METHOD("set_language", "language"), &FoldableContainer::set_language);
 	ClassDB::bind_method(D_METHOD("get_language"), &FoldableContainer::get_language);
-	ClassDB::bind_method(D_METHOD("set_title_text_direction", "text_direction"), &FoldableContainer::set_title_text_direction);
-	ClassDB::bind_method(D_METHOD("get_title_text_direction"), &FoldableContainer::get_title_text_direction);
-	ClassDB::bind_method(D_METHOD("set_title_text_overrun_behavior", "overrun_behavior"), &FoldableContainer::set_title_text_overrun_behavior);
-	ClassDB::bind_method(D_METHOD("get_title_text_overrun_behavior"), &FoldableContainer::get_title_text_overrun_behavior);
+	ClassDB::bind_method(D_METHOD("set_text_direction", "text_direction"), &FoldableContainer::set_text_direction);
+	ClassDB::bind_method(D_METHOD("get_text_direction"), &FoldableContainer::get_text_direction);
+	ClassDB::bind_method(D_METHOD("set_text_overrun_behavior", "overrun_behavior"), &FoldableContainer::set_text_overrun_behavior);
+	ClassDB::bind_method(D_METHOD("get_text_overrun_behavior"), &FoldableContainer::get_text_overrun_behavior);
 	ClassDB::bind_method(D_METHOD("set_title_position", "title_position"), &FoldableContainer::set_title_position);
 	ClassDB::bind_method(D_METHOD("get_title_position"), &FoldableContainer::get_title_position);
 	ClassDB::bind_method(D_METHOD("add_title_bar_control", "control"), &FoldableContainer::add_title_bar_control);
@@ -548,14 +555,14 @@ void FoldableContainer::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("folding_changed", PropertyInfo(Variant::BOOL, "is_folded")));
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "folded"), "set_folded", "is_folded");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "title"), "set_title", "get_title");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "title_alignment", PROPERTY_HINT_ENUM, "Left,Center,Right"), "set_title_alignment", "get_title_alignment");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text"), "set_text", "get_text");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_alignment", PROPERTY_HINT_ENUM, "Left,Center,Right"), "set_text_alignment", "get_text_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "title_position", PROPERTY_HINT_ENUM, "Top,Bottom"), "set_title_position", "get_title_position");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "title_text_overrun_behavior", PROPERTY_HINT_ENUM, "Trim Nothing,Trim Characters,Trim Words,Ellipsis,Word Ellipsis"), "set_title_text_overrun_behavior", "get_title_text_overrun_behavior");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_overrun_behavior", PROPERTY_HINT_ENUM, "Trim Nothing,Trim Characters,Trim Words,Ellipsis,Word Ellipsis"), "set_text_overrun_behavior", "get_text_overrun_behavior");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "foldable_group", PROPERTY_HINT_RESOURCE_TYPE, "FoldableGroup"), "set_foldable_group", "get_foldable_group");
 
 	ADD_GROUP("BiDi", "");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "title_text_direction", PROPERTY_HINT_ENUM, "Auto,Left-to-Right,Right-to-Left,Inherited"), "set_title_text_direction", "get_title_text_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_direction", PROPERTY_HINT_ENUM, "Auto,Left-to-Right,Right-to-Left,Inherited"), "set_text_direction", "get_text_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID), "set_language", "get_language");
 
 	BIND_ENUM_CONSTANT(POSITION_TOP);
@@ -577,6 +584,10 @@ void FoldableContainer::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, FoldableContainer, title_collapsed_font_color, "collapsed_font_color");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, FoldableContainer, title_font_outline_color, "font_outline_color");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FoldableContainer, arrow_normal_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FoldableContainer, arrow_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FoldableContainer, arrow_collapsed_color);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FoldableContainer, expanded_arrow);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FoldableContainer, expanded_arrow_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FoldableContainer, folded_arrow);
@@ -587,7 +598,7 @@ void FoldableContainer::_bind_methods() {
 
 FoldableContainer::FoldableContainer(const String &p_text) {
 	text_buf.instantiate();
-	set_title(p_text);
+	set_text(p_text);
 	set_focus_mode(FOCUS_ALL);
 	set_mouse_filter(MOUSE_FILTER_STOP);
 }
