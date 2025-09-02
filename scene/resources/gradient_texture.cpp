@@ -321,6 +321,10 @@ float GradientTexture2D::_get_gradient_offset_at(int x, int y) const {
 
 void GradientTexture2D::set_width(int p_width) {
 	ERR_FAIL_COND_MSG(p_width <= 0 || p_width > 16384, "Texture dimensions have to be within 1 to 16384 range.");
+	if (p_width == width) {
+		return;
+	}
+
 	width = p_width;
 	_queue_update();
 	emit_changed();
@@ -332,6 +336,10 @@ int GradientTexture2D::get_width() const {
 
 void GradientTexture2D::set_height(int p_height) {
 	ERR_FAIL_COND_MSG(p_height <= 0 || p_height > 16384, "Texture dimensions have to be within 1 to 16384 range.");
+	if (p_height == height) {
+		return;
+	}
+
 	height = p_height;
 	_queue_update();
 	emit_changed();

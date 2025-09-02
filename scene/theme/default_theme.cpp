@@ -1058,13 +1058,27 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	Ref<StyleBoxFlat> focus_circle = make_flat_stylebox(style_focus_color, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	focus_circle->set_corner_radius_all(Math::round(256 * scale));
 	focus_circle->set_corner_detail(Math::round(32 * scale));
+	Ref<StyleBoxFlat> mode_button_focus = style_tab_focus->duplicate();
+	mode_button_focus->set_expand_margin_individual(0, Math::round(2 * scale), 0, 0);
+	Ref<StyleBoxFlat> sliders_panel = make_flat_stylebox(style_normal_color);
+	sliders_panel->set_corner_radius(CORNER_TOP_LEFT, 0);
+	sliders_panel->set_corner_radius(CORNER_TOP_RIGHT, 0);
 
 	theme->set_constant("margin", "ColorPicker", Math::round(4 * scale));
-	theme->set_constant("sv_width", "ColorPicker", Math::round(256 * scale));
-	theme->set_constant("sv_height", "ColorPicker", Math::round(256 * scale));
-	theme->set_constant("h_width", "ColorPicker", Math::round(30 * scale));
-	theme->set_constant("label_width", "ColorPicker", Math::round(10 * scale));
+	theme->set_constant("shape_size", "ColorPicker", Math::round(256 * scale));
+	theme->set_constant("hue_width", "ColorPicker", Math::round(30 * scale));
+	theme->set_constant("sample_height", "ColorPicker", Math::round(30 * scale));
+	theme->set_constant("label_width", "ColorPicker", Math::round(16 * scale));
 	theme->set_constant("center_slider_grabbers", "ColorPicker", 1);
+	theme->set_constant("preset_size", "ColorPicker", Math::round(30 * scale));
+	theme->set_constant("slider_height", "ColorPicker", Math::round(8 * scale));
+	theme->set_constant("colorize_sliders", "ColorPicker", 1);
+
+	theme->set_stylebox("mode_button_pressed", "ColorPicker", style_tab_selected->duplicate());
+	theme->set_stylebox("mode_button_normal", "ColorPicker", style_tab_unselected->duplicate());
+	theme->set_stylebox("mode_button_hovered", "ColorPicker", style_tab_hovered->duplicate());
+	theme->set_stylebox("mode_button_focus", "ColorPicker", mode_button_focus);
+	theme->set_stylebox("sliders_panel", "ColorPicker", sliders_panel);
 
 	theme->set_stylebox("sample_focus", "ColorPicker", focus);
 	theme->set_stylebox("picker_focus_rectangle", "ColorPicker", focus);
@@ -1074,6 +1088,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_icon("menu_option", "ColorPicker", icons["tabs_menu_hl"]);
 	theme->set_icon("folded_arrow", "ColorPicker", icons["arrow_right"]);
 	theme->set_icon("expanded_arrow", "ColorPicker", icons["arrow_down"]);
+	theme->set_icon("folded_arrow_mirrored", "ColorPicker", icons["arrow_left"]);
 	theme->set_icon("screen_picker", "ColorPicker", icons["color_picker_pipette"]);
 	theme->set_icon("shape_circle", "ColorPicker", icons["picker_shape_circle"]);
 	theme->set_icon("shape_rect", "ColorPicker", icons["picker_shape_rectangle"]);
@@ -1085,6 +1100,10 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_icon("bar_arrow", "ColorPicker", icons["color_picker_bar_arrow"]);
 	theme->set_icon("picker_cursor", "ColorPicker", icons["color_picker_cursor"]);
 	theme->set_icon("picker_cursor_bg", "ColorPicker", icons["color_picker_cursor_bg"]);
+	theme->set_icon("slider_cursor", "ColorPicker", icons["color_picker_slider_cursor"]);
+	theme->set_icon("slider_cursor_bg", "ColorPicker", icons["color_picker_slider_cursor_bg"]);
+	theme->set_icon("slider_cursor_checkerboard", "ColorPicker", icons["color_picker_slider_cursor_checkerboard"]);
+	theme->set_icon("color_hex", "ColorPicker", icons["color_picker_hex"]);
 	theme->set_icon("color_script", "ColorPicker", icons["script"]);
 
 	{
@@ -1135,18 +1154,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	theme->set_constant("h_separation", "ColorPickerButton", Math::round(4 * scale));
 	theme->set_constant("outline_size", "ColorPickerButton", 0);
-
-	// ColorPresetButton
-
-	Ref<StyleBoxFlat> preset_sb = make_flat_stylebox(Color(1, 1, 1), 2, 2, 2, 2);
-	preset_sb->set_corner_radius_all(Math::round(2 * scale));
-	preset_sb->set_corner_detail(Math::round(2 * scale));
-	preset_sb->set_anti_aliased(false);
-
-	theme->set_stylebox("preset_fg", "ColorPresetButton", preset_sb);
-	theme->set_stylebox("preset_focus", "ColorPresetButton", focus);
-	theme->set_icon("preset_bg", "ColorPresetButton", icons["mini_checkerboard"]);
-	theme->set_icon("overbright_indicator", "ColorPresetButton", icons["color_picker_overbright"]);
 
 	// TooltipPanel + TooltipLabel
 
@@ -1286,6 +1293,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_color("connection_valid_target_tint_color", "GraphEdit", Color(1, 1, 1, 0.4));
 	theme->set_color("connection_rim_color", "GraphEdit", style_normal_color);
 
+	// FoldableContainer
 	Ref<StyleBoxFlat> foldable_container_title = make_flat_stylebox(style_pressed_color);
 	foldable_container_title->set_corner_radius(CORNER_BOTTOM_LEFT, 0);
 	foldable_container_title->set_corner_radius(CORNER_BOTTOM_RIGHT, 0);

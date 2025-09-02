@@ -38,6 +38,12 @@ class ColorPickerShape : public Object {
 	void _emit_color_changed();
 
 protected:
+	static inline Ref<Shader> wheel_shader;
+	static inline Ref<Shader> circle_shader;
+	static inline Ref<Shader> circle_ok_color_shader;
+	static inline Ref<Shader> rectangle_ok_color_hs_shader;
+	static inline Ref<Shader> rectangle_ok_color_hl_shader;
+
 	ColorPicker *color_picker = nullptr;
 	bool is_dragging = false;
 
@@ -68,9 +74,12 @@ public:
 	bool cursor_editing = false;
 	float echo_multiplier = 1;
 
-	virtual String get_name() const = 0;
-	virtual Ref<Texture2D> get_icon() const = 0;
-	virtual bool is_ok_hsl() const { return false; }
+	static void init_shaders();
+	static void finish_shaders();
+
+	_ALWAYS_INLINE_ virtual String get_name() const = 0;
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const = 0;
+	_ALWAYS_INLINE_ virtual bool is_ok_hsl() const { return false; }
 
 	void initialize_controls();
 	virtual void update_theme() = 0;
@@ -95,8 +104,9 @@ protected:
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
 
 public:
-	virtual String get_name() const override { return ETR("HSV Rectangle"); }
-	virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+	_ALWAYS_INLINE_ virtual String get_name() const override { return ETR("HSV Rectangle"); }
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+
 	virtual void update_theme() override;
 	virtual void grab_focus() override;
 
@@ -113,7 +123,8 @@ protected:
 	Control *square = nullptr;
 	Control *square_overlay = nullptr;
 	Control *value_slider = nullptr;
-	virtual Ref<Shader> _get_shader() const { return ColorPicker::rectangle_ok_color_hs_shader; }
+
+	_ALWAYS_INLINE_ virtual Ref<Shader> _get_shader() const { return ColorPickerShape::rectangle_ok_color_hs_shader; }
 	virtual void _initialize_controls() override;
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
 
@@ -125,9 +136,10 @@ protected:
 	virtual void _value_slider_draw();
 
 public:
-	virtual String get_name() const override { return ETR("OK HS Rectangle"); }
-	virtual bool is_ok_hsl() const override { return true; }
-	virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+	_ALWAYS_INLINE_ virtual String get_name() const override { return ETR("OK HS Rectangle"); }
+	_ALWAYS_INLINE_ virtual bool is_ok_hsl() const override { return true; }
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+
 	virtual void update_theme() override;
 	virtual void grab_focus() override;
 
@@ -139,7 +151,7 @@ class ColorPickerShapeOKHLRectangle : public ColorPickerShapeOKHSRectangle {
 	GDCLASS(ColorPickerShapeOKHLRectangle, ColorPickerShapeOKHSRectangle);
 
 protected:
-	virtual Ref<Shader> _get_shader() const override { return ColorPicker::rectangle_ok_color_hl_shader; }
+	_ALWAYS_INLINE_ virtual Ref<Shader> _get_shader() const override { return ColorPickerShape::rectangle_ok_color_hl_shader; }
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
 
 	virtual void _square_draw() override;
@@ -150,9 +162,9 @@ protected:
 	virtual void _value_slider_draw() override;
 
 public:
-	virtual String get_name() const override { return ETR("OK HL Rectangle"); }
-	virtual bool is_ok_hsl() const override { return true; }
-	virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+	_ALWAYS_INLINE_ virtual String get_name() const override { return ETR("OK HL Rectangle"); }
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect; }
+	_ALWAYS_INLINE_ virtual bool is_ok_hsl() const override { return true; }
 
 	ColorPickerShapeOKHLRectangle(ColorPicker *p_color_picker) :
 			ColorPickerShapeOKHSRectangle(p_color_picker) {}
@@ -184,8 +196,9 @@ protected:
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
 
 public:
-	virtual String get_name() const override { return ETR("HSV Wheel"); }
-	virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect_wheel; }
+	_ALWAYS_INLINE_ virtual String get_name() const override { return ETR("HSV Wheel"); }
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_rect_wheel; }
+
 	virtual void update_theme() override;
 	virtual void grab_focus() override;
 
@@ -214,11 +227,12 @@ protected:
 	void update_circle_cursor(const Vector2 &p_color_change_vector, const Vector2 &p_center, const Vector2 &p_hue_offset);
 
 public:
-	virtual Ref<Shader> _get_shader() const = 0;
+	_ALWAYS_INLINE_ virtual Ref<Shader> _get_shader() const = 0;
 	virtual void _initialize_controls() override;
 
-	virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_circle; }
+	_ALWAYS_INLINE_ virtual Ref<Texture2D> get_icon() const override { return color_picker->theme_cache.shape_circle; }
 	virtual void update_theme() override;
+
 	virtual void grab_focus() override;
 
 	ColorPickerShapeCircle(ColorPicker *p_color_picker) :
@@ -229,8 +243,8 @@ class ColorPickerShapeVHSCircle : public ColorPickerShapeCircle {
 	GDCLASS(ColorPickerShapeVHSCircle, ColorPickerShapeCircle);
 
 protected:
+	_ALWAYS_INLINE_ virtual Ref<Shader> _get_shader() const override { return ColorPickerShape::circle_shader; }
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
-	virtual Ref<Shader> _get_shader() const override { return ColorPicker::circle_shader; }
 
 	virtual void _circle_input(const Ref<InputEvent> &p_event) override;
 	virtual void _value_slider_input(const Ref<InputEvent> &p_event) override;
@@ -250,8 +264,8 @@ class ColorPickerShapeOKHSLCircle : public ColorPickerShapeCircle {
 	GDCLASS(ColorPickerShapeOKHSLCircle, ColorPickerShapeCircle);
 
 protected:
+	_ALWAYS_INLINE_ virtual Ref<Shader> _get_shader() const override { return ColorPickerShape::circle_ok_color_shader; }
 	virtual void _update_cursor(const Vector2 &p_color_change_vector, bool p_is_echo) override;
-	virtual Ref<Shader> _get_shader() const override { return ColorPicker::circle_ok_color_shader; }
 
 	virtual void _circle_input(const Ref<InputEvent> &p_event) override;
 	virtual void _value_slider_input(const Ref<InputEvent> &p_event) override;
