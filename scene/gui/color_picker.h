@@ -32,6 +32,7 @@
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
+#include "scene/gui/color_button.h"
 #include "scene/gui/popup.h"
 #include "scene/resources/shader.h"
 
@@ -39,6 +40,7 @@ class AspectRatioContainer;
 class ColorMode;
 class ColorPickerShape;
 class FileDialog;
+class FoldableContainer;
 class GridContainer;
 class HSlider;
 class Label;
@@ -46,37 +48,22 @@ class LineEdit;
 class MarginContainer;
 class MenuButton;
 class OptionButton;
+class PanelContainer;
 class PopupMenu;
+class SliderStyleBox;
 class SpinBox;
 class StyleBoxFlat;
 class TextureRect;
 
-class ColorPresetButton : public BaseButton {
-	GDCLASS(ColorPresetButton, BaseButton);
+class ColorPresetButton : public ColorButton {
+	GDCLASS(ColorPresetButton, ColorButton);
 
-	Color preset_color;
 	bool recent = false;
 
-	struct ThemeCache {
-		Ref<StyleBox> foreground_style;
-		Ref<StyleBox> focus_style;
-
-		Ref<Texture2D> background_icon;
-		Ref<Texture2D> overbright_indicator;
-	} theme_cache;
-
-protected:
-	void _notification(int);
-	static void _bind_methods();
-
 public:
-	void set_preset_color(const Color &p_color);
-	Color get_preset_color() const;
-
 	virtual String get_tooltip(const Point2 &p_pos) const override;
 
-	ColorPresetButton(Color p_color, int p_size, bool p_recent);
-	~ColorPresetButton();
+	ColorPresetButton(Color p_color, bool p_recent);
 };
 
 class ColorPicker : public VBoxContainer {
@@ -92,6 +79,7 @@ class ColorPicker : public VBoxContainer {
 	friend class ColorPickerShapeOKHSRectangle;
 	friend class ColorPickerShapeOKHLRectangle;
 
+	friend class ColorMode;
 	friend class ColorModeRGB;
 	friend class ColorModeHSV;
 	friend class ColorModeLinear;
@@ -123,6 +111,8 @@ public:
 	};
 
 private:
+	Ref<SliderStyleBox> slider_style_box[4];
+
 	// Ideally, `SHAPE_NONE` should be -1 so that we don't need to convert shape type to index.
 	// In order to avoid breaking compatibility, we have to use these methods for conversion.
 	inline int get_current_shape_index() {
@@ -153,8 +143,8 @@ public:
 	static const int MODE_SLIDER_COUNT = 3;
 
 	enum SLIDER_EXTRA {
-		SLIDER_INTENSITY = MODE_SLIDER_COUNT,
-		SLIDER_ALPHA,
+		SLIDER_ALPHA = MODE_SLIDER_COUNT,
+		SLIDER_INTENSITY,
 
 		SLIDER_MAX
 	};
@@ -168,11 +158,6 @@ public:
 	};
 
 private:
-	static inline Ref<Shader> wheel_shader;
-	static inline Ref<Shader> circle_shader;
-	static inline Ref<Shader> circle_ok_color_shader;
-	static inline Ref<Shader> rectangle_ok_color_hs_shader;
-	static inline Ref<Shader> rectangle_ok_color_hl_shader;
 	static inline List<Color> preset_cache;
 	static inline List<Color> recent_preset_cache;
 
@@ -180,13 +165,9 @@ private:
 	Object *editor_settings = nullptr;
 #endif
 
-	int current_slider_count = MODE_SLIDER_COUNT;
-
 	const float DEFAULT_GAMEPAD_EVENT_DELAY_MS = 1.0 / 2;
 	const float GAMEPAD_EVENT_REPEAT_RATE_MS = 1.0 / 30;
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
-
-	static constexpr int MODE_BUTTON_COUNT = 3;
 
 	bool slider_theme_modified = true;
 
@@ -208,34 +189,36 @@ private:
 	PopupMenu *options_menu = nullptr;
 
 	MarginContainer *internal_margin = nullptr;
+	VBoxContainer *main_vbox = nullptr;
+	VBoxContainer *shape_vbox = nullptr;
 	HBoxContainer *shape_container = nullptr;
-	TextureRect *sample = nullptr;
-	VBoxContainer *swatches_vbc = nullptr;
-	GridContainer *preset_container = nullptr;
+	Control *sample = nullptr;
 	HBoxContainer *recent_preset_hbc = nullptr;
-	Button *btn_add_preset = nullptr;
+	FoldableContainer *preset_foldable = nullptr;
+	Button *add_preset_button = nullptr;
+	FoldableContainer *recent_preset_foldable = nullptr;
+	HBoxContainer *preset_hbc = nullptr;
 	Button *btn_pick = nullptr;
 	Label *palette_name = nullptr;
 	String palette_path;
-	Button *btn_preset = nullptr;
-	Button *btn_recent_preset = nullptr;
 	PopupMenu *shape_popup = nullptr;
-	PopupMenu *mode_popup = nullptr;
 	MenuButton *btn_shape = nullptr;
 	HBoxContainer *mode_hbc = nullptr;
 	HBoxContainer *sample_hbc = nullptr;
+	PanelContainer *sliders_panel = nullptr;
+	VBoxContainer *slider_vbc = nullptr;
 	GridContainer *slider_gc = nullptr;
 	HBoxContainer *hex_hbc = nullptr;
-	Label *hex_label = nullptr;
-	MenuButton *btn_mode = nullptr;
-	Button *mode_btns[MODE_BUTTON_COUNT];
+	Button *mode_btns[MODE_MAX];
 	Ref<ButtonGroup> mode_group;
 	ColorPresetButton *selected_recent_preset = nullptr;
 	Ref<ButtonGroup> preset_group;
 	Ref<ButtonGroup> recent_preset_group;
 
+#ifdef MACOS_ENABLED
 	HBoxContainer *perm_hb = nullptr;
 	void _req_permission();
+#endif // MACOS_ENABLED
 
 #ifdef TOOLS_ENABLED
 	Callable quick_open_callback;
@@ -244,16 +227,12 @@ private:
 
 	OptionButton *mode_option_button = nullptr;
 
-	HSlider *sliders[SLIDER_MAX];
-	SpinBox *values[SLIDER_MAX];
-	Label *labels[SLIDER_MAX];
+	HSlider *sliders[SLIDER_INTENSITY];
+	SpinBox *values[SLIDER_INTENSITY];
+	Label *labels[SLIDER_INTENSITY];
 
 	Button *text_type = nullptr;
 	LineEdit *c_text = nullptr;
-
-	HSlider *alpha_slider = nullptr;
-	SpinBox *alpha_value = nullptr;
-	Label *alpha_label = nullptr;
 
 	bool edit_alpha = true;
 
@@ -267,7 +246,6 @@ private:
 	bool text_is_constructor = false;
 	PickerShapeType current_shape = SHAPE_HSV_RECTANGLE;
 	ColorModeType current_mode = MODE_RGB;
-	bool colorize_sliders = true;
 
 	const int PRESET_COLUMN_COUNT = 9;
 	int prev_preset_size = 0;
@@ -313,13 +291,16 @@ private:
 		float base_scale = 1.0;
 
 		int content_margin = 0;
-		int label_width = 0;
 
-		int sv_height = 0;
-		int sv_width = 0;
-		int h_width = 0;
+		int shape_size = 0;
+		int hue_width = 0;
+		int sample_height = 0;
+		int label_width = 0;
+		int slider_height = 0;
+		int preset_size = 0;
 
 		bool center_slider_grabbers = true;
+		bool colorize_sliders = true;
 
 		Ref<StyleBox> picker_focus_rectangle;
 		Ref<StyleBox> picker_focus_circle;
@@ -328,6 +309,7 @@ private:
 		Ref<Texture2D> screen_picker;
 		Ref<Texture2D> expanded_arrow;
 		Ref<Texture2D> folded_arrow;
+		Ref<Texture2D> folded_arrow_mirrored;
 		Ref<Texture2D> add_preset;
 
 		Ref<Texture2D> shape_rect;
@@ -341,14 +323,19 @@ private:
 		Ref<Texture2D> overbright_indicator;
 		Ref<Texture2D> picker_cursor;
 		Ref<Texture2D> picker_cursor_bg;
+		Ref<Texture2D> slider_cursor;
+		Ref<Texture2D> slider_cursor_bg;
+		Ref<Texture2D> slider_cursor_checkerboard;
 		Ref<Texture2D> color_hue;
 
+		Ref<Texture2D> color_hex;
 		Ref<Texture2D> color_script;
 
-		/* Mode buttons */
 		Ref<StyleBox> mode_button_normal;
 		Ref<StyleBox> mode_button_pressed;
-		Ref<StyleBox> mode_button_hover;
+		Ref<StyleBox> mode_button_hovered;
+		Ref<StyleBox> mode_button_focus;
+		Ref<StyleBox> sliders_panel;
 	} theme_cache;
 
 	void _copy_normalized_to_hsv_okhsl();
@@ -359,7 +346,6 @@ private:
 	void _copy_color_to_normalized_and_intensity();
 
 	void create_slider(GridContainer *gc, int idx);
-	void _reset_sliders_theme();
 	void _html_submitted(const String &p_html);
 	void _slider_drag_started();
 	void _slider_value_changed();
@@ -367,18 +353,17 @@ private:
 	void _update_controls();
 	void _update_color(bool p_update_sliders = true);
 	void _update_text_value();
-#ifdef TOOLS_ENABLED
 	void _text_type_toggled();
-#endif // TOOLS_ENABLED
 	void _sample_input(const Ref<InputEvent> &p_event);
 	void _sample_draw();
 	void _slider_draw(int p_which);
-	void _alpha_slider_draw();
 
 	void _slider_or_spin_input(const Ref<InputEvent> &p_event);
 	void _line_edit_input(const Ref<InputEvent> &p_event);
+	void _preset_foldable_button_pressed(int p_idx);
 	void _preset_input(const Ref<InputEvent> &p_event, const Color &p_color);
-	void _recent_preset_pressed(const bool pressed, ColorPresetButton *p_preset);
+	void _recent_preset_pressed(const bool p_pressed, ColorPresetButton *p_preset);
+	void _preset_pressed(const bool p_pressed, ColorPresetButton *p_preset);
 	void _text_changed(const String &p_new_text);
 	void _add_preset_pressed();
 	void _html_focus_exit();
@@ -398,16 +383,10 @@ private:
 	void _pick_button_pressed_legacy();
 	void _picker_texture_input(const Ref<InputEvent> &p_event);
 
-	inline int _get_preset_size();
-	void _add_preset_button(int p_size, const Color &p_color);
-	void _add_recent_preset_button(int p_size, const Color &p_color);
+	void _add_preset_button(const Color &p_color);
+	void _add_recent_preset_button(const Color &p_color);
 	void _save_palette(bool p_is_save_as);
 	void _load_palette();
-
-	void _show_hide_preset(const bool &p_is_btn_pressed, Button *p_btn_preset, Container *p_preset_container);
-	void _update_drop_down_arrow(const bool &p_is_btn_pressed, Button *p_btn_preset);
-
-	void _set_mode_popup_value(ColorModeType p_mode);
 
 	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from_control);
 	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from_control) const;
@@ -416,6 +395,7 @@ private:
 	void _ensure_file_dialog();
 
 protected:
+	void _validate_property(PropertyInfo &p_property) const;
 	virtual void _update_theme_item_cache() override;
 
 	void _notification(int);
@@ -426,39 +406,35 @@ public:
 	void set_editor_settings(Object *p_editor_settings);
 	void set_quick_open_callback(const Callable &p_file_selected);
 	void set_palette_saved_callback(const Callable &p_palette_saved);
-
 	void _quick_open_palette_file_selected(const String &p_path);
-#endif
+	_ALWAYS_INLINE_ GridContainer *get_slider_container() { return slider_gc; }
+#endif // TOOLS_ENABLED
 
-	GridContainer *get_slider_container();
 	HSlider *get_slider(int idx);
 	Vector<float> get_active_slider_values();
-
-	static void init_shaders();
-	static void finish_shaders();
 
 	void add_mode(ColorMode *p_mode);
 	void add_shape(ColorPickerShape *p_shape);
 
 	void set_edit_alpha(bool p_show);
-	bool is_editing_alpha() const;
+	_ALWAYS_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
 
 	void set_edit_intensity(bool p_show);
-	bool is_editing_intensity() const;
+	_ALWAYS_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
 
 	void _set_pick_color(const Color &p_color, bool p_update_sliders, bool p_calc_intensity);
 	void set_pick_color(const Color &p_color);
-	Color get_pick_color() const;
+	_ALWAYS_INLINE_ Color get_pick_color() const { return color; }
 	void set_old_color(const Color &p_color);
-	Color get_old_color() const;
+	_ALWAYS_INLINE_ Color get_old_color() const { return old_color; }
 
 	void _palette_file_selected(const String &p_path);
 
 	void set_display_old_color(bool p_enabled);
-	bool is_displaying_old_color() const;
+	_ALWAYS_INLINE_ bool is_displaying_old_color() const { return display_old_color; }
 
 	void set_picker_shape(PickerShapeType p_shape);
-	PickerShapeType get_picker_shape() const;
+	_ALWAYS_INLINE_ PickerShapeType get_picker_shape() const { return current_shape; }
 
 	void add_preset(const Color &p_color);
 	void add_recent_preset(const Color &p_color);
@@ -466,38 +442,38 @@ public:
 	void erase_recent_preset(const Color &p_color);
 	PackedColorArray get_presets() const;
 	PackedColorArray get_recent_presets() const;
+
+#ifdef TOOLS_ENABLED
 	void _update_presets();
 	void _update_recent_presets();
+#endif // TOOLS_ENABLED
 
 	void _select_from_preset_container(const Color &p_color);
 	bool _select_from_recent_preset_hbc(const Color &p_color);
 
 	void set_color_mode(ColorModeType p_mode);
-	ColorModeType get_color_mode() const;
+	_ALWAYS_INLINE_ ColorModeType get_color_mode() const { return current_mode; }
 
-	void set_colorize_sliders(bool p_colorize_sliders);
-	bool is_colorizing_sliders() const;
-
-	void set_deferred_mode(bool p_enabled);
-	bool is_deferred_mode() const;
+	_ALWAYS_INLINE_ void set_deferred_mode(bool p_enabled) { deferred_mode_enabled = p_enabled; }
+	_ALWAYS_INLINE_ bool is_deferred_mode() const { return deferred_mode_enabled; }
 
 	void set_can_add_swatches(bool p_enabled);
-	bool are_swatches_enabled() const;
+	_ALWAYS_INLINE_ bool are_swatches_enabled() const { return can_add_swatches; }
 
 	void set_presets_visible(bool p_visible);
-	bool are_presets_visible() const;
+	_ALWAYS_INLINE_ bool are_presets_visible() const { return presets_visible; }
 
 	void set_modes_visible(bool p_visible);
-	bool are_modes_visible() const;
+	_ALWAYS_INLINE_ bool are_modes_visible() const { return color_modes_visible; }
 
 	void set_sampler_visible(bool p_visible);
-	bool is_sampler_visible() const;
+	_ALWAYS_INLINE_ bool is_sampler_visible() const { return sampler_visible; }
 
 	void set_sliders_visible(bool p_visible);
-	bool are_sliders_visible() const;
+	_ALWAYS_INLINE_ bool are_sliders_visible() const { return sliders_visible; }
 
 	void set_hex_visible(bool p_visible);
-	bool is_hex_visible() const;
+	_ALWAYS_INLINE_ bool is_hex_visible() const { return hex_visible; }
 
 	void set_focus_on_line_edit();
 	void set_focus_on_picker_shape();
@@ -506,16 +482,8 @@ public:
 	~ColorPicker();
 };
 
-class ColorPickerPopupPanel : public PopupPanel {
-	virtual void _input_from_window(const Ref<InputEvent> &p_event) override;
-};
-
 class ColorPickerButton : public Button {
 	GDCLASS(ColorPickerButton, Button);
-
-	// Initialization is now done deferred,
-	// this improves performance in the inspector as the color picker
-	// can be expensive to initialize.
 
 	PopupPanel *popup = nullptr;
 	ColorPicker *picker = nullptr;
@@ -539,18 +507,19 @@ class ColorPickerButton : public Button {
 	void _update_picker();
 
 protected:
+	void _validate_property(PropertyInfo &p_property) const;
 	void _notification(int);
 	static void _bind_methods();
 
 public:
 	void set_pick_color(const Color &p_color);
-	Color get_pick_color() const;
+	_ALWAYS_INLINE_ Color get_pick_color() const { return color; }
 
 	void set_edit_alpha(bool p_show);
-	bool is_editing_alpha() const;
+	_ALWAYS_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
 
 	void set_edit_intensity(bool p_show);
-	bool is_editing_intensity() const;
+	_ALWAYS_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
 
 	ColorPicker *get_picker();
 	PopupPanel *get_popup();
