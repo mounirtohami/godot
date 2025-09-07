@@ -129,9 +129,11 @@ void ColorPicker::_notification(int p_what) {
 				for (ColorPickerShape *shape : shapes) {
 					if (shape->is_initialized) {
 						shape->update_theme();
+						for (Control *c : shape->controls) {
+							c->queue_redraw();
+						}
 					}
-					shape_popup->set_item_icon(i, shape->get_icon());
-					i++;
+					shape_popup->set_item_icon(i++, shape->get_icon());
 				}
 			}
 
