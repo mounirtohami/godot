@@ -133,8 +133,7 @@ void ColorPicker::_notification(int p_what) {
 							c->queue_redraw();
 						}
 					}
-					shape_popup->set_item_icon(i, shape->get_icon());
-					i++;
+					shape_popup->set_item_icon(i++, shape->get_icon());
 				}
 			}
 
