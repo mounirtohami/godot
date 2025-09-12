@@ -96,10 +96,6 @@ void MultiMeshInstance2D::set_multimesh(const Ref<MultiMesh> &p_multimesh) {
 	queue_redraw();
 }
 
-Ref<MultiMesh> MultiMeshInstance2D::get_multimesh() const {
-	return multimesh;
-}
-
 void MultiMeshInstance2D::set_texture(const Ref<Texture2D> &p_texture) {
 	if (p_texture == texture) {
 		return;
@@ -107,10 +103,6 @@ void MultiMeshInstance2D::set_texture(const Ref<Texture2D> &p_texture) {
 	texture = p_texture;
 	queue_redraw();
 	emit_signal(SceneStringName(texture_changed));
-}
-
-Ref<Texture2D> MultiMeshInstance2D::get_texture() const {
-	return texture;
 }
 
 #ifdef DEBUG_ENABLED
@@ -229,9 +221,3 @@ void MultiMeshInstance2D::navmesh_parse_source_geometry(const Ref<NavigationPoly
 	}
 }
 #endif // NAVIGATION_2D_DISABLED
-
-MultiMeshInstance2D::MultiMeshInstance2D() {
-}
-
-MultiMeshInstance2D::~MultiMeshInstance2D() {
-}

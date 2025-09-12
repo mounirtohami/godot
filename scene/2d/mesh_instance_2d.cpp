@@ -86,10 +86,6 @@ void MeshInstance2D::set_mesh(const Ref<Mesh> &p_mesh) {
 	queue_redraw();
 }
 
-Ref<Mesh> MeshInstance2D::get_mesh() const {
-	return mesh;
-}
-
 void MeshInstance2D::set_texture(const Ref<Texture2D> &p_texture) {
 	if (p_texture == texture) {
 		return;
@@ -97,10 +93,6 @@ void MeshInstance2D::set_texture(const Ref<Texture2D> &p_texture) {
 	texture = p_texture;
 	queue_redraw();
 	emit_signal(SceneStringName(texture_changed));
-}
-
-Ref<Texture2D> MeshInstance2D::get_texture() const {
-	return texture;
 }
 
 #ifdef DEBUG_ENABLED
@@ -214,6 +206,3 @@ void MeshInstance2D::navmesh_parse_source_geometry(const Ref<NavigationPolygon> 
 	}
 }
 #endif // NAVIGATION_2D_DISABLED
-
-MeshInstance2D::MeshInstance2D() {
-}

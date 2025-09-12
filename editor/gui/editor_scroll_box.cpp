@@ -138,6 +138,7 @@ void EditorScrollBox::_accessibility_action_scroll_right(const Variant &p_data) 
 
 void EditorScrollBox::_notification(int p_what) {
 	switch (p_what) {
+#ifdef ACCESSKIT_ENABLED
 		case NOTIFICATION_ACCESSIBILITY_UPDATE: {
 			RID ae = get_accessibility_element();
 			ERR_FAIL_COND(ae.is_null());
@@ -146,6 +147,7 @@ void EditorScrollBox::_notification(int p_what) {
 			DisplayServer::get_singleton()->accessibility_update_add_action(ae, DisplayServer::AccessibilityAction::ACTION_SCROLL_LEFT, callable_mp(this, &EditorScrollBox::_accessibility_action_scroll_left));
 			DisplayServer::get_singleton()->accessibility_update_add_action(ae, DisplayServer::AccessibilityAction::ACTION_SCROLL_RIGHT, callable_mp(this, &EditorScrollBox::_accessibility_action_scroll_right));
 		} break;
+#endif // ACCESSKIT_ENABLED
 
 		case NOTIFICATION_THEME_CHANGED:
 		case NOTIFICATION_TRANSLATION_CHANGED:

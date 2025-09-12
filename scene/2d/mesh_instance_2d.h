@@ -54,10 +54,10 @@ public:
 #endif // DEBUG_ENABLED
 
 	void set_mesh(const Ref<Mesh> &p_mesh);
-	Ref<Mesh> get_mesh() const;
+	_FORCE_INLINE_ Ref<Mesh> get_mesh() const { return mesh; }
 
 	void set_texture(const Ref<Texture2D> &p_texture);
-	Ref<Texture2D> get_texture() const;
+	_FORCE_INLINE_ Ref<Texture2D> get_texture() const { return texture; }
 
 private:
 	static Callable _navmesh_source_geometry_parsing_callback;
@@ -68,6 +68,4 @@ public:
 	static void navmesh_parse_init();
 	static void navmesh_parse_source_geometry(const Ref<NavigationPolygon> &p_navigation_mesh, Ref<NavigationMeshSourceGeometryData2D> p_source_geometry_data, Node *p_node);
 #endif // NAVIGATION_2D_DISABLED
-
-	MeshInstance2D();
 };

@@ -36,13 +36,19 @@
 #include "servers/display/display_server.h"
 
 void AudioStreamPlayer::_notification(int p_what) {
-	if (p_what == NOTIFICATION_ACCESSIBILITY_UPDATE) {
-		RID ae = get_accessibility_element();
-		ERR_FAIL_COND(ae.is_null());
+	switch (p_what) {
+#ifdef ACCESSKIT_ENABLED
+		case NOTIFCATION_ACCESSIBILITY_UPDATE: {
+			RID ae = get_accessibility_element();
+			ERR_FAIL_COND(ae.is_null());
 
-		DisplayServer::get_singleton()->accessibility_update_set_role(ae, DisplayServer::AccessibilityRole::ROLE_AUDIO);
-	} else {
-		internal->notification(p_what);
+			DisplayServer::get_singleton()->accessibility_update_set_role(ae, DisplayServer::AccessibilityRole::ROLE_AUDIO);
+		} break;
+#endif // ACCESSKIT_ENABLED
+
+		default: {
+			internal->notification(p_what);
+		} break;
 	}
 }
 

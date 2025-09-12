@@ -3113,9 +3113,10 @@ Error Main::setup2(bool p_show_boot_logo) {
 				accessibility_mode = (DisplayServer::AccessibilityMode)GLOBAL_GET("accessibility/general/accessibility_support").operator int64_t();
 			}
 		}
+#ifdef ACCESSKIT_ENABLED
 		DisplayServer::accessibility_set_mode(accessibility_mode);
-
-		// rendering_driver now held in static global String in main and initialized in setup()
+#endif // ACCESSKIT_ENABLED
+	   // rendering_driver now held in static global String in main and initialized in setup()
 		Error err;
 		display_server = DisplayServer::create(display_driver_idx, rendering_driver, window_mode, window_vsync_mode, window_flags, window_position, window_size, init_screen, context, init_embed_parent_window_id, err);
 		if (err != OK || display_server == nullptr) {
@@ -4853,8 +4854,12 @@ bool Main::iteration() {
 		return exit;
 	}
 
+#ifdef ACCESSKIT_ENABLED
 	SceneTree *scene_tree = SceneTree::get_singleton();
 	bool wake_for_events = scene_tree && scene_tree->is_accessibility_enabled();
+#else
+	bool wake_for_events = false;
+#endif // ACCESSKIT_ENABLED
 
 	OS::get_singleton()->add_frame_delay(DisplayServer::get_singleton()->window_can_draw(), wake_for_events);
 

@@ -367,6 +367,7 @@ void TabBar::_shape(int p_tab) {
 	tabs.write[p_tab].text_buf->add_string(atr(tabs[p_tab].text), theme_cache.font, theme_cache.font_size, lang);
 }
 
+#ifdef ACCESSKIT_ENABLED
 RID TabBar::get_tab_accessibility_element(int p_tab) const {
 	RID ae = get_accessibility_element();
 	ERR_FAIL_COND_V(ae.is_null(), RID());
@@ -387,6 +388,7 @@ RID TabBar::get_focused_accessibility_element() const {
 		return item.accessibility_item_element;
 	}
 }
+#endif // ACCESSKIT_ENABLED
 
 void TabBar::_accessibility_action_scroll_into_view(const Variant &p_data, int p_index) {
 	ensure_tab_visible(p_index);
@@ -430,11 +432,14 @@ void TabBar::_notification(int p_what) {
 
 		case NOTIFICATION_EXIT_TREE:
 		case NOTIFICATION_ACCESSIBILITY_INVALIDATE: {
+#ifdef ACCESSKIT_ENABLED
 			for (int i = 0; i < tabs.size(); i++) {
 				tabs.write[i].accessibility_item_element = RID();
 			}
+#endif // ACCESSKIT_ENABLED
 		} break;
 
+#ifdef ACCESSKIT_ENABLED
 		case NOTIFICATION_ACCESSIBILITY_UPDATE: {
 			RID ae = get_accessibility_element();
 			ERR_FAIL_COND(ae.is_null());
@@ -467,6 +472,7 @@ void TabBar::_notification(int p_what) {
 				}
 			}
 		} break;
+#endif // ACCESSKIT_ENABLED
 
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED: {
 			queue_redraw();
@@ -739,6 +745,7 @@ void TabBar::set_tab_count(int p_count) {
 
 	ERR_FAIL_COND(p_count < 0);
 
+#ifdef ACCESSKIT_ENABLED
 	if (tabs.size() > p_count) {
 		for (int i = p_count; i < tabs.size(); i++) {
 			if (tabs[i].accessibility_item_element.is_valid()) {
@@ -747,6 +754,9 @@ void TabBar::set_tab_count(int p_count) {
 			}
 		}
 	}
+	queue_accessibility_update();
+#endif // ACCESSKIT_ENABLED
+
 	tabs.resize(p_count);
 
 	if (p_count == 0) {
@@ -777,7 +787,6 @@ void TabBar::set_tab_count(int p_count) {
 		}
 	}
 
-	queue_accessibility_update();
 	queue_redraw();
 	update_minimum_size();
 	notify_property_list_changed();
@@ -1205,7 +1214,9 @@ void TabBar::_update_cache(bool p_update_hover) {
 		tabs.write[i].text_buf->set_width(-1);
 		tabs.write[i].size_text = Math::ceil(tabs[i].text_buf->get_size().x);
 		tabs.write[i].size_cache = get_tab_width(i);
+#ifdef ACCESSKIT_ENABLED
 		tabs.write[i].accessibility_item_dirty = true;
+#endif // ACCESSKIT_ENABLED
 
 		tabs.write[i].truncated = max_width > 0 && tabs[i].size_cache > max_width;
 		if (tabs[i].truncated) {
@@ -1327,19 +1338,22 @@ void TabBar::clear_tabs() {
 		return;
 	}
 
+#ifdef ACCESSKIT_ENABLED
 	for (int i = 0; i < tabs.size(); i++) {
 		if (tabs[i].accessibility_item_element.is_valid()) {
 			DisplayServer::get_singleton()->accessibility_free_element(tabs.write[i].accessibility_item_element);
 			tabs.write[i].accessibility_item_element = RID();
 		}
 	}
+	queue_accessibility_update();
+#endif // ACCESSKIT_ENABLED
+
 	tabs.clear();
 	offset = 0;
 	max_drawn_tab = 0;
 	current = -1;
 	previous = -1;
 
-	queue_accessibility_update();
 	queue_redraw();
 	update_minimum_size();
 	notify_property_list_changed();
@@ -1348,10 +1362,14 @@ void TabBar::clear_tabs() {
 void TabBar::remove_tab(int p_idx) {
 	ERR_FAIL_INDEX(p_idx, tabs.size());
 
+#ifdef ACCESSKIT_ENABLED
 	if (tabs[p_idx].accessibility_item_element.is_valid()) {
 		DisplayServer::get_singleton()->accessibility_free_element(tabs.write[p_idx].accessibility_item_element);
 		tabs.write[p_idx].accessibility_item_element = RID();
 	}
+	queue_accessibility_update();
+#endif // ACCESSKIT_ENABLED
+
 	tabs.remove_at(p_idx);
 
 	bool is_tab_changing = current == p_idx;
@@ -1401,7 +1419,6 @@ void TabBar::remove_tab(int p_idx) {
 		}
 	}
 
-	queue_accessibility_update();
 	queue_redraw();
 	update_minimum_size();
 	notify_property_list_changed();
@@ -1567,8 +1584,10 @@ void TabBar::_handle_drop_data(const String &p_type, const Point2 &p_point, cons
 
 void TabBar::_move_tab_from(TabBar *p_from_tabbar, int p_from_index, int p_to_index) {
 	Tab moving_tab = p_from_tabbar->tabs[p_from_index];
+#ifdef ACCESSKIT_ENABLED
 	moving_tab.accessibility_item_element = RID();
 	moving_tab.accessibility_item_dirty = true;
+#endif // ACCESSKIT_ENABLED
 	p_from_tabbar->remove_tab(p_from_index);
 	tabs.insert(p_to_index, moving_tab);
 
@@ -1689,7 +1708,9 @@ void TabBar::move_tab(int p_from, int p_to) {
 	ERR_FAIL_INDEX(p_to, tabs.size());
 
 	Tab tab_from = tabs[p_from];
+#ifdef ACCESSKIT_ENABLED
 	tab_from.accessibility_item_dirty = true;
+#endif // ACCESSKIT_ENABLED
 
 	tabs.remove_at(p_from);
 	tabs.insert(p_to, tab_from);

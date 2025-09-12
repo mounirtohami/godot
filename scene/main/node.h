@@ -445,6 +445,9 @@ protected:
 	void _call_unhandled_input(const Ref<InputEvent> &p_event);
 	void _call_unhandled_key_input(const Ref<InputEvent> &p_event);
 
+	bool _is_accessibility_enabled() const;
+	bool _is_accessibility_supported() const;
+
 	void _validate_property(PropertyInfo &p_property) const;
 	virtual String _to_string() override;
 
@@ -465,7 +468,9 @@ protected:
 	GDVIRTUAL0(_enter_tree)
 	GDVIRTUAL0(_exit_tree)
 	GDVIRTUAL0(_ready)
+#ifdef ACCESSKIT_ENABLED
 	GDVIRTUAL0RC(Vector<String>, _get_accessibility_configuration_warnings)
+#endif // ACCESSKIT_ENABLED
 	GDVIRTUAL0RC(Vector<String>, _get_configuration_warnings)
 
 	GDVIRTUAL1(_input, Ref<InputEvent>)
@@ -749,11 +754,12 @@ public:
 
 	void queue_accessibility_update();
 
+#ifdef ACCESSKIT_ENABLED
+	virtual bool accessibility_override_tree_hierarchy() const { return false; }
 	virtual RID get_accessibility_element() const;
 	virtual RID get_focused_accessibility_element() const;
-	virtual bool accessibility_override_tree_hierarchy() const { return false; }
-
 	virtual PackedStringArray get_accessibility_configuration_warnings() const;
+#endif // ACCESSKIT_ENABLED
 
 	Node *duplicate(int p_flags = DUPLICATE_GROUPS | DUPLICATE_SIGNALS | DUPLICATE_SCRIPTS) const;
 #ifdef TOOLS_ENABLED

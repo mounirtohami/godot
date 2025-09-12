@@ -137,7 +137,9 @@ protected:
 	static void _bind_methods();
 
 public:
+#ifdef ACCESSKIT_ENABLED
 	virtual bool accessibility_override_tree_hierarchy() const override { return true; }
+#endif // ACCESSKIT_ENABLED
 
 	TabBar *get_tab_bar() const;
 

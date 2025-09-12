@@ -254,6 +254,7 @@ private:
 
 		// Accessibility.
 
+#ifdef ACCESSKIT_ENABLED
 		String accessibility_name;
 		String accessibility_description;
 		DisplayServer::AccessibilityLiveMode accessibility_live = DisplayServer::AccessibilityLiveMode::LIVE_OFF;
@@ -262,6 +263,7 @@ private:
 		TypedArray<NodePath> accessibility_described_by_nodes;
 		TypedArray<NodePath> accessibility_labeled_by_nodes;
 		TypedArray<NodePath> accessibility_flow_to_nodes;
+#endif // ACCESSKIT_ENABLED
 
 		// Theming.
 
@@ -390,11 +392,13 @@ protected:
 	void _notification(int p_notification);
 	static void _bind_methods();
 
+#ifdef ACCESSKIT_ENABLED
 	void _accessibility_action_foucs(const Variant &p_data);
 	void _accessibility_action_blur(const Variant &p_data);
 	void _accessibility_action_show_tooltip(const Variant &p_data);
 	void _accessibility_action_hide_tooltip(const Variant &p_data);
 	void _accessibility_action_scroll_into_view(const Variant &p_data);
+#endif // ACCESSKIT_ENABLED
 
 #ifndef DISABLE_DEPRECATED
 	bool _has_focus_bind_compat_110250() const;
@@ -472,7 +476,9 @@ public:
 	static void set_root_layout_direction(int p_root_dir);
 
 	PackedStringArray get_configuration_warnings() const override;
+#ifdef ACCESSKIT_ENABLED
 	PackedStringArray get_accessibility_configuration_warnings() const override;
+#endif // ACCESSKIT_ENABLED
 #ifdef TOOLS_ENABLED
 	virtual void get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const override;
 #endif //TOOLS_ENABLED
@@ -592,9 +598,12 @@ public:
 	virtual void drop_data(const Point2 &p_point, const Variant &p_data);
 	void set_drag_preview(Control *p_control);
 	void force_drag(const Variant &p_data, Control *p_control);
+	bool is_drag_successful() const;
+
+#ifdef ACCESSKIT_ENABLED
 	void accessibility_drag();
 	void accessibility_drop();
-	bool is_drag_successful() const;
+#endif // ACCESSKIT_ENABLED
 
 	// Focus.
 
@@ -622,15 +631,16 @@ public:
 
 	// Accessibility.
 
-	virtual String get_accessibility_container_name(const Node *p_node) const;
-
 	void set_accessibility_name(const String &p_name);
 	String get_accessibility_name() const;
+
+#ifdef ACCESSKIT_ENABLED
+	void set_accessibility_live(DisplayServer::AccessibilityLiveMode p_mode);
+	virtual String get_accessibility_container_name(const Node *p_node) const;
 
 	void set_accessibility_description(const String &p_description);
 	String get_accessibility_description() const;
 
-	void set_accessibility_live(DisplayServer::AccessibilityLiveMode p_mode);
 	_FORCE_INLINE_ DisplayServer::AccessibilityLiveMode get_accessibility_live() const { return data.accessibility_live; }
 
 	void set_accessibility_controls_nodes(const TypedArray<NodePath> &p_node_path);
@@ -644,6 +654,7 @@ public:
 
 	void set_accessibility_flow_to_nodes(const TypedArray<NodePath> &p_node_path);
 	_FORCE_INLINE_ TypedArray<NodePath> get_accessibility_flow_to_nodes() const { return data.accessibility_flow_to_nodes; }
+#endif // ACCESSKIT_ENABLED
 
 	// Rendering.
 
@@ -742,7 +753,9 @@ public:
 	virtual String get_tooltip(const Point2 &p_pos) const;
 	virtual Control *make_custom_tooltip(const String &p_text) const;
 
+#ifdef ACCESSKIT_ENABLED
 	virtual String accessibility_get_contextual_info() const;
+#endif // ACCESSKIT_ENABLED
 
 	Control();
 	~Control();
