@@ -265,9 +265,19 @@ public:
 			elem_ptr++;
 			return *this;
 		}
+		_FORCE_INLINE_ Iterator operator++(int) {
+			Iterator tmp(*this);
+			elem_ptr++;
+			return tmp;
+		}
 		_FORCE_INLINE_ Iterator &operator--() {
 			elem_ptr--;
 			return *this;
+		}
+		_FORCE_INLINE_ Iterator operator--(int) {
+			Iterator tmp(*this);
+			elem_ptr--;
+			return tmp;
 		}
 
 		_FORCE_INLINE_ bool operator==(const Iterator &b) const { return elem_ptr == b.elem_ptr; }
@@ -290,9 +300,19 @@ public:
 			elem_ptr++;
 			return *this;
 		}
+		_FORCE_INLINE_ ConstIterator operator++(int) {
+			ConstIterator tmp(*this);
+			elem_ptr++;
+			return tmp;
+		}
 		_FORCE_INLINE_ ConstIterator &operator--() {
 			elem_ptr--;
 			return *this;
+		}
+		_FORCE_INLINE_ ConstIterator operator--(int) {
+			ConstIterator tmp(*this);
+			elem_ptr--;
+			return tmp;
 		}
 
 		_FORCE_INLINE_ bool operator==(const ConstIterator &b) const { return elem_ptr == b.elem_ptr; }

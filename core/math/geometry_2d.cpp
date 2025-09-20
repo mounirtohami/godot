@@ -44,9 +44,10 @@ void Geometry2D::merge_many_polygons(const Vector<Vector<Vector2>> &p_polygons, 
 	PathsD subjects;
 	for (const Vector<Vector2> &polygon : p_polygons) {
 		PathD path(polygon.size());
-		for (int i = 0; i < polygon.size(); i++) {
-			const Vector2 &point = polygon[i];
-			path[i] = PointD(point.x, point.y);
+
+		PathD::iterator itr = path.begin();
+		for (const Point2 &point : polygon) {
+			*itr++ = PointD(point.x, point.y);
 		}
 		subjects.push_back(path);
 	}
@@ -56,13 +57,13 @@ void Geometry2D::merge_many_polygons(const Vector<Vector<Vector2>> &p_polygons, 
 
 	r_out_polygons.clear();
 	r_out_holes.clear();
-	for (PathsD::size_type i = 0; i < solution.size(); ++i) {
-		PathD &path = solution[i];
-
+	for (Path<double> &path : solution) {
 		Vector<Point2> output_polygon;
 		output_polygon.resize(path.size());
-		for (PathsD::size_type j = 0; j < path.size(); ++j) {
-			output_polygon.set(j, Vector2(static_cast<real_t>(path[j].x), static_cast<real_t>(path[j].y)));
+
+		Vector<Point2>::Iterator poly_itr = output_polygon.begin();
+		for (const Point<double> &point : path) {
+			*poly_itr++ = Vector2(static_cast<real_t>(point.x), static_cast<real_t>(point.y));
 		}
 		if (IsPositive(path)) {
 			r_out_polygons.push_back(output_polygon);
@@ -79,8 +80,9 @@ Vector<Vector<Vector2>> Geometry2D::decompose_many_polygons_in_convex(const Vect
 	for (const Vector<Vector2> &polygon : p_polygons) {
 		TPPLPoly inp;
 		inp.Init(polygon.size());
-		for (int i = 0; i < polygon.size(); i++) {
-			inp.GetPoint(i) = polygon[i];
+		int idx = 0;
+		for (const Point2 &point : polygon) {
+			inp.GetPoint(idx++) = point;
 		}
 		inp.SetOrientation(TPPL_ORIENTATION_CCW);
 		in_poly.push_back(inp);
@@ -88,8 +90,9 @@ Vector<Vector<Vector2>> Geometry2D::decompose_many_polygons_in_convex(const Vect
 	for (const Vector<Vector2> &polygon : p_holes) {
 		TPPLPoly inp;
 		inp.Init(polygon.size());
-		for (int i = 0; i < polygon.size(); i++) {
-			inp.GetPoint(i) = polygon[i];
+		int idx = 0;
+		for (const Point2 &point : polygon) {
+			inp.GetPoint(idx++) = point;
 		}
 		inp.SetOrientation(TPPL_ORIENTATION_CW);
 		inp.SetHole(true);
@@ -104,13 +107,14 @@ Vector<Vector<Vector2>> Geometry2D::decompose_many_polygons_in_convex(const Vect
 	decomp.resize(out_poly.size());
 	int idx = 0;
 	for (TPPLPoly &tp : out_poly) {
-		decomp.write[idx].resize(tp.GetNumPoints());
+		const long num_points = tp.GetNumPoints();
+		Vector<Vector2> &poly = decomp.write[idx++];
+		poly.resize(num_points);
 
-		for (int64_t i = 0; i < tp.GetNumPoints(); i++) {
-			decomp.write[idx].write[i] = tp.GetPoint(i);
+		Vector<Point2>::Iterator point_itr = poly.begin();
+		for (int64_t i = 0; i < num_points; i++) {
+			*point_itr++ = tp.GetPoint(i);
 		}
-
-		idx++;
 	}
 
 	return decomp;
@@ -143,17 +147,19 @@ void Geometry2D::make_atlas(const Vector<Size2i> &p_rects, Vector<Point2i> &r_re
 	// 256x8192 atlas (won't work anywhere).
 
 	ERR_FAIL_COND(p_rects.is_empty());
-	for (int i = 0; i < p_rects.size(); i++) {
-		ERR_FAIL_COND(p_rects[i].width <= 0);
-		ERR_FAIL_COND(p_rects[i].height <= 0);
-	}
 
 	Vector<_AtlasWorkRect> wrects;
 	wrects.resize(p_rects.size());
-	for (int i = 0; i < p_rects.size(); i++) {
-		wrects.write[i].s = p_rects[i];
-		wrects.write[i].idx = i;
+
+	int idx = 0;
+	Vector<Size2i>::ConstIterator rect = p_rects.begin();
+	for (_AtlasWorkRect &wrect : wrects) {
+		ERR_FAIL_COND(rect->width <= 0);
+		ERR_FAIL_COND(rect->height <= 0);
+		wrect.s = *rect;
+		wrect.idx = idx++;
 	}
+
 	wrects.sort();
 	int widest = wrects[0].s.width;
 
@@ -161,42 +167,40 @@ void Geometry2D::make_atlas(const Vector<Size2i> &p_rects, Vector<Point2i> &r_re
 
 	for (int i = 0; i <= 12; i++) {
 		int w = 1 << i;
-		int max_h = 0;
-		int max_w = 0;
 		if (w < widest) {
 			continue;
 		}
 
+		int max_h = 0;
+		int max_w = 0;
+
 		Vector<int> hmax;
-		hmax.resize(w);
-		for (int j = 0; j < w; j++) {
-			hmax.write[j] = 0;
-		}
+		hmax.resize_initialized(w);
 
 		// Place them.
 		int ofs = 0;
 		int limit_h = 0;
-		for (int j = 0; j < wrects.size(); j++) {
-			if (ofs + wrects[j].s.width > w) {
+		for (_AtlasWorkRect &wrect : wrects) {
+			if (ofs + wrect.s.width > w) {
 				ofs = 0;
 			}
 
 			int from_y = 0;
-			for (int k = 0; k < wrects[j].s.width; k++) {
+			for (int k = 0; k < wrect.s.width; k++) {
 				if (hmax[ofs + k] > from_y) {
 					from_y = hmax[ofs + k];
 				}
 			}
 
-			wrects.write[j].p.x = ofs;
-			wrects.write[j].p.y = from_y;
-			int end_h = from_y + wrects[j].s.height;
-			int end_w = ofs + wrects[j].s.width;
+			wrect.p.x = ofs;
+			wrect.p.y = from_y;
+			int end_h = from_y + wrect.s.height;
+			int end_w = ofs + wrect.s.width;
 			if (ofs == 0) {
 				limit_h = end_h;
 			}
 
-			for (int k = 0; k < wrects[j].s.width; k++) {
+			for (int k = 0; k < wrect.s.width; k++) {
 				hmax.write[ofs + k] = end_h;
 			}
 
@@ -209,7 +213,7 @@ void Geometry2D::make_atlas(const Vector<Size2i> &p_rects, Vector<Point2i> &r_re
 			}
 
 			if (ofs == 0 || end_h > limit_h) { // While h limit not reached, keep stacking.
-				ofs += wrects[j].s.width;
+				ofs += wrect.s.width;
 			}
 		}
 
@@ -225,20 +229,22 @@ void Geometry2D::make_atlas(const Vector<Size2i> &p_rects, Vector<Point2i> &r_re
 	int best = -1;
 	real_t best_aspect = 1e20;
 
-	for (int i = 0; i < results.size(); i++) {
-		real_t h = next_power_of_2((uint32_t)results[i].max_h);
-		real_t w = next_power_of_2((uint32_t)results[i].max_w);
+	idx = 0;
+	for (const _AtlasWorkRectResult &result : results) {
+		real_t h = next_power_of_2((uint32_t)result.max_h);
+		real_t w = next_power_of_2((uint32_t)result.max_w);
 		real_t aspect = h > w ? h / w : w / h;
 		if (aspect < best_aspect) {
-			best = i;
+			best = idx;
 			best_aspect = aspect;
 		}
+		idx++;
 	}
 
 	r_result.resize(p_rects.size());
 
-	for (int i = 0; i < p_rects.size(); i++) {
-		r_result.write[results[best].result[i].idx] = results[best].result[i].p;
+	for (const _AtlasWorkRect &wrect : results[best].result) {
+		r_result.write[wrect.idx] = wrect.p;
 	}
 
 	r_size = Size2(results[best].max_w, results[best].max_h);
@@ -265,12 +271,15 @@ Vector<Vector<Point2>> Geometry2D::_polypaths_do_operation(PolyBooleanOperation 
 	}
 
 	PathD path_a(p_polypath_a.size());
-	for (int i = 0; i != p_polypath_a.size(); ++i) {
-		path_a[i] = PointD(p_polypath_a[i].x, p_polypath_a[i].y);
+	PathD::iterator a_itr = path_a.begin();
+	for (const Point2 &point : p_polypath_a) {
+		*a_itr++ = PointD(point.x, point.y);
 	}
+
 	PathD path_b(p_polypath_b.size());
-	for (int i = 0; i != p_polypath_b.size(); ++i) {
-		path_b[i] = PointD(p_polypath_b[i].x, p_polypath_b[i].y);
+	PathD::iterator b_itr = path_b.begin();
+	for (const Point2 &point : p_polypath_b) {
+		*b_itr++ = PointD(point.x, point.y);
 	}
 
 	ClipperD clp(clipper_precision); // Scale points up internally to attain the desired precision.
@@ -292,14 +301,19 @@ Vector<Vector<Point2>> Geometry2D::_polypaths_do_operation(PolyBooleanOperation 
 	}
 
 	Vector<Vector<Point2>> polypaths;
-	for (PathsD::size_type i = 0; i < paths.size(); ++i) {
-		const PathD &path = paths[i];
+	polypaths.resize(paths.size());
 
-		Vector<Vector2> polypath;
-		for (PathsD::size_type j = 0; j < path.size(); ++j) {
-			polypath.push_back(Point2(static_cast<real_t>(path[j].x), static_cast<real_t>(path[j].y)));
+	Vector<Vector<Point2>>::Iterator polypaths_itr = polypaths.begin();
+	for (const PathD &path : paths) {
+		Vector<Point2> polypath;
+		polypath.resize(path.size());
+
+		Vector<Point2>::Iterator polypath_itr = polypath.begin();
+		for (const PointD &point : path) {
+			*polypath_itr++ = Point2(static_cast<real_t>(point.x), static_cast<real_t>(point.y));
 		}
-		polypaths.push_back(polypath);
+
+		*polypaths_itr++ = polypath;
 	}
 	return polypaths;
 }
@@ -341,26 +355,32 @@ Vector<Vector<Point2>> Geometry2D::_polypath_offset(const Vector<Point2> &p_poly
 			break;
 	}
 
-	PathD polypath(p_polypath.size());
-	for (int i = 0; i != p_polypath.size(); ++i) {
-		polypath[i] = PointD(p_polypath[i].x, p_polypath[i].y);
+	PathD path_d(p_polypath.size());
+	Path<double>::iterator itr = path_d.begin();
+	for (const Point2 &point : p_polypath) {
+		*itr++ = PointD(point.x, point.y);
 	}
 
 	// Inflate/deflate.
-	PathsD paths = InflatePaths({ polypath }, p_delta, jt, et, 2.0, clipper_precision, 0.25 * clipper_scale);
+	PathsD paths = InflatePaths({ path_d }, p_delta, jt, et, 2.0, clipper_precision, 0.25 * clipper_scale);
 	// Here the points are scaled up internally and
 	// the arc_tolerance is scaled accordingly
 	// to attain the desired precision.
 
 	Vector<Vector<Point2>> polypaths;
-	for (PathsD::size_type i = 0; i < paths.size(); ++i) {
-		const PathD &path = paths[i];
+	polypaths.resize(paths.size());
 
-		Vector<Vector2> polypath2;
-		for (PathsD::size_type j = 0; j < path.size(); ++j) {
-			polypath2.push_back(Point2(static_cast<real_t>(path[j].x), static_cast<real_t>(path[j].y)));
+	Vector<Vector<Point2>>::Iterator polypaths_itr = polypaths.begin();
+	for (const PathD &path : paths) {
+		Vector<Point2> polypath;
+		polypath.resize(path.size());
+
+		Vector<Point2>::Iterator polypath_itr = polypath.begin();
+		for (const PointD &point : path) {
+			*polypath_itr++ = Point2(static_cast<real_t>(point.x), static_cast<real_t>(point.y));
 		}
-		polypaths.push_back(polypath2);
+
+		*polypaths_itr++ = polypath;
 	}
 	return polypaths;
 }
@@ -376,13 +396,10 @@ Vector<Vector3i> Geometry2D::partial_pack_rects(const Vector<Vector2i> &p_sizes,
 	Vector<stbrp_rect> rects;
 	rects.resize(p_sizes.size());
 
-	for (int i = 0; i < p_sizes.size(); i++) {
-		rects.write[i].id = i;
-		rects.write[i].w = p_sizes[i].width;
-		rects.write[i].h = p_sizes[i].height;
-		rects.write[i].x = 0;
-		rects.write[i].y = 0;
-		rects.write[i].was_packed = 0;
+	int id = 0;
+	Vector<stbrp_rect>::Iterator rect_itr = rects.begin();
+	for (const Vector2i &size : p_sizes) {
+		*rect_itr++ = { id++, size.width, size.height, 0, 0, 0 };
 	}
 
 	stbrp_pack_rects(&context, rects.ptrw(), rects.size());
@@ -390,8 +407,9 @@ Vector<Vector3i> Geometry2D::partial_pack_rects(const Vector<Vector2i> &p_sizes,
 	Vector<Vector3i> ret;
 	ret.resize(p_sizes.size());
 
-	for (int i = 0; i < p_sizes.size(); i++) {
-		ret.write[rects[i].id] = Vector3i(rects[i].x, rects[i].y, rects[i].was_packed != 0 ? 1 : 0);
+	Vector<Vector3i>::Iterator ret_itr = ret.begin();
+	for (Vector<stbrp_rect>::Iterator I = rects.begin(), E = rects.end(); I != E; ++I) {
+		*ret_itr++ = Vector3i(I->x, I->y, I->was_packed != 0 ? 1 : 0);
 	}
 
 	return ret;
