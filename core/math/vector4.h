@@ -87,6 +87,10 @@ struct [[nodiscard]] Vector4 {
 		return Vector4(MAX(x, p_scalar), MAX(y, p_scalar), MAX(z, p_scalar), MAX(w, p_scalar));
 	}
 
+	_FORCE_INLINE_ static Vector4 splat(real_t &p_scalar) noexcept {
+		return Vector4(p_scalar, p_scalar, p_scalar, p_scalar);
+	}
+
 	_FORCE_INLINE_ real_t length_squared() const;
 	bool is_equal_approx(const Vector4 &p_vec4) const;
 	bool is_zero_approx() const;

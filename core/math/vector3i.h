@@ -93,6 +93,10 @@ struct [[nodiscard]] Vector3i {
 		return Vector3i(MAX(x, p_scalar), MAX(y, p_scalar), MAX(z, p_scalar));
 	}
 
+	_FORCE_INLINE_ static Vector3i splat(int32_t &p_scalar) noexcept {
+		return Vector3i(p_scalar, p_scalar, p_scalar);
+	}
+
 	_FORCE_INLINE_ int64_t length_squared() const;
 	_FORCE_INLINE_ double length() const;
 

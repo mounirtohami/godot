@@ -82,6 +82,10 @@ struct [[nodiscard]] Vector2 {
 		return x < y ? Vector2::AXIS_Y : Vector2::AXIS_X;
 	}
 
+	_FORCE_INLINE_ Vector2 static splat(real_t &p_scalar) noexcept {
+		return Vector2(p_scalar, p_scalar);
+	}
+
 	void normalize();
 	Vector2 normalized() const;
 	bool is_normalized() const;

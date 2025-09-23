@@ -106,6 +106,10 @@ struct [[nodiscard]] Vector3 {
 		return Vector3(MAX(x, p_scalar), MAX(y, p_scalar), MAX(z, p_scalar));
 	}
 
+	_FORCE_INLINE_ static Vector3 splat(real_t &p_scalar) noexcept {
+		return Vector3(p_scalar, p_scalar, p_scalar);
+	}
+
 	_FORCE_INLINE_ real_t length() const;
 	_FORCE_INLINE_ real_t length_squared() const;
 

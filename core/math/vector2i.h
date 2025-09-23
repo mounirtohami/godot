@@ -106,6 +106,10 @@ struct [[nodiscard]] Vector2i {
 		return (p_to - *this).length_squared();
 	}
 
+	_FORCE_INLINE_ static Vector2i splat(int32_t &p_scalar) noexcept {
+		return Vector2i(p_scalar, p_scalar);
+	}
+
 	constexpr Vector2i operator+(const Vector2i &p_v) const;
 	constexpr void operator+=(const Vector2i &p_v);
 	constexpr Vector2i operator-(const Vector2i &p_v) const;
