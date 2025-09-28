@@ -1481,12 +1481,9 @@ void EditorPropertyInteger::update_property() {
 void EditorPropertyInteger::setup(const EditorPropertyRangeHint &p_range_hint) {
 	spin->set_min(p_range_hint.min);
 	spin->set_max(p_range_hint.max);
-	spin->set_step(Math::round(p_range_hint.step));
-	if (p_range_hint.hide_control) {
-		spin->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-	} else {
-		spin->set_control_state(p_range_hint.prefer_slider ? EditorSpinSlider::CONTROL_STATE_PREFER_SLIDER : EditorSpinSlider::CONTROL_STATE_DEFAULT);
-	}
+	spin->set_step(p_range_hint.step);
+	spin->set_hide_control(p_range_hint.hide_control);
+	spin->set_integer_prefer_slider(p_range_hint.prefer_slider);
 	spin->set_allow_greater(p_range_hint.or_greater);
 	spin->set_allow_lesser(p_range_hint.or_less);
 	spin->set_suffix(p_range_hint.suffix);
@@ -1614,9 +1611,8 @@ void EditorPropertyFloat::setup(const EditorPropertyRangeHint &p_range_hint) {
 	spin->set_min(p_range_hint.min);
 	spin->set_max(p_range_hint.max);
 	spin->set_step(p_range_hint.step);
-	if (p_range_hint.hide_control) {
-		spin->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-	}
+	spin->set_hide_control(p_range_hint.hide_control);
+	spin->set_float_prefer_arrows(p_range_hint.prefer_arrows);
 	spin->set_exp_ratio(p_range_hint.exp_range);
 	spin->set_allow_greater(p_range_hint.or_greater);
 	spin->set_allow_lesser(p_range_hint.or_less);
@@ -1854,7 +1850,7 @@ EditorPropertyEasing::EditorPropertyEasing() {
 	spin->set_min(-100);
 	spin->set_max(100);
 	spin->set_step(0);
-	spin->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
+	spin->set_hide_control(true);
 	spin->set_allow_lesser(true);
 	spin->set_allow_greater(true);
 	spin->connect(SceneStringName(value_changed), callable_mp(this, &EditorPropertyEasing::_spin_value_changed));
@@ -1904,9 +1900,7 @@ void EditorPropertyRect2::setup(const EditorPropertyRangeHint &p_range_hint) {
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 		spin[i]->set_suffix(p_range_hint.suffix);
@@ -2094,9 +2088,7 @@ void EditorPropertyPlane::setup(const EditorPropertyRangeHint &p_range_hint) {
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 	}
@@ -2245,9 +2237,7 @@ void EditorPropertyQuaternion::setup(const EditorPropertyRangeHint &p_range_hint
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 		// Quaternion is inherently unitless, however someone may want to use it as
@@ -2392,9 +2382,7 @@ void EditorPropertyAABB::setup(const EditorPropertyRangeHint &p_range_hint) {
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 		spin[i]->set_suffix(p_range_hint.suffix);
@@ -2472,14 +2460,10 @@ void EditorPropertyTransform2D::setup(const EditorPropertyRangeHint &p_range_hin
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
-		spin[i]->set_allow_greater(true);
-		spin[i]->set_allow_lesser(true);
-		if (i % 3 == 2) {
-			spin[i]->set_suffix(p_range_hint.suffix);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
+		spin[i]->set_min(p_range_hint.min);
+		spin[i]->set_max(p_range_hint.max);
+		spin[i]->set_suffix(p_range_hint.suffix);
 	}
 }
 
@@ -2556,9 +2540,7 @@ void EditorPropertyBasis::setup(const EditorPropertyRangeHint &p_range_hint) {
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 		// Basis is inherently unitless, however someone may want to use it as
@@ -2647,9 +2629,7 @@ void EditorPropertyTransform3D::setup(const EditorPropertyRangeHint &p_range_hin
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
+		spin[i]->set_hide_control(p_range_hint.hide_control);
 		spin[i]->set_allow_greater(true);
 		spin[i]->set_allow_lesser(true);
 		if (i % 4 == 3) {
@@ -2746,11 +2726,8 @@ void EditorPropertyProjection::setup(const EditorPropertyRangeHint &p_range_hint
 		spin[i]->set_min(p_range_hint.min);
 		spin[i]->set_max(p_range_hint.max);
 		spin[i]->set_step(p_range_hint.step);
-		if (p_range_hint.hide_control) {
-			spin[i]->set_control_state(EditorSpinSlider::CONTROL_STATE_HIDE);
-		}
-		spin[i]->set_allow_greater(true);
-		spin[i]->set_allow_lesser(true);
+		spin[i]->set_hide_control(p_range_hint.hide_control);
+		spin[i]->set_min(p_range_hint.min);
 		if (i % 4 == 3) {
 			spin[i]->set_suffix(p_range_hint.suffix);
 		}
@@ -3693,6 +3670,8 @@ static EditorPropertyRangeHint _parse_range_hint(PropertyHint p_hint, const Stri
 				hint.or_less = true;
 			} else if (slice == "prefer_slider") {
 				hint.prefer_slider = true;
+			} else if (slice == "prefer_arrows") {
+				hint.prefer_arrows = true;
 			} else if (slice == "hide_control") {
 				hint.hide_control = true;
 #ifndef DISABLE_DEPRECATED
