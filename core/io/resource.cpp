@@ -38,7 +38,7 @@
 #include "scene/main/node.h" //only so casting works
 
 void Resource::emit_changed() {
-	if (emit_changed_state != EMIT_CHANGED_UNBLOCKED) {
+	if (is_emit_changed_blocked()) {
 		emit_changed_state = EMIT_CHANGED_BLOCKED_PENDING_EMIT;
 		return;
 	}
@@ -50,18 +50,22 @@ void Resource::emit_changed() {
 	emit_signal(CoreStringName(changed));
 }
 
-void Resource::_block_emit_changed() {
+void Resource::block_emit_changed() {
 	if (emit_changed_state == EMIT_CHANGED_UNBLOCKED) {
 		emit_changed_state = EMIT_CHANGED_BLOCKED;
 	}
 }
 
-void Resource::_unblock_emit_changed() {
+void Resource::unblock_emit_changed() {
 	bool emit = (emit_changed_state == EMIT_CHANGED_BLOCKED_PENDING_EMIT);
 	emit_changed_state = EMIT_CHANGED_UNBLOCKED;
 	if (emit) {
 		emit_changed();
 	}
+}
+
+bool Resource::is_emit_changed_blocked() const {
+	return emit_changed_state != EMIT_CHANGED_UNBLOCKED;
 }
 
 void Resource::_resource_path_changed() {
@@ -228,7 +232,7 @@ Error Resource::copy_from(const Ref<Resource> &p_resource) {
 		return ERR_INVALID_PARAMETER;
 	}
 
-	_block_emit_changed();
+	block_emit_changed();
 
 	reset_state(); // May want to reset state.
 
@@ -246,7 +250,7 @@ Error Resource::copy_from(const Ref<Resource> &p_resource) {
 		set(E.name, p_resource->get(E.name));
 	}
 
-	_unblock_emit_changed();
+	unblock_emit_changed();
 
 	return OK;
 }
@@ -738,6 +742,9 @@ void Resource::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_scene_unique_id"), &Resource::get_scene_unique_id);
 
 	ClassDB::bind_method(D_METHOD("emit_changed"), &Resource::emit_changed);
+	ClassDB::bind_method(D_METHOD("block_changed_signal"), &Resource::block_emit_changed);
+	ClassDB::bind_method(D_METHOD("unblock_changed_signal"), &Resource::unblock_emit_changed);
+	ClassDB::bind_method(D_METHOD("is_changed_signal_blocked"), &Resource::is_emit_changed_blocked);
 
 	ClassDB::bind_method(D_METHOD("duplicate", "deep"), &Resource::duplicate, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("duplicate_deep", "deep_subresources_mode"), &Resource::_duplicate_deep_bind, DEFVAL(RESOURCE_DEEP_DUPLICATE_INTERNAL));

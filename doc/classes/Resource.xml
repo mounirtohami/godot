@@ -48,6 +48,12 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="block_changed_signal">
+			<return type="void" />
+			<description>
+				Blocks the emission of the [signal changed] signal.
+			</description>
+		</method>
 		<method name="duplicate" qualifiers="const">
 			<return type="Resource" />
 			<param index="0" name="deep" type="bool" default="false" />
@@ -116,6 +122,12 @@
 				Returns [code]true[/code] if the resource is saved on disk as a part of another resource's file.
 			</description>
 		</method>
+		<method name="is_changed_signal_blocked" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the [signal changed] signal is blocked.
+			</description>
+		</method>
 		<method name="reset_state">
 			<return type="void" />
 			<description>
@@ -149,6 +161,12 @@
 			<param index="0" name="path" type="String" />
 			<description>
 				Sets the [member resource_path] to [param path], potentially overriding an existing cache entry for this path. Further attempts to load an overridden resource by path will instead return this resource.
+			</description>
+		</method>
+		<method name="unblock_changed_signal">
+			<return type="void" />
+			<description>
+				Unblocks the emission of the [signal changed] signal and emits changed if it was changed while blocked.
 			</description>
 		</method>
 	</methods>

@@ -107,9 +107,6 @@ protected:
 	virtual void _resource_path_changed();
 	static void _bind_methods();
 
-	void _block_emit_changed();
-	void _unblock_emit_changed();
-
 	void _set_path(const String &p_path);
 	void _take_over_path(const String &p_path);
 
@@ -135,6 +132,9 @@ public:
 	virtual void reload_from_file();
 
 	void emit_changed();
+	void block_emit_changed();
+	void unblock_emit_changed();
+	bool is_emit_changed_blocked() const;
 	void connect_changed(const Callable &p_callable, uint32_t p_flags = 0);
 	void disconnect_changed(const Callable &p_callable);
 
