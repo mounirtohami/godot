@@ -405,7 +405,7 @@ void EditorDebuggerNode::_notification(int p_what) {
 					}
 				}
 
-				EditorRunBar::get_singleton()->get_pause_button()->set_disabled(false);
+				EditorRunBar::get_singleton()->get_pause_button()->set_visible(true);
 				// Switch to remote tree view if so desired.
 				remote_scene_tree->set_new_session();
 				auto_switch_remote_scene_tree = EDITOR_GET("debugger/auto_switch_to_remote_scene_tree");
@@ -476,7 +476,7 @@ void EditorDebuggerNode::_debugger_stopped(int p_id) {
 	});
 	if (!found) {
 		EditorRunBar::get_singleton()->get_pause_button()->set_pressed(false);
-		EditorRunBar::get_singleton()->get_pause_button()->set_disabled(true);
+		EditorRunBar::get_singleton()->get_pause_button()->set_visible(false);
 		SceneTreeDock *dock = SceneTreeDock::get_singleton();
 		if (dock->is_inside_tree()) {
 			dock->hide_remote_tree();
