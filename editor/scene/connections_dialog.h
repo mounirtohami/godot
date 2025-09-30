@@ -31,6 +31,7 @@
 #pragma once
 
 #include "core/variant/callable_bind.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
 #include "scene/gui/tree.h"
 
@@ -48,7 +49,7 @@ class SceneTreeEditor;
 class SpinBox;
 
 class ConnectDialog : public ConfirmationDialog {
-	GDCLASS(ConnectDialog, ConfirmationDialog);
+	GDCLASS(ConnectDialog, ConfirmationDialog)
 
 public:
 	struct ConnectionData {
@@ -206,7 +207,7 @@ class ConnectionsDockTree : public Tree {
 };
 
 class ConnectionsDock : public VBoxContainer {
-	GDCLASS(ConnectionsDock, VBoxContainer);
+	GDCLASS(ConnectionsDock, VBoxContainer)
 
 	enum TreeItemType {
 		TREE_ITEM_TYPE_ROOT,

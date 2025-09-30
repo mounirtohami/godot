@@ -32,8 +32,10 @@
 
 #include "core/config/project_settings.h"
 #include "core/input/input.h"
+#include "core/io/resource_loader.h"
 #include "core/os/keyboard.h"
 #include "editor/animation/animation_player_editor_plugin.h"
+#include "editor/animation/animation_track_editor.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/docks/scene_tree_dock.h"
 #include "editor/editor_main_screen.h"
@@ -58,14 +60,19 @@
 #include "scene/gui/base_button.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
+#include "scene/gui/menu_button.h"
 #include "scene/gui/separator.h"
+#include "scene/gui/spin_box.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/subviewport_container.h"
+#include "scene/gui/texture_button.h"
 #include "scene/gui/view_panner.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/window.h"
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/style_box_texture.h"
+#include "servers/audio/audio_stream.h"
 
 #define DRAG_THRESHOLD (8 * EDSCALE)
 constexpr real_t SCALE_HANDLE_DISTANCE = 25;

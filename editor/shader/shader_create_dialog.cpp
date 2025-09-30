@@ -35,6 +35,8 @@
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/gui/editor_validation_panel.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/label.h"
 #include "scene/resources/shader_include.h"
 #include "scene/resources/visual_shader.h"
 #include "servers/rendering/shader_types.h"

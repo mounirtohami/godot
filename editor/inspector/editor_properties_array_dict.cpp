@@ -43,6 +43,7 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
 
 #ifdef _3D_DISABLED

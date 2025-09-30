@@ -1243,18 +1243,6 @@ void FileDialog::set_filename_filter(const String &p_filename_filter) {
 	invalidate();
 }
 
-Vector<String> FileDialog::get_filters() const {
-	return filters;
-}
-
-String FileDialog::get_filename_filter() const {
-	return file_name_filter;
-}
-
-String FileDialog::get_current_dir() const {
-	return full_dir;
-}
-
 String FileDialog::get_current_file() const {
 	return filename_edit->get_text();
 }
@@ -1311,16 +1299,8 @@ void FileDialog::set_root_subfolder(const String &p_root) {
 	update_dir();
 }
 
-String FileDialog::get_root_subfolder() const {
-	return root_subfolder;
-}
-
 void FileDialog::set_mode_overrides_title(bool p_override) {
 	mode_overrides_title = p_override;
-}
-
-bool FileDialog::is_mode_overriding_title() const {
-	return mode_overrides_title;
 }
 
 void FileDialog::set_file_mode(FileMode p_mode) {
@@ -1373,10 +1353,6 @@ void FileDialog::set_file_mode(FileMode p_mode) {
 	get_ok_button()->set_disabled(_is_open_should_be_disabled());
 }
 
-FileDialog::FileMode FileDialog::get_file_mode() const {
-	return mode;
-}
-
 void FileDialog::set_display_mode(DisplayMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 2);
 	if (display_mode == p_mode) {
@@ -1392,10 +1368,6 @@ void FileDialog::set_display_mode(DisplayMode p_mode) {
 		list_mode_button->set_pressed(true);
 	}
 	invalidate();
-}
-
-FileDialog::DisplayMode FileDialog::get_display_mode() const {
-	return display_mode;
 }
 
 void FileDialog::set_favorite_list(const PackedStringArray &p_favorites) {
@@ -1534,10 +1506,6 @@ void FileDialog::_setup_button(Button *p_button, const Ref<Texture2D> &p_icon) {
 void FileDialog::_update_make_dir_visible() {
 	can_create_folders = customization_flags[CUSTOMIZATION_CREATE_FOLDER] && mode != FILE_MODE_OPEN_FILE && mode != FILE_MODE_OPEN_FILES;
 	make_dir_container->set_visible(can_create_folders);
-}
-
-FileDialog::Access FileDialog::get_access() const {
-	return access;
 }
 
 void FileDialog::_make_dir_confirm() {
@@ -1890,10 +1858,6 @@ void FileDialog::_update_option_controls() {
 	}
 }
 
-Dictionary FileDialog::get_selected_options() const {
-	return selected_options;
-}
-
 String FileDialog::get_option_name(int p_option) const {
 	ERR_FAIL_INDEX_V(p_option, options.size(), String());
 	return options[p_option].name;
@@ -2166,14 +2130,6 @@ void FileDialog::set_show_filename_filter(bool p_show) {
 	show_filename_filter = p_show;
 	update_filename_filter_gui();
 	invalidate();
-}
-
-bool FileDialog::get_show_filename_filter() const {
-	return show_filename_filter;
-}
-
-bool FileDialog::is_showing_hidden_files() const {
-	return show_hidden_files;
 }
 
 void FileDialog::set_default_show_hidden_files(bool p_show) {

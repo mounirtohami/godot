@@ -33,7 +33,7 @@
 #include "scene/gui/container.h"
 
 class CenterContainer : public Container {
-	GDCLASS(CenterContainer, Container);
+	GDCLASS(CenterContainer, Container)
 
 	bool use_top_left = false;
 
@@ -43,10 +43,10 @@ protected:
 
 public:
 	void set_use_top_left(bool p_enable);
-	bool is_using_top_left() const;
+	_FORCE_INLINE_ bool is_using_top_left() const { return use_top_left; }
 
 	virtual Size2 get_minimum_size() const override;
 
-	virtual Vector<int> get_allowed_size_flags_horizontal() const override;
-	virtual Vector<int> get_allowed_size_flags_vertical() const override;
+	virtual Vector<int> get_allowed_size_flags_horizontal() const override { return Vector<int>(); }
+	virtual Vector<int> get_allowed_size_flags_vertical() const override { return Vector<int>(); }
 };

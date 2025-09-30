@@ -66,6 +66,7 @@
 #include "editor/shader/text_shader_editor.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
+#include "scene/gui/label.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"

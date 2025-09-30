@@ -54,16 +54,21 @@
 #include "main/main.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/flow_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/option_button.h"
+#include "scene/gui/panel.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/rich_text_label.h"
 #include "scene/gui/separator.h"
 #include "scene/main/window.h"
 #include "scene/theme/theme_db.h"
 #include "servers/display/display_server.h"
+
+#ifndef NAVIGATION_3D_DISABLED
 #include "servers/navigation_3d/navigation_server_3d.h"
+#endif // NAVIGATION_3D_DISABLED
 
 #ifndef PHYSICS_2D_DISABLED
 #include "servers/physics_2d/physics_server_2d.h"
@@ -1292,7 +1297,9 @@ ProjectManager::ProjectManager() {
 #ifndef PHYSICS_3D_DISABLED
 	PhysicsServer3D::get_singleton()->set_active(false);
 #endif // PHYSICS_3D_DISABLED
+#ifndef PHYSICS_2D_DISABLED
 	PhysicsServer2D::get_singleton()->set_active(false);
+#endif // PHYSICS_2D_DISABLED
 
 	// Initialize settings.
 	{

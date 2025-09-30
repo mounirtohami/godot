@@ -778,10 +778,6 @@ void MenuBar::set_switch_on_hover(bool p_enabled) {
 	switch_on_hover = p_enabled;
 }
 
-bool MenuBar::is_switch_on_hover() {
-	return switch_on_hover;
-}
-
 void MenuBar::set_disable_shortcuts(bool p_disabled) {
 	disable_shortcuts = p_disabled;
 }
@@ -795,10 +791,6 @@ void MenuBar::set_text_direction(Control::TextDirection p_text_direction) {
 	}
 }
 
-Control::TextDirection MenuBar::get_text_direction() const {
-	return text_direction;
-}
-
 void MenuBar::set_language(const String &p_language) {
 	if (language != p_language) {
 		language = p_language;
@@ -807,19 +799,11 @@ void MenuBar::set_language(const String &p_language) {
 	}
 }
 
-String MenuBar::get_language() const {
-	return language;
-}
-
 void MenuBar::set_flat(bool p_enabled) {
 	if (flat != p_enabled) {
 		flat = p_enabled;
 		queue_redraw();
 	}
-}
-
-bool MenuBar::is_flat() const {
-	return flat;
 }
 
 void MenuBar::set_start_index(int p_index) {
@@ -832,10 +816,6 @@ void MenuBar::set_start_index(int p_index) {
 	}
 }
 
-int MenuBar::get_start_index() const {
-	return start_index;
-}
-
 void MenuBar::set_prefer_global_menu(bool p_enabled) {
 	if (prefer_native != p_enabled) {
 		prefer_native = p_enabled;
@@ -845,10 +825,6 @@ void MenuBar::set_prefer_global_menu(bool p_enabled) {
 			unbind_global_menu();
 		}
 	}
-}
-
-bool MenuBar::is_prefer_global_menu() const {
-	return prefer_native;
 }
 
 Size2 MenuBar::get_minimum_size() const {

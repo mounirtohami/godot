@@ -1241,6 +1241,10 @@ void ColorPicker::set_color_mode(ColorModeType p_mode) {
 	_update_color();
 }
 
+void ColorPicker::set_deferred_mode(bool p_enabled) {
+	deferred_mode_enabled = p_enabled;
+}
+
 void ColorPicker::_update_text_value() {
 	if (text_is_constructor || !is_color_valid_hex(color)) {
 		String t = "Color" + color_to_string(color, edit_alpha && color.a < 1, true);

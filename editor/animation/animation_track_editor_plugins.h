@@ -33,7 +33,7 @@
 #include "editor/animation/animation_track_editor.h"
 
 class AnimationTrackEditBool : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditBool, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditBool, AnimationTrackEdit)
 	Ref<Texture2D> icon_checked;
 	Ref<Texture2D> icon_unchecked;
 
@@ -45,7 +45,7 @@ public:
 };
 
 class AnimationTrackEditColor : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditColor, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditColor, AnimationTrackEdit)
 
 public:
 	virtual int get_key_height() const override;
@@ -56,7 +56,7 @@ public:
 };
 
 class AnimationTrackEditAudio : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditAudio, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditAudio, AnimationTrackEdit)
 
 	ObjectID id;
 
@@ -74,7 +74,7 @@ public:
 };
 
 class AnimationTrackEditSpriteFrame : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditSpriteFrame, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditSpriteFrame, AnimationTrackEdit)
 
 	ObjectID id;
 	bool is_coords = false;
@@ -90,7 +90,7 @@ public:
 };
 
 class AnimationTrackEditSubAnim : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditSubAnim, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditSubAnim, AnimationTrackEdit)
 
 	ObjectID id;
 
@@ -104,7 +104,7 @@ public:
 };
 
 class AnimationTrackEditTypeAudio : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditTypeAudio, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditTypeAudio, AnimationTrackEdit)
 
 	void _preview_changed(ObjectID p_which);
 
@@ -132,7 +132,7 @@ public:
 };
 
 class AnimationTrackEditTypeAnimation : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditTypeAnimation, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditTypeAnimation, AnimationTrackEdit)
 
 	ObjectID id;
 
@@ -146,7 +146,7 @@ public:
 };
 
 class AnimationTrackEditVolumeDB : public AnimationTrackEdit {
-	GDCLASS(AnimationTrackEditVolumeDB, AnimationTrackEdit);
+	GDCLASS(AnimationTrackEditVolumeDB, AnimationTrackEdit)
 
 public:
 	virtual void draw_bg(int p_clip_left, int p_clip_right) override;
@@ -156,7 +156,7 @@ public:
 };
 
 class AnimationTrackEditDefaultPlugin : public AnimationTrackEditPlugin {
-	GDCLASS(AnimationTrackEditDefaultPlugin, AnimationTrackEditPlugin);
+	GDCLASS(AnimationTrackEditDefaultPlugin, AnimationTrackEditPlugin)
 
 public:
 	virtual AnimationTrackEdit *create_value_track_edit(Object *p_object, Variant::Type p_type, const String &p_property, PropertyHint p_hint, const String &p_hint_string, int p_usage) override;

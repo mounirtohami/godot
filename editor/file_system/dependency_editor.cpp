@@ -38,6 +38,8 @@
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/popup_menu.h"
 

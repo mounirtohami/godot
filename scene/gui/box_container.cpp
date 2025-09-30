@@ -304,19 +304,11 @@ void BoxContainer::set_alignment(AlignmentMode p_alignment) {
 	_resort();
 }
 
-BoxContainer::AlignmentMode BoxContainer::get_alignment() const {
-	return alignment;
-}
-
 void BoxContainer::set_vertical(bool p_vertical) {
 	ERR_FAIL_COND_MSG(is_fixed, "Can't change orientation of " + get_class() + ".");
 	vertical = p_vertical;
 	update_minimum_size();
 	_resort();
-}
-
-bool BoxContainer::is_vertical() const {
-	return vertical;
 }
 
 Control *BoxContainer::add_spacer(bool p_begin) {
@@ -359,10 +351,6 @@ Vector<int> BoxContainer::get_allowed_size_flags_vertical() const {
 	flags.append(SIZE_SHRINK_CENTER);
 	flags.append(SIZE_SHRINK_END);
 	return flags;
-}
-
-BoxContainer::BoxContainer(bool p_vertical) {
-	vertical = p_vertical;
 }
 
 void BoxContainer::_bind_methods() {

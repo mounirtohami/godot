@@ -30,15 +30,13 @@
 
 #pragma once
 
-#include "box_container.h"
-#include "scene/gui/button.h"
-#include "scene/gui/label.h"
-#include "scene/gui/panel.h"
-#include "scene/gui/popup.h"
-#include "scene/gui/texture_button.h"
 #include "scene/main/window.h"
 
+class HBoxContainer;
+class Button;
+class Label;
 class LineEdit;
+class Panel;
 
 class AcceptDialog : public Window {
 	GDCLASS(AcceptDialog, Window);
@@ -112,10 +110,10 @@ public:
 	void remove_button(Button *p_button);
 
 	void set_hide_on_ok(bool p_hide);
-	bool get_hide_on_ok() const;
+	_FORCE_INLINE_ bool get_hide_on_ok() const { return hide_on_ok; }
 
 	void set_close_on_escape(bool p_enable);
-	bool get_close_on_escape() const;
+	_FORCE_INLINE_ bool get_close_on_escape() const { return close_on_escape; }
 
 	void set_text(String p_text);
 	String get_text() const;
@@ -124,7 +122,7 @@ public:
 	bool has_autowrap();
 
 	void set_ok_button_text(String p_ok_button_text);
-	String get_ok_button_text() const;
+	_FORCE_INLINE_ String get_ok_button_text() const { return ok_text; }
 
 	AcceptDialog();
 	~AcceptDialog();
@@ -138,7 +136,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	Button *get_cancel_button();
+	_FORCE_INLINE_ Button *get_cancel_button() { return cancel; }
 
 	void set_cancel_button_text(String p_cancel_button_text);
 	String get_cancel_button_text() const;

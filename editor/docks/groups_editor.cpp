@@ -40,8 +40,11 @@
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/check_button.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/grid_container.h"
 #include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
+#include "scene/gui/tree.h"
 #include "scene/resources/packed_scene.h"
 
 static bool can_edit(Node *p_node, const String &p_group) {
@@ -120,7 +123,7 @@ void GroupsEditor::_load_scene_groups(Node *p_node) {
 	List<Node::GroupInfo> groups;
 	p_node->get_groups(&groups);
 
-	for (const GroupInfo &gi : groups) {
+	for (const Node::GroupInfo &gi : groups) {
 		if (!gi.persistent) {
 			continue;
 		}

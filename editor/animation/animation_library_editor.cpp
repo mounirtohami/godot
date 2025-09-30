@@ -30,6 +30,8 @@
 
 #include "animation_library_editor.h"
 
+#include "core/io/config_file.h"
+#include "core/io/resource_loader.h"
 #include "core/string/print_string.h"
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
@@ -39,10 +41,15 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/file_system/editor_paths.h"
 #include "editor/gui/editor_file_dialog.h"
+#include "editor/plugins/editor_plugin.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/animation/animation_mixer.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/tree.h"
 #include "scene/resources/packed_scene.h"
 
 void AnimationLibraryEditor::set_animation_mixer(Object *p_mixer) {

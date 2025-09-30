@@ -35,6 +35,7 @@
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/settings/editor_command_palette.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/button.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/split_container.h"
 #include "servers/display/display_server.h"

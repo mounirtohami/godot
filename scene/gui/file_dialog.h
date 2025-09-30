@@ -46,7 +46,7 @@ class VBoxContainer;
 class VSeparator;
 
 class FileDialog : public ConfirmationDialog {
-	GDCLASS(FileDialog, ConfirmationDialog);
+	GDCLASS(FileDialog, ConfirmationDialog)
 
 	inline static constexpr int MAX_RECENTS = 20;
 
@@ -385,15 +385,15 @@ public:
 	void clear_filters();
 	void add_filter(const String &p_filter, const String &p_description = "");
 	void set_filters(const Vector<String> &p_filters);
-	Vector<String> get_filters() const;
+	_FORCE_INLINE_ Vector<String> get_filters() const { return filters; }
 	void clear_filename_filter();
 	void set_filename_filter(const String &p_filename_filter);
-	String get_filename_filter() const;
+	_FORCE_INLINE_ String get_filename_filter() const { return file_name_filter; }
 
 	void set_enable_multiple_selection(bool p_enable);
 	Vector<String> get_selected_files() const;
 
-	String get_current_dir() const;
+	_FORCE_INLINE_ String get_current_dir() const { return full_dir; }
 	String get_current_file() const;
 	String get_current_path() const;
 	void set_current_dir(const String &p_dir);
@@ -412,22 +412,22 @@ public:
 	void set_option_count(int p_count);
 	int get_option_count() const;
 
-	Dictionary get_selected_options() const;
+	_FORCE_INLINE_ Dictionary get_selected_options() const { return selected_options; }
 
 	void set_root_subfolder(const String &p_root);
-	String get_root_subfolder() const;
+	_FORCE_INLINE_ String get_root_subfolder() const { return root_subfolder; }
 
 	void set_mode_overrides_title(bool p_override);
-	bool is_mode_overriding_title() const;
+	_FORCE_INLINE_ bool is_mode_overriding_title() const { return mode_overrides_title; }
 
 	void set_use_native_dialog(bool p_native);
 	bool get_use_native_dialog() const;
 
 	void set_file_mode(FileMode p_mode);
-	FileMode get_file_mode() const;
+	_FORCE_INLINE_ FileMode get_file_mode() const { return mode; }
 
 	void set_display_mode(DisplayMode p_mode);
-	DisplayMode get_display_mode() const;
+	_FORCE_INLINE_ DisplayMode get_display_mode() const { return display_mode; }
 
 	static void set_favorite_list(const PackedStringArray &p_favorites);
 	static PackedStringArray get_favorite_list();
@@ -442,12 +442,12 @@ public:
 	LineEdit *get_line_edit() { return filename_edit; }
 
 	void set_access(Access p_access);
-	Access get_access() const;
+	_FORCE_INLINE_ Access get_access() const { return access; }
 
 	void set_show_hidden_files(bool p_show);
-	bool is_showing_hidden_files() const;
+	_FORCE_INLINE_ bool is_showing_hidden_files() const { return show_hidden_files; }
 	void set_show_filename_filter(bool p_show);
-	bool get_show_filename_filter() const;
+	_FORCE_INLINE_ bool get_show_filename_filter() const { return show_filename_filter; }
 
 	static void set_default_show_hidden_files(bool p_show);
 	static void set_default_display_mode(DisplayMode p_mode);

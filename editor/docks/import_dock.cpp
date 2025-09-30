@@ -40,6 +40,7 @@
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
 #include "scene/gui/box_container.h"
+#include "scene/gui/label.h"
 
 class ImportDockParameters : public Object {
 	GDCLASS(ImportDockParameters, Object);

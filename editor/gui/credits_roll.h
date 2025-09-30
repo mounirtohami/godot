@@ -37,7 +37,7 @@ class VBoxContainer;
 class Font;
 
 class CreditsRoll : public Popup {
-	GDCLASS(CreditsRoll, Popup);
+	GDCLASS(CreditsRoll, Popup)
 
 	enum class LabelSize {
 		NORMAL,

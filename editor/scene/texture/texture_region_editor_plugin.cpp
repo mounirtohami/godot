@@ -41,8 +41,10 @@
 #ifndef _3D_DISABLED
 #include "scene/3d/sprite_3d.h"
 #endif // _3D_DISABLED
+#include "scene/gui/label.h"
 #include "scene/gui/nine_patch_rect.h"
 #include "scene/gui/option_button.h"
+#include "scene/gui/panel.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/spin_box.h"

@@ -585,10 +585,6 @@ void Button::set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior) {
 	}
 }
 
-TextServer::OverrunBehavior Button::get_text_overrun_behavior() const {
-	return overrun_behavior;
-}
-
 void Button::set_text(const String &p_text) {
 	const String translated_text = _get_translated_text(p_text);
 	if (text == p_text && xl_text == translated_text) {
@@ -603,10 +599,6 @@ void Button::set_text(const String &p_text) {
 	update_minimum_size();
 }
 
-String Button::get_text() const {
-	return text;
-}
-
 void Button::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 	if (autowrap_mode != p_mode) {
 		autowrap_mode = p_mode;
@@ -616,10 +608,6 @@ void Button::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 	}
 }
 
-TextServer::AutowrapMode Button::get_autowrap_mode() const {
-	return autowrap_mode;
-}
-
 void Button::set_autowrap_trim_flags(BitField<TextServer::LineBreakFlag> p_flags) {
 	if (autowrap_flags_trim != (p_flags & TextServer::BREAK_TRIM_MASK)) {
 		autowrap_flags_trim = p_flags & TextServer::BREAK_TRIM_MASK;
@@ -627,10 +615,6 @@ void Button::set_autowrap_trim_flags(BitField<TextServer::LineBreakFlag> p_flags
 		queue_redraw();
 		update_minimum_size();
 	}
-}
-
-BitField<TextServer::LineBreakFlag> Button::get_autowrap_trim_flags() const {
-	return autowrap_flags_trim;
 }
 
 void Button::set_text_direction(Control::TextDirection p_text_direction) {
@@ -643,10 +627,6 @@ void Button::set_text_direction(Control::TextDirection p_text_direction) {
 	}
 }
 
-Control::TextDirection Button::get_text_direction() const {
-	return text_direction;
-}
-
 void Button::set_language(const String &p_language) {
 	if (language != p_language) {
 		language = p_language;
@@ -654,10 +634,6 @@ void Button::set_language(const String &p_language) {
 		queue_accessibility_update();
 		queue_redraw();
 	}
-}
-
-String Button::get_language() const {
-	return language;
 }
 
 void Button::set_button_icon(const Ref<Texture2D> &p_icon) {
@@ -692,10 +668,6 @@ void Button::_update_style_margins(const Ref<StyleBox> &p_stylebox) {
 	theme_cache.style_margin_bottom = MAX(theme_cache.style_margin_bottom, p_stylebox->get_margin(SIDE_BOTTOM));
 }
 
-Ref<Texture2D> Button::get_button_icon() const {
-	return icon;
-}
-
 void Button::set_expand_icon(bool p_enabled) {
 	if (expand_icon != p_enabled) {
 		expand_icon = p_enabled;
@@ -705,19 +677,11 @@ void Button::set_expand_icon(bool p_enabled) {
 	}
 }
 
-bool Button::is_expand_icon() const {
-	return expand_icon;
-}
-
 void Button::set_flat(bool p_enabled) {
 	if (flat != p_enabled) {
 		flat = p_enabled;
 		queue_redraw();
 	}
-}
-
-bool Button::is_flat() const {
-	return flat;
 }
 
 void Button::set_clip_text(bool p_enabled) {
@@ -730,20 +694,12 @@ void Button::set_clip_text(bool p_enabled) {
 	}
 }
 
-bool Button::get_clip_text() const {
-	return clip_text;
-}
-
 void Button::set_text_alignment(HorizontalAlignment p_alignment) {
 	if (alignment != p_alignment) {
 		alignment = p_alignment;
 		queue_accessibility_update();
 		queue_redraw();
 	}
-}
-
-HorizontalAlignment Button::get_text_alignment() const {
-	return alignment;
 }
 
 void Button::set_icon_alignment(HorizontalAlignment p_alignment) {
@@ -768,14 +724,6 @@ void Button::set_vertical_icon_alignment(VerticalAlignment p_alignment) {
 	}
 	update_minimum_size();
 	queue_redraw();
-}
-
-HorizontalAlignment Button::get_icon_alignment() const {
-	return horizontal_icon_alignment;
-}
-
-VerticalAlignment Button::get_vertical_icon_alignment() const {
-	return vertical_icon_alignment;
 }
 
 void Button::_bind_methods() {

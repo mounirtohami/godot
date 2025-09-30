@@ -33,6 +33,7 @@
 #include "editor/doc/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/button.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/tree.h"
 

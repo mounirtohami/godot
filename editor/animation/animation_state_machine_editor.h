@@ -42,7 +42,7 @@ class OptionButton;
 class PanelContainer;
 
 class AnimationNodeStateMachineEditor : public AnimationTreeNodeEditorPlugin {
-	GDCLASS(AnimationNodeStateMachineEditor, AnimationTreeNodeEditorPlugin);
+	GDCLASS(AnimationNodeStateMachineEditor, AnimationTreeNodeEditorPlugin)
 
 	Ref<AnimationNodeStateMachine> state_machine;
 
@@ -302,7 +302,7 @@ public:
 };
 
 class EditorAnimationMultiTransitionEdit : public RefCounted {
-	GDCLASS(EditorAnimationMultiTransitionEdit, RefCounted);
+	GDCLASS(EditorAnimationMultiTransitionEdit, RefCounted)
 
 	struct Transition {
 		StringName from;

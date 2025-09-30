@@ -48,7 +48,7 @@ SAFE_FLAG_TYPE_PUN_GUARANTEES
 SAFE_NUMERIC_TYPE_PUN_GUARANTEES(uint32_t)
 
 class Node : public Object {
-	GDCLASS(Node, Object);
+	GDCLASS(Node, Object)
 
 protected:
 	// During group processing, these are thread-safe.
@@ -437,7 +437,7 @@ protected:
 
 	void _set_use_identity_transform(bool p_enable) { data.use_identity_transform = p_enable; }
 	bool _is_using_identity_transform() const { return data.use_identity_transform; }
-	int32_t _get_scene_tree_depth() const { return data.depth; }
+	_FORCE_INLINE_ int32_t _get_scene_tree_depth() const { return data.depth; }
 
 	//call from SceneTree
 	void _call_input(const Ref<InputEvent> &p_event);
@@ -542,11 +542,11 @@ public:
 
 	/* NODE/TREE */
 
-	StringName get_name() const;
+	_FORCE_INLINE_ StringName get_name() const { return data.name; }
 	String get_description() const;
 	void set_name(const StringName &p_name);
 
-	InternalMode get_internal_mode() const;
+	_FORCE_INLINE_ InternalMode get_internal_mode() const { return data.internal_mode; }
 
 	void add_child(Node *p_child, bool p_force_readable_name = false, InternalMode p_internal = INTERNAL_MODE_DISABLED);
 	void add_sibling(Node *p_sibling, bool p_force_readable_name = false);
@@ -572,7 +572,7 @@ public:
 	Node *get_node_and_resource(const NodePath &p_path, Ref<Resource> &r_res, Vector<StringName> &r_leftover_subpath, bool p_last_is_property = true) const;
 
 	virtual void reparent(Node *p_parent, bool p_keep_global_transform = true);
-	Node *get_parent() const;
+	_FORCE_INLINE_ Node *get_parent() const { return data.parent; }
 	Node *find_parent(const String &p_pattern) const;
 
 	void set_unique_scene_id(int32_t p_unique_id);
@@ -613,7 +613,7 @@ public:
 	void _move_child(Node *p_child, int p_index, bool p_ignore_end = false);
 
 	void set_owner(Node *p_owner);
-	Node *get_owner() const;
+	_FORCE_INLINE_ Node *get_owner() const { return data.owner; }
 	void get_owned_by(Node *p_by, List<Node *> *p_owned);
 
 	void set_unique_name_in_owner(bool p_enabled);
@@ -653,10 +653,10 @@ public:
 	String get_tree_string_pretty();
 
 	void set_scene_file_path(const String &p_scene_file_path);
-	String get_scene_file_path() const;
+	_FORCE_INLINE_ String get_scene_file_path() const { return data.scene_file_path; }
 
 	void set_editor_description(const String &p_editor_description);
-	String get_editor_description() const;
+	_FORCE_INLINE_ String get_editor_description() const { return data.editor_description; }
 
 	void set_editable_instance(Node *p_node, bool p_editable);
 	bool is_editable_instance(const Node *p_node) const;
@@ -665,7 +665,7 @@ public:
 #ifdef TOOLS_ENABLED
 	void set_property_pinned(const String &p_property, bool p_pinned);
 	bool is_property_pinned(const StringName &p_property) const;
-	virtual StringName get_property_store_alias(const StringName &p_property) const;
+	virtual StringName get_property_store_alias(const StringName &p_property) const { return p_property; }
 	bool is_part_of_edited_scene() const;
 #else
 	bool is_part_of_edited_scene() const { return false; }
@@ -695,25 +695,25 @@ public:
 	bool is_processing_internal() const;
 
 	void set_process_priority(int p_priority);
-	int get_process_priority() const;
+	_FORCE_INLINE_ int get_process_priority() const { return data.process_priority; }
 
 	void set_process_thread_group_order(int p_order);
-	int get_process_thread_group_order() const;
+	_FORCE_INLINE_ int get_process_thread_group_order() const { return data.process_thread_group_order; }
 
 	void set_physics_process_priority(int p_priority);
-	int get_physics_process_priority() const;
+	_FORCE_INLINE_ int get_physics_process_priority() const { return data.physics_process_priority; }
 
 	void set_process_input(bool p_enable);
-	bool is_processing_input() const;
+	_FORCE_INLINE_ bool is_processing_input() const { return data.input; }
 
 	void set_process_shortcut_input(bool p_enable);
-	bool is_processing_shortcut_input() const;
+	_FORCE_INLINE_ bool is_processing_shortcut_input() const { return data.shortcut_input; }
 
 	void set_process_unhandled_input(bool p_enable);
-	bool is_processing_unhandled_input() const;
+	_FORCE_INLINE_ bool is_processing_unhandled_input() const { return data.unhandled_input; }
 
 	void set_process_unhandled_key_input(bool p_enable);
-	bool is_processing_unhandled_key_input() const;
+	_FORCE_INLINE_ bool is_processing_unhandled_key_input() const { return data.unhandled_key_input; }
 
 	_FORCE_INLINE_ bool _is_any_processing() const {
 		return data.process || data.process_internal || data.physics_process || data.physics_process_internal;
@@ -745,7 +745,7 @@ public:
 	_FORCE_INLINE_ static bool is_group_processing() { return current_process_thread_group; }
 
 	void set_process_thread_messages(BitField<ProcessThreadMessages> p_flags);
-	BitField<ProcessThreadMessages> get_process_thread_messages() const;
+	_FORCE_INLINE_ BitField<ProcessThreadMessages> get_process_thread_messages() const { return data.process_thread_messages; }
 
 	void queue_accessibility_update();
 
@@ -771,7 +771,7 @@ public:
 	Ref<SceneState> get_scene_inherited_state() const;
 
 	void set_scene_instance_load_placeholder(bool p_enable);
-	bool get_scene_instance_load_placeholder() const;
+	_FORCE_INLINE_ bool get_scene_instance_load_placeholder() const { return data.use_placeholder; }
 
 	template <typename... VarArgs>
 	Vector<Variant> make_binds(VarArgs... p_args) {
@@ -782,12 +782,12 @@ public:
 	void replace_by(Node *p_node, bool p_keep_groups = false);
 
 	void set_process_mode(ProcessMode p_mode);
-	ProcessMode get_process_mode() const;
+	_FORCE_INLINE_ ProcessMode get_process_mode() const { return data.process_mode; }
 	bool can_process() const;
 	bool can_process_notification(int p_what) const;
 
 	void set_physics_interpolation_mode(PhysicsInterpolationMode p_mode);
-	PhysicsInterpolationMode get_physics_interpolation_mode() const { return data.physics_interpolation_mode; }
+	_FORCE_INLINE_ PhysicsInterpolationMode get_physics_interpolation_mode() const { return data.physics_interpolation_mode; }
 	_FORCE_INLINE_ bool is_physics_interpolated() const { return data.physics_interpolated; }
 	_FORCE_INLINE_ bool is_physics_interpolated_and_enabled() const { return SceneTree::is_fti_enabled() && is_physics_interpolated(); }
 	void reset_physics_interpolation();
@@ -798,7 +798,7 @@ public:
 	void request_ready();
 
 	void set_process_thread_group(ProcessThreadGroup p_mode);
-	ProcessThreadGroup get_process_thread_group() const;
+	_FORCE_INLINE_ ProcessThreadGroup get_process_thread_group() const { return data.process_thread_group; }
 
 	static void print_orphan_nodes();
 	static TypedArray<int> get_orphan_node_ids();
@@ -831,11 +831,11 @@ public:
 	/* NETWORK */
 
 	virtual void set_multiplayer_authority(int p_peer_id, bool p_recursive = true);
-	int get_multiplayer_authority() const;
+	_FORCE_INLINE_ int get_multiplayer_authority() const { return data.multiplayer_authority; }
 	bool is_multiplayer_authority() const;
 
 	void rpc_config(const StringName &p_method, const Variant &p_config); // config a local method for RPC
-	const Variant get_node_rpc_config() const;
+	_FORCE_INLINE_ const Variant get_node_rpc_config() const { return data.rpc_config; }
 
 	template <typename... VarArgs>
 	Error rpc(const StringName &p_method, VarArgs... p_args);
@@ -850,7 +850,7 @@ public:
 	/* INTERNATIONALIZATION */
 
 	void set_auto_translate_mode(AutoTranslateMode p_mode);
-	AutoTranslateMode get_auto_translate_mode() const;
+	_FORCE_INLINE_ AutoTranslateMode get_auto_translate_mode() const { return data.auto_translate_mode; }
 	bool can_auto_translate() const;
 
 	virtual StringName get_translation_domain() const override;
@@ -895,7 +895,7 @@ public:
 
 	/* HELPER */
 
-	bool is_instance() const { return !data.scene_file_path.is_empty(); }
+	_FORCE_INLINE_ bool is_instance() const { return !data.scene_file_path.is_empty(); }
 
 	// These inherited functions need proper multithread locking when overridden in Node.
 #ifdef DEBUG_ENABLED

@@ -39,7 +39,7 @@
 class EditorFileDialog;
 
 class ResourcePreloaderEditor : public PanelContainer {
-	GDCLASS(ResourcePreloaderEditor, PanelContainer);
+	GDCLASS(ResourcePreloaderEditor, PanelContainer)
 
 	enum {
 		BUTTON_OPEN_SCENE,
@@ -81,7 +81,7 @@ public:
 };
 
 class ResourcePreloaderEditorPlugin : public EditorPlugin {
-	GDCLASS(ResourcePreloaderEditorPlugin, EditorPlugin);
+	GDCLASS(ResourcePreloaderEditorPlugin, EditorPlugin)
 
 	ResourcePreloaderEditor *preloader_editor = nullptr;
 	Button *button = nullptr;

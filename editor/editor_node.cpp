@@ -49,6 +49,7 @@
 #include "editor/inspector/editor_context_menu_plugin.h"
 #include "main/main.h"
 #include "scene/2d/node_2d.h"
+#include "scene/animation/animation_player.h"
 #include "scene/animation/animation_tree.h"
 #include "scene/gui/color_picker.h"
 #include "scene/gui/dialogs.h"

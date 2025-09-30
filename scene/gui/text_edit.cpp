@@ -71,20 +71,12 @@ void TextEdit::Text::set_tab_size(int p_tab_size) {
 	tab_size_dirty = true;
 }
 
-int TextEdit::Text::get_tab_size() const {
-	return tab_size;
-}
-
 void TextEdit::Text::set_indent_wrapped_lines(bool p_enabled) {
 	if (indent_wrapped_lines == p_enabled) {
 		return;
 	}
 	indent_wrapped_lines = p_enabled;
 	tab_size_dirty = true;
-}
-
-bool TextEdit::Text::is_indent_wrapped_lines() const {
-	return indent_wrapped_lines;
 }
 
 void TextEdit::Text::set_direction_and_language(TextServer::Direction p_direction, const String &p_language) {
@@ -146,22 +138,6 @@ int TextEdit::Text::get_line_height() const {
 	}
 
 	return max_line_height;
-}
-
-void TextEdit::Text::set_width(float p_width) {
-	width = p_width;
-}
-
-float TextEdit::Text::get_width() const {
-	return width;
-}
-
-void TextEdit::Text::set_brk_flags(BitField<TextServer::LineBreakFlag> p_flags) {
-	brk_flags = p_flags;
-}
-
-BitField<TextServer::LineBreakFlag> TextEdit::Text::get_brk_flags() const {
-	return brk_flags;
 }
 
 int TextEdit::Text::get_line_wrap_amount(int p_line) const {
@@ -451,10 +427,6 @@ void TextEdit::Text::clear() {
 	invalidate_cache(0, true);
 }
 
-int TextEdit::Text::get_total_visible_line_count() const {
-	return total_visible_line_count;
-}
-
 void TextEdit::Text::set(int p_line, const String &p_text, const Array &p_bidi_override) {
 	ERR_FAIL_INDEX(p_line, text.size());
 
@@ -603,18 +575,6 @@ void TextEdit::Text::set_use_custom_word_separators(bool p_enabled) {
 	invalidate_all_lines();
 }
 
-bool TextEdit::Text::is_default_word_separators_enabled() const {
-	return use_default_word_separators;
-}
-
-bool TextEdit::Text::is_custom_word_separators_enabled() const {
-	return use_custom_word_separators;
-}
-
-String TextEdit::Text::get_custom_word_separators() const {
-	return custom_word_separators;
-}
-
 String TextEdit::Text::get_default_word_separators() const {
 	String concat_separators = "!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";
 	for (char32_t ch = 0x2000; ch <= 0x206F; ++ch) { // General punctuation block.
@@ -727,10 +687,6 @@ void TextEdit::_accessibility_action_scroll_into_view(const Variant &p_data, int
 	} else {
 		_scroll_down(delta, false);
 	}
-}
-
-Ref<StyleBox> TextEdit::_get_current_stylebox() const {
-	return editable ? theme_cache.style_normal : theme_cache.style_readonly;
 }
 
 void TextEdit::_notification(int p_what) {
@@ -3512,10 +3468,6 @@ Size2 TextEdit::get_minimum_size() const {
 	return ms;
 }
 
-bool TextEdit::is_text_field() const {
-	return true;
-}
-
 Variant TextEdit::get_drag_data(const Point2 &p_point) {
 	Variant ret = Control::get_drag_data(p_point);
 	if (ret != Variant()) {
@@ -3729,10 +3681,6 @@ void TextEdit::set_editable(bool p_editable) {
 	update_minimum_size();
 }
 
-bool TextEdit::is_editable() const {
-	return editable;
-}
-
 void TextEdit::set_text_direction(Control::TextDirection p_text_direction) {
 	ERR_FAIL_COND((int)p_text_direction < -1 || (int)p_text_direction > 3);
 	if (text_direction != p_text_direction) {
@@ -3762,10 +3710,6 @@ void TextEdit::set_text_direction(Control::TextDirection p_text_direction) {
 	}
 }
 
-Control::TextDirection TextEdit::get_text_direction() const {
-	return text_direction;
-}
-
 void TextEdit::set_language(const String &p_language) {
 	if (language != p_language) {
 		language = p_language;
@@ -3784,10 +3728,6 @@ void TextEdit::set_language(const String &p_language) {
 	}
 }
 
-String TextEdit::get_language() const {
-	return language;
-}
-
 void TextEdit::set_structured_text_bidi_override(TextServer::StructuredTextParser p_parser) {
 	if (st_parser != p_parser) {
 		st_parser = p_parser;
@@ -3797,10 +3737,6 @@ void TextEdit::set_structured_text_bidi_override(TextServer::StructuredTextParse
 		queue_accessibility_update();
 		queue_redraw();
 	}
-}
-
-TextServer::StructuredTextParser TextEdit::get_structured_text_bidi_override() const {
-	return st_parser;
 }
 
 void TextEdit::set_structured_text_bidi_override_options(const Array &p_args) {
@@ -3814,10 +3750,6 @@ void TextEdit::set_structured_text_bidi_override_options(const Array &p_args) {
 	}
 	queue_accessibility_update();
 	queue_redraw();
-}
-
-Array TextEdit::get_structured_text_bidi_override_options() const {
-	return Array(st_args);
 }
 
 void TextEdit::set_tab_size(const int p_size) {
@@ -3850,14 +3782,6 @@ bool TextEdit::is_indent_wrapped_lines() const {
 	return text.is_indent_wrapped_lines();
 }
 
-void TextEdit::set_tab_input_mode(bool p_enabled) {
-	tab_input_mode = p_enabled;
-}
-
-bool TextEdit::get_tab_input_mode() const {
-	return tab_input_mode;
-}
-
 // User controls
 void TextEdit::set_overtype_mode_enabled(bool p_enabled) {
 	if (overtype_mode == p_enabled) {
@@ -3866,18 +3790,6 @@ void TextEdit::set_overtype_mode_enabled(bool p_enabled) {
 
 	overtype_mode = p_enabled;
 	queue_redraw();
-}
-
-bool TextEdit::is_overtype_mode_enabled() const {
-	return overtype_mode;
-}
-
-void TextEdit::set_context_menu_enabled(bool p_enabled) {
-	context_menu_enabled = p_enabled;
-}
-
-bool TextEdit::is_context_menu_enabled() const {
-	return context_menu_enabled;
 }
 
 void TextEdit::show_emoji_and_symbol_picker() {
@@ -3890,58 +3802,6 @@ void TextEdit::set_emoji_menu_enabled(bool p_enabled) {
 		emoji_menu_enabled = p_enabled;
 		_update_context_menu();
 	}
-}
-
-bool TextEdit::is_emoji_menu_enabled() const {
-	return emoji_menu_enabled;
-}
-
-void TextEdit::set_backspace_deletes_composite_character_enabled(bool p_enabled) {
-	backspace_deletes_composite_character_enabled = p_enabled;
-}
-
-bool TextEdit::is_backspace_deletes_composite_character_enabled() const {
-	return backspace_deletes_composite_character_enabled;
-}
-
-void TextEdit::set_shortcut_keys_enabled(bool p_enabled) {
-	shortcut_keys_enabled = p_enabled;
-}
-
-bool TextEdit::is_shortcut_keys_enabled() const {
-	return shortcut_keys_enabled;
-}
-
-void TextEdit::set_virtual_keyboard_enabled(bool p_enabled) {
-	virtual_keyboard_enabled = p_enabled;
-}
-
-bool TextEdit::is_virtual_keyboard_enabled() const {
-	return virtual_keyboard_enabled;
-}
-
-void TextEdit::set_virtual_keyboard_show_on_focus(bool p_show_on_focus) {
-	virtual_keyboard_show_on_focus = p_show_on_focus;
-}
-
-bool TextEdit::get_virtual_keyboard_show_on_focus() const {
-	return virtual_keyboard_show_on_focus;
-}
-
-void TextEdit::set_middle_mouse_paste_enabled(bool p_enabled) {
-	middle_mouse_paste_enabled = p_enabled;
-}
-
-bool TextEdit::is_middle_mouse_paste_enabled() const {
-	return middle_mouse_paste_enabled;
-}
-
-void TextEdit::set_empty_selection_clipboard_enabled(bool p_enabled) {
-	empty_selection_clipboard_enabled = p_enabled;
-}
-
-bool TextEdit::is_empty_selection_clipboard_enabled() const {
-	return empty_selection_clipboard_enabled;
 }
 
 // Text manipulation
@@ -4034,10 +3894,6 @@ void TextEdit::set_placeholder(const String &p_text) {
 	_update_placeholder();
 	queue_accessibility_update();
 	queue_redraw();
-}
-
-String TextEdit::get_placeholder() const {
-	return placeholder_text;
 }
 
 void TextEdit::set_line(int p_line, const String &p_new_text) {
@@ -4674,10 +4530,6 @@ void TextEdit::end_action() {
 	}
 }
 
-TextEdit::EditAction TextEdit::get_current_action() const {
-	return current_action;
-}
-
 void TextEdit::begin_complex_operation() {
 	_push_current_op();
 	if (complex_operation_count == 0) {
@@ -4715,10 +4567,6 @@ bool TextEdit::has_undo() const {
 		return undo_stack.size() + pending > 0;
 	}
 	return undo_stack_pos != undo_stack.front();
-}
-
-bool TextEdit::has_redo() const {
-	return undo_stack_pos != nullptr;
 }
 
 void TextEdit::undo() {
@@ -4855,27 +4703,7 @@ bool TextEdit::is_insert_text_operation() const {
 	return (current_op.type == TextOperation::TYPE_INSERT || current_action == EditAction::ACTION_TYPING);
 }
 
-void TextEdit::tag_saved_version() {
-	saved_version = get_version();
-}
-
-uint32_t TextEdit::get_version() const {
-	return current_op.version;
-}
-
-uint32_t TextEdit::get_saved_version() const {
-	return saved_version;
-}
-
 /* Search */
-void TextEdit::set_search_text(const String &p_search_text) {
-	search_text = p_search_text;
-}
-
-void TextEdit::set_search_flags(uint32_t p_flags) {
-	search_flags = p_flags;
-}
-
 Point2i TextEdit::search(const String &p_key, uint32_t p_search_flags, int p_from_line, int p_from_column) const {
 	if (p_key.is_empty()) {
 		return Point2(-1, -1);
@@ -5139,10 +4967,6 @@ int TextEdit::get_minimap_line_at_pos(const Point2i &p_pos) const {
 	return row;
 }
 
-bool TextEdit::is_dragging_cursor() const {
-	return dragging_selection || dragging_minimap;
-}
-
 bool TextEdit::is_mouse_over_selection(bool p_edges, int p_caret) const {
 	Point2i pos = get_line_column_at_pos(get_local_mouse_pos());
 	int line = pos.y;
@@ -5164,10 +4988,6 @@ void TextEdit::set_caret_type(CaretType p_type) {
 	queue_redraw();
 }
 
-TextEdit::CaretType TextEdit::get_caret_type() const {
-	return caret_type;
-}
-
 void TextEdit::set_caret_blink_enabled(bool p_enabled) {
 	if (caret_blink_enabled == p_enabled) {
 		return;
@@ -5183,10 +5003,6 @@ void TextEdit::set_caret_blink_enabled(bool p_enabled) {
 		}
 	}
 	draw_caret = true;
-}
-
-bool TextEdit::is_caret_blink_enabled() const {
-	return caret_blink_enabled;
 }
 
 float TextEdit::get_caret_blink_interval() const {
@@ -5206,26 +5022,6 @@ void TextEdit::set_draw_caret_when_editable_disabled(bool p_enable) {
 	queue_redraw();
 }
 
-bool TextEdit::is_drawing_caret_when_editable_disabled() const {
-	return draw_caret_when_editable_disabled;
-}
-
-void TextEdit::set_move_caret_on_right_click_enabled(bool p_enabled) {
-	move_caret_on_right_click = p_enabled;
-}
-
-bool TextEdit::is_move_caret_on_right_click_enabled() const {
-	return move_caret_on_right_click;
-}
-
-void TextEdit::set_caret_mid_grapheme_enabled(bool p_enabled) {
-	caret_mid_grapheme_enabled = p_enabled;
-}
-
-bool TextEdit::is_caret_mid_grapheme_enabled() const {
-	return caret_mid_grapheme_enabled;
-}
-
 void TextEdit::set_multiple_carets_enabled(bool p_enabled) {
 	multi_carets_enabled = p_enabled;
 	if (!multi_carets_enabled) {
@@ -5234,10 +5030,6 @@ void TextEdit::set_multiple_carets_enabled(bool p_enabled) {
 		multicaret_edit_ignore_carets.clear();
 		multicaret_edit_merge_queued = false;
 	}
-}
-
-bool TextEdit::is_multiple_carets_enabled() const {
-	return multi_carets_enabled;
 }
 
 int TextEdit::add_caret(int p_line, int p_column) {
@@ -5651,10 +5443,6 @@ void TextEdit::end_multicaret_edit() {
 	multicaret_edit_ignore_carets.clear();
 }
 
-bool TextEdit::is_in_mulitcaret_edit() const {
-	return multicaret_edit_count > 0;
-}
-
 bool TextEdit::multicaret_edit_ignore_caret(int p_caret) const {
 	return multicaret_edit_ignore_carets.has(p_caret);
 }
@@ -5810,10 +5598,6 @@ void TextEdit::set_selecting_enabled(bool p_enabled) {
 	}
 }
 
-bool TextEdit::is_selecting_enabled() const {
-	return selecting_enabled;
-}
-
 void TextEdit::set_deselect_on_focus_loss_enabled(bool p_enabled) {
 	if (deselect_on_focus_loss_enabled == p_enabled) {
 		return;
@@ -5823,26 +5607,6 @@ void TextEdit::set_deselect_on_focus_loss_enabled(bool p_enabled) {
 	if (p_enabled && has_selection() && !has_focus()) {
 		deselect();
 	}
-}
-
-bool TextEdit::is_deselect_on_focus_loss_enabled() const {
-	return deselect_on_focus_loss_enabled;
-}
-
-void TextEdit::set_drag_and_drop_selection_enabled(bool p_enabled) {
-	drag_and_drop_selection_enabled = p_enabled;
-}
-
-bool TextEdit::is_drag_and_drop_selection_enabled() const {
-	return drag_and_drop_selection_enabled;
-}
-
-void TextEdit::set_selection_mode(SelectionMode p_mode) {
-	selecting_mode = p_mode;
-}
-
-TextEdit::SelectionMode TextEdit::get_selection_mode() const {
-	return selecting_mode;
 }
 
 void TextEdit::select_all() {
@@ -6341,10 +6105,6 @@ void TextEdit::set_line_wrapping_mode(LineWrappingMode p_wrapping_mode) {
 	}
 }
 
-TextEdit::LineWrappingMode TextEdit::get_line_wrapping_mode() const {
-	return line_wrapping_mode;
-}
-
 void TextEdit::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 	if (autowrap_mode == p_mode) {
 		return;
@@ -6356,10 +6116,6 @@ void TextEdit::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 		queue_accessibility_update();
 		queue_redraw();
 	}
-}
-
-TextServer::AutowrapMode TextEdit::get_autowrap_mode() const {
-	return autowrap_mode;
 }
 
 bool TextEdit::is_line_wrapped(int p_line) const {
@@ -6428,10 +6184,6 @@ void TextEdit::set_smooth_scroll_enabled(bool p_enabled) {
 	smooth_scroll_enabled = p_enabled;
 }
 
-bool TextEdit::is_smooth_scroll_enabled() const {
-	return smooth_scroll_enabled;
-}
-
 void TextEdit::set_scroll_past_end_of_file_enabled(bool p_enabled) {
 	if (scroll_past_end_of_file_enabled == p_enabled) {
 		return;
@@ -6439,22 +6191,6 @@ void TextEdit::set_scroll_past_end_of_file_enabled(bool p_enabled) {
 
 	scroll_past_end_of_file_enabled = p_enabled;
 	queue_redraw();
-}
-
-bool TextEdit::is_scroll_past_end_of_file_enabled() const {
-	return scroll_past_end_of_file_enabled;
-}
-
-RID TextEdit::get_text_canvas_item() const {
-	return text_ci;
-}
-
-VScrollBar *TextEdit::get_v_scroll_bar() const {
-	return v_scroll;
-}
-
-HScrollBar *TextEdit::get_h_scroll_bar() const {
-	return h_scroll;
 }
 
 void TextEdit::set_v_scroll(double p_scroll) {
@@ -6488,10 +6224,6 @@ void TextEdit::set_v_scroll_speed(float p_speed) {
 	v_scroll_speed = p_speed;
 }
 
-float TextEdit::get_v_scroll_speed() const {
-	return v_scroll_speed;
-}
-
 void TextEdit::set_fit_content_height_enabled(bool p_enabled) {
 	if (fit_content_height == p_enabled) {
 		return;
@@ -6500,20 +6232,12 @@ void TextEdit::set_fit_content_height_enabled(bool p_enabled) {
 	update_minimum_size();
 }
 
-bool TextEdit::is_fit_content_height_enabled() const {
-	return fit_content_height;
-}
-
 void TextEdit::set_fit_content_width_enabled(bool p_enabled) {
 	if (fit_content_width == p_enabled) {
 		return;
 	}
 	fit_content_width = p_enabled;
 	update_minimum_size();
-}
-
-bool TextEdit::is_fit_content_width_enabled() const {
-	return fit_content_width;
 }
 
 double TextEdit::get_scroll_pos_for_line(int p_line, int p_wrap_index) const {
@@ -6680,10 +6404,6 @@ void TextEdit::set_draw_minimap(bool p_enabled) {
 	queue_redraw();
 }
 
-bool TextEdit::is_drawing_minimap() const {
-	return draw_minimap;
-}
-
 void TextEdit::set_minimap_width(int p_minimap_width) {
 	if (minimap_width == p_minimap_width) {
 		return;
@@ -6692,10 +6412,6 @@ void TextEdit::set_minimap_width(int p_minimap_width) {
 	minimap_width = p_minimap_width;
 	_update_wrap_at_column();
 	queue_redraw();
-}
-
-int TextEdit::get_minimap_width() const {
-	return minimap_width;
 }
 
 int TextEdit::get_minimap_visible_lines() const {
@@ -6973,10 +6689,6 @@ void TextEdit::set_syntax_highlighter(Ref<SyntaxHighlighter> p_syntax_highlighte
 	queue_redraw();
 }
 
-Ref<SyntaxHighlighter> TextEdit::get_syntax_highlighter() const {
-	return syntax_highlighter;
-}
-
 /* Visual. */
 void TextEdit::set_highlight_current_line(bool p_enabled) {
 	if (highlight_current_line == p_enabled) {
@@ -6987,10 +6699,6 @@ void TextEdit::set_highlight_current_line(bool p_enabled) {
 	queue_redraw();
 }
 
-bool TextEdit::is_highlight_current_line_enabled() const {
-	return highlight_current_line;
-}
-
 void TextEdit::set_highlight_all_occurrences(bool p_enabled) {
 	if (highlight_all_occurrences == p_enabled) {
 		return;
@@ -6998,10 +6706,6 @@ void TextEdit::set_highlight_all_occurrences(bool p_enabled) {
 
 	highlight_all_occurrences = p_enabled;
 	queue_redraw();
-}
-
-bool TextEdit::is_highlight_all_occurrences_enabled() const {
-	return highlight_all_occurrences;
 }
 
 void TextEdit::set_use_default_word_separators(bool p_enabled) {
@@ -7056,10 +6760,6 @@ void TextEdit::set_draw_control_chars(bool p_enabled) {
 	}
 }
 
-bool TextEdit::get_draw_control_chars() const {
-	return draw_control_chars;
-}
-
 void TextEdit::set_draw_tabs(bool p_enabled) {
 	if (draw_tabs == p_enabled) {
 		return;
@@ -7069,10 +6769,6 @@ void TextEdit::set_draw_tabs(bool p_enabled) {
 	queue_redraw();
 }
 
-bool TextEdit::is_drawing_tabs() const {
-	return draw_tabs;
-}
-
 void TextEdit::set_draw_spaces(bool p_enabled) {
 	if (draw_spaces == p_enabled) {
 		return;
@@ -7080,14 +6776,6 @@ void TextEdit::set_draw_spaces(bool p_enabled) {
 
 	draw_spaces = p_enabled;
 	queue_redraw();
-}
-
-bool TextEdit::is_drawing_spaces() const {
-	return draw_spaces;
-}
-
-Color TextEdit::get_font_color() const {
-	return theme_cache.font_color;
 }
 
 void TextEdit::_bind_methods() {

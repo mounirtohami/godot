@@ -33,8 +33,10 @@
 #include "editor/plugins/editor_plugin.h"
 #include "editor/scene/2d/abstract_polygon_2d_editor.h"
 
+class Button;
 class AcceptDialog;
 class HBoxContainer;
+class Label;
 class NavigationPolygon;
 class NavigationRegion2D;
 class Timer;

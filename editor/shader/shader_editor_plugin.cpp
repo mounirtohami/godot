@@ -42,7 +42,9 @@
 #include "editor/shader/text_shader_editor.h"
 #include "editor/shader/visual_shader_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
+#include "scene/gui/label.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
 

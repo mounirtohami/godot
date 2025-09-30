@@ -37,6 +37,7 @@
 #include "scene/resources/texture.h"
 
 class ColorChannelSelector;
+class ShaderMaterial;
 
 class Texture3DEditor : public Control {
 	GDCLASS(Texture3DEditor, Control);

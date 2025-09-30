@@ -39,10 +39,6 @@ void ColorRect::set_color(const Color &p_color) {
 	queue_redraw();
 }
 
-Color ColorRect::get_color() const {
-	return color;
-}
-
 void ColorRect::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ACCESSIBILITY_UPDATE: {

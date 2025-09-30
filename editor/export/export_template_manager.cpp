@@ -42,6 +42,7 @@
 #include "editor/gui/progress_dialog.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/link_button.h"

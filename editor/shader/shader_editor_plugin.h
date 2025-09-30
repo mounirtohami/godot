@@ -44,6 +44,8 @@ class VBoxContainer;
 class HBoxContainer;
 class VisualShaderEditor;
 class WindowWrapper;
+class Shader;
+class ShaderInclude;
 
 class ShaderEditorPlugin : public EditorPlugin {
 	GDCLASS(ShaderEditorPlugin, EditorPlugin);

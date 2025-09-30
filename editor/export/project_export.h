@@ -31,6 +31,7 @@
 #pragma once
 
 #include "editor/export/editor_export_preset.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
 
 class CheckBox;
@@ -51,7 +52,7 @@ class Tree;
 class TreeItem;
 
 class ProjectExportTextureFormatError : public HBoxContainer {
-	GDCLASS(ProjectExportTextureFormatError, HBoxContainer);
+	GDCLASS(ProjectExportTextureFormatError, HBoxContainer)
 
 	ProjectExportDialog *export_dialog = nullptr;
 	Label *texture_format_error_label = nullptr;
@@ -69,7 +70,7 @@ public:
 };
 
 class ProjectExportDialog : public ConfirmationDialog {
-	GDCLASS(ProjectExportDialog, ConfirmationDialog);
+	GDCLASS(ProjectExportDialog, ConfirmationDialog)
 
 	TabContainer *sections = nullptr;
 

@@ -40,6 +40,7 @@ class GridContainer;
 class HSplitContainer;
 class HFlowContainer;
 class ItemList;
+class VBoxContainer;
 class MenuButton;
 class OptionButton;
 class PopupMenu;

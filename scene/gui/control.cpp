@@ -126,10 +126,6 @@ void Control::_edit_set_scale(const Size2 &p_scale) {
 	set_scale(p_scale);
 }
 
-Size2 Control::_edit_get_scale() const {
-	return data.scale;
-}
-
 void Control::_edit_set_rect(const Rect2 &p_edit_rect) {
 	ERR_FAIL_COND_MSG(!Engine::get_singleton()->is_editor_hint(), "This function can only be used from editor plugins.");
 	set_position((get_position() + get_transform().basis_xform(p_edit_rect.position)), ControlEditorToolbar::get_singleton()->is_anchors_mode_enabled());
@@ -144,10 +140,6 @@ real_t Control::_edit_get_rotation() const {
 	return get_rotation();
 }
 
-bool Control::_edit_use_rotation() const {
-	return true;
-}
-
 void Control::_edit_set_pivot(const Point2 &p_pivot) {
 	Vector2 delta_pivot = p_pivot - get_pivot_offset();
 	Vector2 move = Vector2((std::cos(data.rotation) - 1.0) * delta_pivot.x - std::sin(data.rotation) * delta_pivot.y, std::sin(data.rotation) * delta_pivot.x + (std::cos(data.rotation) - 1.0) * delta_pivot.y);
@@ -160,10 +152,6 @@ Point2 Control::_edit_get_pivot() const {
 	return get_combined_pivot_offset();
 }
 
-bool Control::_edit_use_pivot() const {
-	return true;
-}
-
 Size2 Control::_edit_get_minimum_size() const {
 	return get_combined_minimum_size();
 }
@@ -172,10 +160,6 @@ Size2 Control::_edit_get_minimum_size() const {
 #ifdef DEBUG_ENABLED
 Rect2 Control::_edit_get_rect() const {
 	return Rect2(Point2(), get_size());
-}
-
-bool Control::_edit_use_rect() const {
-	return true;
 }
 #endif // DEBUG_ENABLED
 
@@ -1891,9 +1875,6 @@ void Control::_call_gui_input(const Ref<InputEvent> &p_event) {
 	gui_input(p_event);
 }
 
-void Control::gui_input(const Ref<InputEvent> &p_event) {
-}
-
 void Control::accept_event() {
 	ERR_MAIN_THREAD_GUARD;
 	if (is_inside_tree()) {
@@ -2188,20 +2169,12 @@ void Control::set_accessibility_live(DisplayServer::AccessibilityLiveMode p_mode
 	}
 }
 
-DisplayServer::AccessibilityLiveMode Control::get_accessibility_live() const {
-	return data.accessibility_live;
-}
-
 void Control::set_accessibility_controls_nodes(const TypedArray<NodePath> &p_node_path) {
 	ERR_MAIN_THREAD_GUARD;
 	if (data.accessibility_controls_nodes != p_node_path) {
 		data.accessibility_controls_nodes = p_node_path;
 		queue_accessibility_update();
 	}
-}
-
-TypedArray<NodePath> Control::get_accessibility_controls_nodes() const {
-	return data.accessibility_controls_nodes;
 }
 
 void Control::set_accessibility_described_by_nodes(const TypedArray<NodePath> &p_node_path) {
@@ -2212,10 +2185,6 @@ void Control::set_accessibility_described_by_nodes(const TypedArray<NodePath> &p
 	}
 }
 
-TypedArray<NodePath> Control::get_accessibility_described_by_nodes() const {
-	return data.accessibility_described_by_nodes;
-}
-
 void Control::set_accessibility_labeled_by_nodes(const TypedArray<NodePath> &p_node_path) {
 	ERR_MAIN_THREAD_GUARD;
 	if (data.accessibility_labeled_by_nodes != p_node_path) {
@@ -2224,20 +2193,12 @@ void Control::set_accessibility_labeled_by_nodes(const TypedArray<NodePath> &p_n
 	}
 }
 
-TypedArray<NodePath> Control::get_accessibility_labeled_by_nodes() const {
-	return data.accessibility_labeled_by_nodes;
-}
-
 void Control::set_accessibility_flow_to_nodes(const TypedArray<NodePath> &p_node_path) {
 	ERR_MAIN_THREAD_GUARD;
 	if (data.accessibility_flow_to_nodes != p_node_path) {
 		data.accessibility_flow_to_nodes = p_node_path;
 		queue_accessibility_update();
 	}
-}
-
-TypedArray<NodePath> Control::get_accessibility_flow_to_nodes() const {
-	return data.accessibility_flow_to_nodes;
 }
 
 void Control::set_drag_preview(Control *p_control) {

@@ -34,6 +34,7 @@
 #include "editor/scene/texture/color_channel_selector.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/label.h"
+#include "scene/resources/material.h"
 
 // Shader sources.
 

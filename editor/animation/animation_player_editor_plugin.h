@@ -30,21 +30,34 @@
 
 #pragma once
 
-#include "editor/animation/animation_library_editor.h"
-#include "editor/animation/animation_track_editor.h"
+#include "editor/inspector/editor_inspector.h"
 #include "editor/plugins/editor_plugin.h"
-#include "scene/animation/animation_player.h"
-#include "scene/gui/dialogs.h"
-#include "scene/gui/slider.h"
-#include "scene/gui/spin_box.h"
-#include "scene/gui/texture_button.h"
-#include "scene/gui/tree.h"
+#include "scene/gui/box_container.h"
 
+class AcceptDialog;
+class AnimatedValuesBackup;
+class Animation;
+class AnimationLibraryEditor;
+class AnimationMarkerKeyEditEditor;
+class AnimationMixer;
+class AnimationPlayer;
 class AnimationPlayerEditorPlugin;
+class AnimationTrackEditor;
+class AnimationTrackKeyEditEditor;
+class Button;
+class ConfirmationDialog;
+class EditorFileDialog;
 class ImageTexture;
+class LineEdit;
+class MenuButton;
+class OptionButton;
+class ShaderMaterial;
+class Shader;
+class SpinBox;
+class Tree;
 
 class AnimationPlayerEditor : public VBoxContainer {
-	GDCLASS(AnimationPlayerEditor, VBoxContainer);
+	GDCLASS(AnimationPlayerEditor, VBoxContainer)
 
 	friend AnimationPlayerEditorPlugin;
 
@@ -260,11 +273,9 @@ public:
 
 	static AnimationPlayerEditor *get_singleton() { return singleton; }
 
-	bool is_pinned() const { return pin->is_pressed(); }
-	void unpin() {
-		pin->set_pressed(false);
-		_pin_pressed();
-	}
+	bool is_pinned() const;
+	void unpin();
+
 	AnimationTrackEditor *get_track_editor() { return track_editor; }
 	Dictionary get_state() const;
 	void set_state(const Dictionary &p_state);
@@ -279,7 +290,7 @@ public:
 };
 
 class AnimationPlayerEditorPlugin : public EditorPlugin {
-	GDCLASS(AnimationPlayerEditorPlugin, EditorPlugin);
+	GDCLASS(AnimationPlayerEditorPlugin, EditorPlugin)
 
 	friend AnimationPlayerEditor;
 
@@ -323,7 +334,7 @@ public:
 // AnimationTrackKeyEditEditorPlugin
 
 class EditorInspectorPluginAnimationTrackKeyEdit : public EditorInspectorPlugin {
-	GDCLASS(EditorInspectorPluginAnimationTrackKeyEdit, EditorInspectorPlugin);
+	GDCLASS(EditorInspectorPluginAnimationTrackKeyEdit, EditorInspectorPlugin)
 
 	AnimationTrackKeyEditEditor *atk_editor = nullptr;
 
@@ -333,7 +344,7 @@ public:
 };
 
 class AnimationTrackKeyEditEditorPlugin : public EditorPlugin {
-	GDCLASS(AnimationTrackKeyEditEditorPlugin, EditorPlugin);
+	GDCLASS(AnimationTrackKeyEditEditorPlugin, EditorPlugin)
 
 	EditorInspectorPluginAnimationTrackKeyEdit *atk_plugin = nullptr;
 
@@ -349,7 +360,7 @@ public:
 // AnimationMarkerKeyEditEditorPlugin
 
 class EditorInspectorPluginAnimationMarkerKeyEdit : public EditorInspectorPlugin {
-	GDCLASS(EditorInspectorPluginAnimationMarkerKeyEdit, EditorInspectorPlugin);
+	GDCLASS(EditorInspectorPluginAnimationMarkerKeyEdit, EditorInspectorPlugin)
 
 	AnimationMarkerKeyEditEditor *amk_editor = nullptr;
 
@@ -359,7 +370,7 @@ public:
 };
 
 class AnimationMarkerKeyEditEditorPlugin : public EditorPlugin {
-	GDCLASS(AnimationMarkerKeyEditEditorPlugin, EditorPlugin);
+	GDCLASS(AnimationMarkerKeyEditEditorPlugin, EditorPlugin)
 
 	EditorInspectorPluginAnimationMarkerKeyEdit *amk_plugin = nullptr;
 

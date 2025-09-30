@@ -48,6 +48,7 @@ class MenuButton;
 class PopupPanel;
 class RichTextLabel;
 class Tree;
+class ShaderMaterial;
 
 class VisualShaderEditor;
 class MaterialEditor;

@@ -41,7 +41,12 @@
 #include "editor/inspector/editor_inspector.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/translations/editor_locale_dialog.h"
+#include "scene/gui/label.h"
 #include "scene/gui/split_container.h"
+#include "scene/gui/tab_container.h"
+#include "scene/gui/text_edit.h"
+#include "scene/gui/tree.h"
+#include "scene/resources/font.h"
 
 /*************************************************************************/
 /* Settings data                                                         */

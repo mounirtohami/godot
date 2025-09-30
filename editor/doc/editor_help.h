@@ -30,18 +30,21 @@
 
 #pragma once
 
-#include "core/os/thread.h"
 #include "editor/doc/doc_tools.h"
-#include "editor/plugins/editor_plugin.h"
-#include "scene/gui/dialogs.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/popup.h"
-#include "scene/gui/rich_text_label.h"
-#include "scene/gui/split_container.h"
-#include "scene/gui/text_edit.h"
-#include "scene/main/timer.h"
+
+class Button;
+class ConfirmationDialog;
+class HSplitContainer;
+class Label;
+class LineEdit;
+class RichTextLabel;
+class RichTextLabel;
+class TextEdit;
 
 class FindBar : public HBoxContainer {
-	GDCLASS(FindBar, HBoxContainer);
+	GDCLASS(FindBar, HBoxContainer)
 
 	LineEdit *search_text = nullptr;
 	Button *find_prev = nullptr;
@@ -84,7 +87,7 @@ public:
 class EditorFileSystemDirectory;
 
 class EditorHelp : public VBoxContainer {
-	GDCLASS(EditorHelp, VBoxContainer);
+	GDCLASS(EditorHelp, VBoxContainer)
 
 	enum MethodType {
 		METHOD_TYPE_METHOD,
@@ -261,7 +264,7 @@ public:
 
 	String get_class();
 
-	void set_focused() { class_desc->grab_focus(); }
+	void set_focused();
 
 	int get_scroll() const;
 	void set_scroll(int p_scroll);
@@ -274,7 +277,7 @@ public:
 };
 
 class EditorHelpBit : public VBoxContainer {
-	GDCLASS(EditorHelpBit, VBoxContainer);
+	GDCLASS(EditorHelpBit, VBoxContainer)
 
 	enum SymbolHint {
 		SYMBOL_HINT_NONE,
@@ -363,7 +366,7 @@ public:
 // Standard tooltips do not allow you to hover over them.
 // This class is intended as a temporary workaround.
 class EditorHelpBitTooltip : public PopupPanel {
-	GDCLASS(EditorHelpBitTooltip, PopupPanel);
+	GDCLASS(EditorHelpBitTooltip, PopupPanel)
 
 	static bool _is_tooltip_visible;
 

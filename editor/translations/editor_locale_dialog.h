@@ -40,7 +40,7 @@ class Tree;
 class OptionButton;
 
 class EditorLocaleDialog : public ConfirmationDialog {
-	GDCLASS(EditorLocaleDialog, ConfirmationDialog);
+	GDCLASS(EditorLocaleDialog, ConfirmationDialog)
 
 	enum LocaleFilter {
 		SHOW_ALL_LOCALES,

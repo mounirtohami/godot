@@ -33,7 +33,7 @@
 #include "scene/gui/popup_menu.h"
 
 class MenuBar : public Control {
-	GDCLASS(MenuBar, Control);
+	GDCLASS(MenuBar, Control)
 
 	Mutex mutex;
 
@@ -151,11 +151,11 @@ public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
 	void set_switch_on_hover(bool p_enabled);
-	bool is_switch_on_hover();
+	_FORCE_INLINE_ bool is_switch_on_hover() const { return switch_on_hover; }
 	void set_disable_shortcuts(bool p_disabled);
 
 	void set_prefer_global_menu(bool p_enabled);
-	bool is_prefer_global_menu() const;
+	_FORCE_INLINE_ bool is_prefer_global_menu() const { return prefer_native; }
 
 	bool is_native_menu() const;
 
@@ -164,16 +164,16 @@ public:
 	int get_menu_count() const;
 
 	void set_text_direction(TextDirection p_text_direction);
-	TextDirection get_text_direction() const;
+	_FORCE_INLINE_ TextDirection get_text_direction() const { return text_direction; }
 
 	void set_language(const String &p_language);
-	String get_language() const;
+	_FORCE_INLINE_ String get_language() const { return language; }
 
 	void set_start_index(int p_index);
-	int get_start_index() const;
+	_FORCE_INLINE_ int get_start_index() const { return start_index; }
 
 	void set_flat(bool p_enabled);
-	bool is_flat() const;
+	_FORCE_INLINE_ bool is_flat() const { return flat; }
 
 	void set_menu_title(int p_menu, const String &p_title);
 	String get_menu_title(int p_menu) const;

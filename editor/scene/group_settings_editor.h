@@ -30,17 +30,21 @@
 
 #pragma once
 
-#include "scene/gui/dialogs.h"
+#include "scene/gui/box_container.h"
 
+class AcceptDialog;
 class CheckBox;
+class ConfirmationDialog;
 class EditorFileSystemDirectory;
 class EditorValidationPanel;
 class FileSystemDock;
 class Label;
+class Button;
+class LineEdit;
 class Tree;
 
 class GroupSettingsEditor : public VBoxContainer {
-	GDCLASS(GroupSettingsEditor, VBoxContainer);
+	GDCLASS(GroupSettingsEditor, VBoxContainer)
 
 	const String GLOBAL_GROUP_PREFIX = "global_group/";
 	const StringName group_changed = "group_changed";

@@ -37,6 +37,8 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_validation_panel.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/dialogs.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/resources/packed_scene.h"
 

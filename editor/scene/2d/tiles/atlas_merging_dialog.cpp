@@ -33,7 +33,7 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/gui/control.h"
+#include "scene/gui/label.h"
 #include "scene/gui/split_container.h"
 #include "scene/resources/image_texture.h"
 

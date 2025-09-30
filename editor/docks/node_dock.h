@@ -31,13 +31,15 @@
 #pragma once
 
 #include "editor/docks/editor_dock.h"
-#include "groups_editor.h"
 
+class Button;
+class HBoxContainer;
+class GroupsEditor;
 class ConfigFile;
 class ConnectionsDock;
 
 class NodeDock : public EditorDock {
-	GDCLASS(NodeDock, EditorDock);
+	GDCLASS(NodeDock, EditorDock)
 
 	Button *connections_button = nullptr;
 	Button *groups_button = nullptr;

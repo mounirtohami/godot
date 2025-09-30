@@ -283,10 +283,6 @@ void BaseButton::set_disabled(bool p_disabled) {
 	update_minimum_size();
 }
 
-bool BaseButton::is_disabled() const {
-	return status.disabled;
-}
-
 void BaseButton::set_pressed(bool p_pressed) {
 	bool prev_pressed = status.pressed;
 	set_pressed_no_signal(p_pressed);
@@ -314,18 +310,6 @@ void BaseButton::set_pressed_no_signal(bool p_pressed) {
 	status.pressed = p_pressed;
 	queue_accessibility_update();
 	queue_redraw();
-}
-
-bool BaseButton::is_pressing() const {
-	return status.press_attempt;
-}
-
-bool BaseButton::is_pressed() const {
-	return toggle_mode ? status.pressed : status.press_attempt;
-}
-
-bool BaseButton::is_hovered() const {
-	return status.hovering;
 }
 
 BaseButton::DrawMode BaseButton::get_draw_mode() const {
@@ -374,10 +358,6 @@ void BaseButton::set_toggle_mode(bool p_on) {
 	update_configuration_warnings();
 }
 
-bool BaseButton::is_toggle_mode() const {
-	return toggle_mode;
-}
-
 void BaseButton::set_shortcut_in_tooltip(bool p_on) {
 	if (shortcut_in_tooltip != p_on) {
 		shortcut_in_tooltip = p_on;
@@ -385,16 +365,8 @@ void BaseButton::set_shortcut_in_tooltip(bool p_on) {
 	}
 }
 
-bool BaseButton::is_shortcut_in_tooltip_enabled() const {
-	return shortcut_in_tooltip;
-}
-
 void BaseButton::set_action_mode(ActionMode p_mode) {
 	action_mode = p_mode;
-}
-
-BaseButton::ActionMode BaseButton::get_action_mode() const {
-	return action_mode;
 }
 
 void BaseButton::set_size_mode(SizeMode p_size_mode) {
@@ -407,32 +379,16 @@ void BaseButton::set_size_mode(SizeMode p_size_mode) {
 	queue_redraw();
 }
 
-BaseButton::SizeMode BaseButton::get_size_mode() const {
-	return size_mode;
-}
-
 void BaseButton::set_button_mask(BitField<MouseButtonMask> p_mask) {
 	button_mask = p_mask;
-}
-
-BitField<MouseButtonMask> BaseButton::get_button_mask() const {
-	return button_mask;
 }
 
 void BaseButton::set_keep_pressed_outside(bool p_on) {
 	keep_pressed_outside = p_on;
 }
 
-bool BaseButton::is_keep_pressed_outside() const {
-	return keep_pressed_outside;
-}
-
 void BaseButton::set_shortcut_feedback(bool p_enable) {
 	shortcut_feedback = p_enable;
-}
-
-bool BaseButton::is_shortcut_feedback() const {
-	return shortcut_feedback;
 }
 
 void BaseButton::set_shortcut(const Ref<Shortcut> &p_shortcut) {
@@ -441,10 +397,6 @@ void BaseButton::set_shortcut(const Ref<Shortcut> &p_shortcut) {
 		set_process_shortcut_input(shortcut.is_valid());
 		queue_accessibility_update();
 	}
-}
-
-Ref<Shortcut> BaseButton::get_shortcut() const {
-	return shortcut;
 }
 
 void BaseButton::_shortcut_feedback_timeout() {
@@ -529,14 +481,6 @@ void BaseButton::set_button_group(const Ref<ButtonGroup> &p_group) {
 	queue_accessibility_update();
 	queue_redraw(); //checkbox changes to radio if set a buttongroup
 	update_configuration_warnings();
-}
-
-Ref<ButtonGroup> BaseButton::get_button_group() const {
-	return button_group;
-}
-
-bool BaseButton::_was_pressed_by_mouse() const {
-	return was_mouse_pressed;
 }
 
 Size2 BaseButton::_get_final_minimum_size(const Size2 &p_min_size) const {
@@ -663,9 +607,6 @@ BaseButton *ButtonGroup::get_pressed_button() {
 
 void ButtonGroup::set_allow_unpress(bool p_enabled) {
 	allow_unpress = p_enabled;
-}
-bool ButtonGroup::is_allow_unpress() {
-	return allow_unpress;
 }
 
 void ButtonGroup::_bind_methods() {

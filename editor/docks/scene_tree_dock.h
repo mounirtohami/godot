@@ -43,11 +43,13 @@ class MenuButton;
 class RenameDialog;
 class ReparentDialog;
 class ShaderCreateDialog;
+class ShaderMaterial;
+class Shader;
 class TextureRect;
 class VBoxContainer;
 
 class SceneTreeDock : public EditorDock {
-	GDCLASS(SceneTreeDock, EditorDock);
+	GDCLASS(SceneTreeDock, EditorDock)
 
 	enum Tool {
 		TOOL_NEW,

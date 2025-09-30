@@ -35,7 +35,7 @@
 #include "scene/gui/tree.h"
 
 class EditorCommandPalette : public ConfirmationDialog {
-	GDCLASS(EditorCommandPalette, ConfirmationDialog);
+	GDCLASS(EditorCommandPalette, ConfirmationDialog)
 
 	static EditorCommandPalette *singleton;
 	LineEdit *command_search_box = nullptr;

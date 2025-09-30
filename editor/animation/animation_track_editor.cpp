@@ -56,6 +56,7 @@
 #include "scene/gui/color_picker.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/option_button.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/separator.h"

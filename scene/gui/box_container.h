@@ -63,21 +63,21 @@ public:
 	Control *add_spacer(bool p_begin = false);
 
 	void set_alignment(AlignmentMode p_alignment);
-	AlignmentMode get_alignment() const;
+	_FORCE_INLINE_ AlignmentMode get_alignment() const { return alignment; }
 
 	void set_vertical(bool p_vertical);
-	bool is_vertical() const;
+	_FORCE_INLINE_ bool is_vertical() const { return vertical; }
 
 	virtual Size2 get_minimum_size() const override;
 
 	virtual Vector<int> get_allowed_size_flags_horizontal() const override;
 	virtual Vector<int> get_allowed_size_flags_vertical() const override;
 
-	BoxContainer(bool p_vertical = false);
+	BoxContainer(bool p_vertical = false) { vertical = p_vertical; }
 };
 
 class HBoxContainer : public BoxContainer {
-	GDCLASS(HBoxContainer, BoxContainer);
+	GDCLASS(HBoxContainer, BoxContainer)
 
 public:
 	HBoxContainer() :
@@ -86,7 +86,7 @@ public:
 
 class MarginContainer;
 class VBoxContainer : public BoxContainer {
-	GDCLASS(VBoxContainer, BoxContainer);
+	GDCLASS(VBoxContainer, BoxContainer)
 
 public:
 	MarginContainer *add_margin_child(const String &p_label, Control *p_control, bool p_expand = false);

@@ -56,7 +56,7 @@ class StyleBoxFlat;
 class TextureRect;
 
 class ColorPresetButton : public ColorButton {
-	GDCLASS(ColorPresetButton, ColorButton);
+	GDCLASS(ColorPresetButton, ColorButton)
 
 	bool recent = false;
 
@@ -67,7 +67,7 @@ public:
 };
 
 class ColorPicker : public VBoxContainer {
-	GDCLASS(ColorPicker, VBoxContainer);
+	GDCLASS(ColorPicker, VBoxContainer)
 
 	// These classes poke into theme items for their internal logic.
 	friend class ColorPickerShape;
@@ -407,7 +407,7 @@ public:
 	void set_quick_open_callback(const Callable &p_file_selected);
 	void set_palette_saved_callback(const Callable &p_palette_saved);
 	void _quick_open_palette_file_selected(const String &p_path);
-	_ALWAYS_INLINE_ GridContainer *get_slider_container() { return slider_gc; }
+	_FORCE_INLINE_ GridContainer *get_slider_container() { return slider_gc; }
 #endif // TOOLS_ENABLED
 
 	HSlider *get_slider(int idx);
@@ -417,24 +417,24 @@ public:
 	void add_shape(ColorPickerShape *p_shape);
 
 	void set_edit_alpha(bool p_show);
-	_ALWAYS_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
+	_FORCE_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
 
 	void set_edit_intensity(bool p_show);
-	_ALWAYS_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
+	_FORCE_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
 
 	void _set_pick_color(const Color &p_color, bool p_update_sliders, bool p_calc_intensity);
 	void set_pick_color(const Color &p_color);
-	_ALWAYS_INLINE_ Color get_pick_color() const { return color; }
+	_FORCE_INLINE_ Color get_pick_color() const { return color; }
 	void set_old_color(const Color &p_color);
-	_ALWAYS_INLINE_ Color get_old_color() const { return old_color; }
+	_FORCE_INLINE_ Color get_old_color() const { return old_color; }
 
 	void _palette_file_selected(const String &p_path);
 
 	void set_display_old_color(bool p_enabled);
-	_ALWAYS_INLINE_ bool is_displaying_old_color() const { return display_old_color; }
+	_FORCE_INLINE_ bool is_displaying_old_color() const { return display_old_color; }
 
 	void set_picker_shape(PickerShapeType p_shape);
-	_ALWAYS_INLINE_ PickerShapeType get_picker_shape() const { return current_shape; }
+	_FORCE_INLINE_ PickerShapeType get_picker_shape() const { return current_shape; }
 
 	void add_preset(const Color &p_color);
 	void add_recent_preset(const Color &p_color);
@@ -452,28 +452,28 @@ public:
 	bool _select_from_recent_preset_hbc(const Color &p_color);
 
 	void set_color_mode(ColorModeType p_mode);
-	_ALWAYS_INLINE_ ColorModeType get_color_mode() const { return current_mode; }
+	_FORCE_INLINE_ ColorModeType get_color_mode() const { return current_mode; }
 
-	_ALWAYS_INLINE_ void set_deferred_mode(bool p_enabled) { deferred_mode_enabled = p_enabled; }
-	_ALWAYS_INLINE_ bool is_deferred_mode() const { return deferred_mode_enabled; }
+	void set_deferred_mode(bool p_enabled);
+	_FORCE_INLINE_ bool is_deferred_mode() const { return deferred_mode_enabled; }
 
 	void set_can_add_swatches(bool p_enabled);
-	_ALWAYS_INLINE_ bool are_swatches_enabled() const { return can_add_swatches; }
+	_FORCE_INLINE_ bool are_swatches_enabled() const { return can_add_swatches; }
 
 	void set_presets_visible(bool p_visible);
-	_ALWAYS_INLINE_ bool are_presets_visible() const { return presets_visible; }
+	_FORCE_INLINE_ bool are_presets_visible() const { return presets_visible; }
 
 	void set_modes_visible(bool p_visible);
-	_ALWAYS_INLINE_ bool are_modes_visible() const { return color_modes_visible; }
+	_FORCE_INLINE_ bool are_modes_visible() const { return color_modes_visible; }
 
 	void set_sampler_visible(bool p_visible);
-	_ALWAYS_INLINE_ bool is_sampler_visible() const { return sampler_visible; }
+	_FORCE_INLINE_ bool is_sampler_visible() const { return sampler_visible; }
 
 	void set_sliders_visible(bool p_visible);
-	_ALWAYS_INLINE_ bool are_sliders_visible() const { return sliders_visible; }
+	_FORCE_INLINE_ bool are_sliders_visible() const { return sliders_visible; }
 
 	void set_hex_visible(bool p_visible);
-	_ALWAYS_INLINE_ bool is_hex_visible() const { return hex_visible; }
+	_FORCE_INLINE_ bool is_hex_visible() const { return hex_visible; }
 
 	void set_focus_on_line_edit();
 	void set_focus_on_picker_shape();
@@ -483,7 +483,7 @@ public:
 };
 
 class ColorPickerButton : public Button {
-	GDCLASS(ColorPickerButton, Button);
+	GDCLASS(ColorPickerButton, Button)
 
 	PopupPanel *popup = nullptr;
 	ColorPicker *picker = nullptr;
@@ -513,13 +513,13 @@ protected:
 
 public:
 	void set_pick_color(const Color &p_color);
-	_ALWAYS_INLINE_ Color get_pick_color() const { return color; }
+	_FORCE_INLINE_ Color get_pick_color() const { return color; }
 
 	void set_edit_alpha(bool p_show);
-	_ALWAYS_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
+	_FORCE_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
 
 	void set_edit_intensity(bool p_show);
-	_ALWAYS_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
+	_FORCE_INLINE_ bool is_editing_intensity() const { return edit_intensity; }
 
 	ColorPicker *get_picker();
 	PopupPanel *get_popup();

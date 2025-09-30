@@ -32,7 +32,6 @@
 
 #include "core/config/project_settings.h"
 #include "core/io/dir_access.h"
-#include "core/os/time.h"
 #include "core/version.h"
 #include "editor/editor_string_names.h"
 #include "editor/file_system/editor_paths.h"

@@ -33,6 +33,8 @@
 #include "core/config/project_settings.h"
 #include "core/input/input.h"
 #include "core/os/keyboard.h"
+#include "editor/animation/animation_library_editor.h"
+#include "editor/animation/animation_track_editor.h"
 #include "editor/animation/animation_tree_editor_plugin.h"
 #include "editor/docks/inspector_dock.h"
 #include "editor/docks/scene_tree_dock.h"
@@ -47,9 +49,15 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
+#include "scene/animation/animation_mixer.h"
+#include "scene/animation/animation_player.h"
 #include "scene/animation/animation_tree.h"
+#include "scene/gui/dialogs.h"
+#include "scene/gui/label.h"
+#include "scene/gui/menu_button.h"
 #include "scene/gui/separator.h"
-#include "scene/main/window.h"
+#include "scene/gui/spin_box.h"
+#include "scene/gui/tree.h"
 #include "scene/resources/animation.h"
 #include "scene/resources/image_texture.h"
 #include "servers/rendering/rendering_server.h"
@@ -882,6 +890,15 @@ void AnimationPlayerEditor::ensure_visibility() {
 	}
 
 	_animation_edit();
+}
+
+bool AnimationPlayerEditor::is_pinned() const {
+	return pin->is_pressed();
+}
+
+void AnimationPlayerEditor::unpin() {
+	pin->set_pressed(false);
+	_pin_pressed();
 }
 
 Dictionary AnimationPlayerEditor::get_state() const {

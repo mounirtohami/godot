@@ -40,7 +40,7 @@ class PanelContainer;
 class VBoxContainer;
 
 class QuickSettingsDialog : public AcceptDialog {
-	GDCLASS(QuickSettingsDialog, AcceptDialog);
+	GDCLASS(QuickSettingsDialog, AcceptDialog)
 
 #ifndef ANDROID_ENABLED
 	Vector<String> editor_languages;

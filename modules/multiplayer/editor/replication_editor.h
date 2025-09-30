@@ -38,6 +38,7 @@
 class ConfirmationDialog;
 class MultiplayerSynchronizer;
 class AcceptDialog;
+class Label;
 class LineEdit;
 class Tree;
 class TreeItem;

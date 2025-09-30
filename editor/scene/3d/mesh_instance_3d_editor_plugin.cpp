@@ -47,6 +47,7 @@
 #include "scene/gui/aspect_ratio_container.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
+#include "scene/gui/label.h"
 #include "scene/gui/menu_button.h"
 #include "scene/gui/spin_box.h"
 #include "scene/resources/3d/box_shape_3d.h"

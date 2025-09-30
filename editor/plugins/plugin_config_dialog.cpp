@@ -40,6 +40,7 @@
 #include "editor/settings/project_settings_editor.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 
 void PluginConfigDialog::_clear_fields() {
 	name_edit->set_text("");

@@ -32,11 +32,12 @@
 
 #include "scene/gui/dialogs.h"
 
-class LineEdit;
 class ItemList;
+class LineEdit;
+class VBoxContainer;
 
 class EditorLayoutsDialog : public ConfirmationDialog {
-	GDCLASS(EditorLayoutsDialog, ConfirmationDialog);
+	GDCLASS(EditorLayoutsDialog, ConfirmationDialog)
 
 	LineEdit *name = nullptr;
 	ItemList *layout_names = nullptr;

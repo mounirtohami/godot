@@ -31,9 +31,13 @@
 #include "node_dock.h"
 
 #include "core/io/config_file.h"
+#include "editor/docks/groups_editor.h"
 #include "editor/scene/connections_dialog.h"
 #include "editor/settings/editor_command_palette.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
+#include "scene/gui/label.h"
 
 void NodeDock::show_groups() {
 	groups_button->set_pressed(true);

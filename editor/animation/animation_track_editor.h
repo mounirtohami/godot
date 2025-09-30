@@ -58,7 +58,7 @@ class ViewPanner;
 class EditorValidationPanel;
 
 class AnimationTrackKeyEdit : public Object {
-	GDCLASS(AnimationTrackKeyEdit, Object);
+	GDCLASS(AnimationTrackKeyEdit, Object)
 
 public:
 	bool setting = false;
@@ -95,7 +95,7 @@ protected:
 };
 
 class AnimationMultiTrackKeyEdit : public Object {
-	GDCLASS(AnimationMultiTrackKeyEdit, Object);
+	GDCLASS(AnimationMultiTrackKeyEdit, Object)
 
 public:
 	bool setting = false;
@@ -133,7 +133,7 @@ protected:
 };
 
 class AnimationMarkerKeyEdit : public Object {
-	GDCLASS(AnimationMarkerKeyEdit, Object);
+	GDCLASS(AnimationMarkerKeyEdit, Object)
 
 public:
 	bool animation_read_only = false;
@@ -185,7 +185,7 @@ protected:
 };
 
 class AnimationTimelineEdit : public Range {
-	GDCLASS(AnimationTimelineEdit, Range);
+	GDCLASS(AnimationTimelineEdit, Range)
 
 	friend class AnimationBezierTrackEdit;
 	friend class AnimationTrackEditor;
@@ -277,7 +277,8 @@ public:
 };
 
 class AnimationMarkerEdit : public Control {
-	GDCLASS(AnimationMarkerEdit, Control);
+	GDCLASS(AnimationMarkerEdit, Control)
+
 	friend class AnimationTimelineEdit;
 
 	enum {
@@ -410,7 +411,8 @@ public:
 };
 
 class AnimationTrackEdit : public Control {
-	GDCLASS(AnimationTrackEdit, Control);
+	GDCLASS(AnimationTrackEdit, Control)
+
 	friend class AnimationTimelineEdit;
 
 	enum {
@@ -546,7 +548,7 @@ public:
 };
 
 class AnimationTrackEditPlugin : public RefCounted {
-	GDCLASS(AnimationTrackEditPlugin, RefCounted);
+	GDCLASS(AnimationTrackEditPlugin, RefCounted)
 
 public:
 	virtual AnimationTrackEdit *create_value_track_edit(Object *p_object, Variant::Type p_type, const String &p_property, PropertyHint p_hint, const String &p_hint_string, int p_usage);
@@ -559,7 +561,7 @@ class AnimationMultiTrackKeyEdit;
 class AnimationBezierTrackEdit;
 
 class AnimationTrackEditGroup : public Control {
-	GDCLASS(AnimationTrackEditGroup, Control);
+	GDCLASS(AnimationTrackEditGroup, Control)
 	Ref<Texture2D> icon;
 	Vector2 icon_size;
 	String node_name;
@@ -587,7 +589,7 @@ public:
 };
 
 class AnimationTrackEditor : public VBoxContainer {
-	GDCLASS(AnimationTrackEditor, VBoxContainer);
+	GDCLASS(AnimationTrackEditor, VBoxContainer)
 	friend class AnimationTimelineEdit;
 	friend class AnimationBezierTrackEdit;
 	friend class AnimationMarkerKeyEditEditor;
@@ -996,7 +998,7 @@ public:
 // AnimationTrackKeyEditEditorPlugin
 
 class AnimationTrackKeyEditEditor : public EditorProperty {
-	GDCLASS(AnimationTrackKeyEditEditor, EditorProperty);
+	GDCLASS(AnimationTrackKeyEditEditor, EditorProperty)
 
 	Ref<Animation> animation;
 	int track = -1;
@@ -1022,7 +1024,7 @@ public:
 // AnimationMarkerKeyEditEditorPlugin
 
 class AnimationMarkerKeyEditEditor : public EditorProperty {
-	GDCLASS(AnimationMarkerKeyEditEditor, EditorProperty);
+	GDCLASS(AnimationMarkerKeyEditEditor, EditorProperty)
 
 	Ref<Animation> animation;
 	StringName marker_name;

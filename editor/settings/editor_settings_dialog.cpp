@@ -42,15 +42,17 @@
 #include "editor/inspector/editor_sectioned_inspector.h"
 #ifndef _3D_DISABLED
 #include "editor/scene/3d/node_3d_editor_plugin.h"
+#include "editor/settings/project_settings_editor.h"
 #endif // _3D_DISABLED
 #include "editor/settings/editor_event_search_bar.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/settings/event_listener_line_edit.h"
 #include "editor/settings/input_event_configuration_dialog.h"
-#include "editor/settings/project_settings_editor.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/check_button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"

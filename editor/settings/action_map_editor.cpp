@@ -37,6 +37,7 @@
 #include "editor/settings/input_event_configuration_dialog.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/check_button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/tree.h"
 

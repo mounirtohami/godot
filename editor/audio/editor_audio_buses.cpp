@@ -44,6 +44,7 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
+#include "scene/gui/label.h"
 #include "scene/gui/separator.h"
 #include "scene/main/timer.h"
 #include "scene/resources/font.h"

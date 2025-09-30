@@ -47,9 +47,9 @@ STATIC_ASSERT_INCOMPLETE_TYPE(class, Engine);
 #include "scene/animation/tween.h"
 #include "scene/debugger/scene_debugger.h"
 #include "scene/main/multiplayer_api.h"
+#include "scene/main/viewport.h"
 #include "scene/main/window.h"
 #include "scene/resources/packed_scene.h"
-#include "viewport.h"
 
 #ifdef DEBUG_ENABLED
 SafeNumeric<uint64_t> Node::total_node_count{ 0 };
@@ -739,10 +739,6 @@ void Node::_propagate_suspend_notification(bool p_enable) {
 	data.blocked--;
 }
 
-Node::ProcessMode Node::get_process_mode() const {
-	return data.process_mode;
-}
-
 void Node::_propagate_process_owner(Node *p_owner, int p_pause_notification, int p_enabled_notification) {
 	data.process_owner = p_owner;
 
@@ -775,10 +771,6 @@ void Node::set_multiplayer_authority(int p_peer_id, bool p_recursive) {
 	}
 }
 
-int Node::get_multiplayer_authority() const {
-	return data.multiplayer_authority;
-}
-
 bool Node::is_multiplayer_authority() const {
 	ERR_FAIL_COND_V(!is_inside_tree(), false);
 
@@ -800,10 +792,6 @@ void Node::rpc_config(const StringName &p_method, const Variant &p_config) {
 		ERR_FAIL_COND(p_config.get_type() != Variant::DICTIONARY);
 		node_config[p_method] = p_config;
 	}
-}
-
-const Variant Node::get_node_rpc_config() const {
-	return data.rpc_config;
 }
 
 /***** RPC FUNCTIONS ********/
@@ -1129,10 +1117,6 @@ void Node::set_process_thread_group_order(int p_order) {
 	data.tree->process_groups_dirty = true;
 }
 
-int Node::get_process_thread_group_order() const {
-	return data.process_thread_group_order;
-}
-
 void Node::set_process_priority(int p_priority) {
 	ERR_THREAD_GUARD
 	if (data.process_priority == p_priority) {
@@ -1155,10 +1139,6 @@ void Node::set_process_priority(int p_priority) {
 	}
 }
 
-int Node::get_process_priority() const {
-	return data.process_priority;
-}
-
 void Node::set_physics_process_priority(int p_priority) {
 	ERR_THREAD_GUARD
 	if (data.physics_process_priority == p_priority) {
@@ -1179,10 +1159,6 @@ void Node::set_physics_process_priority(int p_priority) {
 	if (_is_any_processing()) {
 		_add_to_process_thread_group();
 	}
-}
-
-int Node::get_physics_process_priority() const {
-	return data.physics_process_priority;
 }
 
 void Node::set_process_thread_group(ProcessThreadGroup p_mode) {
@@ -1220,10 +1196,6 @@ void Node::set_process_thread_group(ProcessThreadGroup p_mode) {
 	notify_property_list_changed();
 }
 
-Node::ProcessThreadGroup Node::get_process_thread_group() const {
-	return data.process_thread_group;
-}
-
 void Node::set_process_thread_messages(BitField<ProcessThreadMessages> p_flags) {
 	ERR_THREAD_GUARD
 	if (data.process_thread_messages == p_flags) {
@@ -1231,10 +1203,6 @@ void Node::set_process_thread_messages(BitField<ProcessThreadMessages> p_flags) 
 	}
 
 	data.process_thread_messages = p_flags;
-}
-
-BitField<Node::ProcessThreadMessages> Node::get_process_thread_messages() const {
-	return data.process_thread_messages;
 }
 
 void Node::set_process_input(bool p_enable) {
@@ -1255,10 +1223,6 @@ void Node::set_process_input(bool p_enable) {
 	}
 }
 
-bool Node::is_processing_input() const {
-	return data.input;
-}
-
 void Node::set_process_shortcut_input(bool p_enable) {
 	ERR_THREAD_GUARD
 	if (p_enable == data.shortcut_input) {
@@ -1274,10 +1238,6 @@ void Node::set_process_shortcut_input(bool p_enable) {
 	} else {
 		remove_from_group("_vp_shortcut_input" + itos(get_viewport()->get_instance_id()));
 	}
-}
-
-bool Node::is_processing_shortcut_input() const {
-	return data.shortcut_input;
 }
 
 void Node::set_process_unhandled_input(bool p_enable) {
@@ -1297,10 +1257,6 @@ void Node::set_process_unhandled_input(bool p_enable) {
 	}
 }
 
-bool Node::is_processing_unhandled_input() const {
-	return data.unhandled_input;
-}
-
 void Node::set_process_unhandled_key_input(bool p_enable) {
 	ERR_THREAD_GUARD
 	if (p_enable == data.unhandled_key_input) {
@@ -1318,10 +1274,6 @@ void Node::set_process_unhandled_key_input(bool p_enable) {
 	}
 }
 
-bool Node::is_processing_unhandled_key_input() const {
-	return data.unhandled_key_input;
-}
-
 void Node::set_auto_translate_mode(AutoTranslateMode p_mode) {
 	ERR_THREAD_GUARD
 	if (data.auto_translate_mode == p_mode) {
@@ -1337,10 +1289,6 @@ void Node::set_auto_translate_mode(AutoTranslateMode p_mode) {
 	data.is_auto_translate_dirty = true;
 
 	propagate_notification(NOTIFICATION_TRANSLATION_CHANGED);
-}
-
-Node::AutoTranslateMode Node::get_auto_translate_mode() const {
-	return data.auto_translate_mode;
 }
 
 bool Node::can_auto_translate() const {
@@ -1411,10 +1359,6 @@ void Node::_propagate_translation_domain_dirty() {
 	if (is_inside_tree() && data.auto_translate_mode != AUTO_TRANSLATE_MODE_DISABLED) {
 		notification(NOTIFICATION_TRANSLATION_CHANGED);
 	}
-}
-
-StringName Node::get_name() const {
-	return data.name;
 }
 
 void Node::_set_name_nocheck(const StringName &p_name) {
@@ -1637,10 +1581,6 @@ void Node::_generate_serial_child_name(const Node *p_child, StringName &name) co
 			}
 		}
 	}
-}
-
-Node::InternalMode Node::get_internal_mode() const {
-	return data.internal_mode;
 }
 
 void Node::_add_child_nocheck(Node *p_child, const StringName &p_name, InternalMode p_internal_mode) {
@@ -2135,10 +2075,6 @@ void Node::reparent(Node *p_parent, bool p_keep_global_transform) {
 	}
 }
 
-Node *Node::get_parent() const {
-	return data.parent;
-}
-
 Node *Node::find_parent(const String &p_pattern) const {
 	ERR_THREAD_GUARD_V(nullptr);
 	Node *p = data.parent;
@@ -2349,10 +2285,6 @@ void Node::set_owner(Node *p_owner) {
 	}
 
 	_emit_editor_state_changed();
-}
-
-Node *Node::get_owner() const {
-	return data.owner;
 }
 
 void Node::_clean_up_owner() {
@@ -2729,10 +2661,6 @@ void Node::set_scene_file_path(const String &p_scene_file_path) {
 	_emit_editor_state_changed();
 }
 
-String Node::get_scene_file_path() const {
-	return data.scene_file_path;
-}
-
 void Node::set_editor_description(const String &p_editor_description) {
 	ERR_THREAD_GUARD
 	if (data.editor_description == p_editor_description) {
@@ -2741,10 +2669,6 @@ void Node::set_editor_description(const String &p_editor_description) {
 
 	data.editor_description = p_editor_description;
 	emit_signal(SNAME("editor_description_changed"), this);
-}
-
-String Node::get_editor_description() const {
-	return data.editor_description;
 }
 
 void Node::set_editable_instance(Node *p_node, bool p_editable) {
@@ -2819,10 +2743,6 @@ bool Node::is_property_pinned(const StringName &p_property) const {
 	return pinned.has(psa);
 }
 
-StringName Node::get_property_store_alias(const StringName &p_property) const {
-	return p_property;
-}
-
 bool Node::is_part_of_edited_scene() const {
 	return Engine::get_singleton()->is_editor_hint() && is_inside_tree() && data.tree->get_edited_scene_root() &&
 			data.tree->get_edited_scene_root()->get_parent()->is_ancestor_of(this);
@@ -2861,10 +2781,6 @@ Ref<SceneState> Node::get_scene_inherited_state() const {
 
 void Node::set_scene_instance_load_placeholder(bool p_enable) {
 	data.use_placeholder = p_enable;
-}
-
-bool Node::get_scene_instance_load_placeholder() const {
-	return data.use_placeholder;
 }
 
 Node *Node::_duplicate(int p_flags, HashMap<const Node *, Node *> *r_duplimap) const {

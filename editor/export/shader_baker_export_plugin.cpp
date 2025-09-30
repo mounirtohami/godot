@@ -33,6 +33,7 @@
 #include "core/config/project_settings.h"
 #include "core/version.h"
 #include "editor/editor_node.h"
+#include "scene/resources/material.h"
 #include "servers/rendering/renderer_rd/renderer_scene_render_rd.h"
 #include "servers/rendering/renderer_rd/storage_rd/material_storage.h"
 #include "servers/rendering/rendering_shader_container.h"

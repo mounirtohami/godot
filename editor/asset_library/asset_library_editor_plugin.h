@@ -30,27 +30,29 @@
 
 #pragma once
 
-#include "editor/asset_library/editor_asset_installer.h"
 #include "editor/plugins/editor_plugin.h"
-#include "scene/gui/box_container.h"
-#include "scene/gui/grid_container.h"
-#include "scene/gui/line_edit.h"
-#include "scene/gui/link_button.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/margin_container.h"
-#include "scene/gui/option_button.h"
 #include "scene/gui/panel_container.h"
-#include "scene/gui/progress_bar.h"
-#include "scene/gui/rich_text_label.h"
-#include "scene/gui/scroll_container.h"
-#include "scene/gui/texture_button.h"
-#include "scene/gui/texture_rect.h"
-#include "scene/main/http_request.h"
 
+class EditorAssetInstaller;
 class EditorFileDialog;
+class GridContainer;
+class HBoxContainer;
+class HTTPRequest;
+class LineEdit;
+class LinkButton;
 class MenuButton;
+class OptionButton;
+class ProgressBar;
+class RichTextLabel;
+class ScrollContainer;
+class TextureButton;
+class TextureRect;
+class VBoxContainer;
 
 class EditorAssetLibraryItem : public PanelContainer {
-	GDCLASS(EditorAssetLibraryItem, PanelContainer);
+	GDCLASS(EditorAssetLibraryItem, PanelContainer)
 
 	TextureButton *icon = nullptr;
 	LinkButton *title = nullptr;
@@ -82,7 +84,7 @@ public:
 };
 
 class EditorAssetLibraryItemDescription : public ConfirmationDialog {
-	GDCLASS(EditorAssetLibraryItemDescription, ConfirmationDialog);
+	GDCLASS(EditorAssetLibraryItemDescription, ConfirmationDialog)
 
 	EditorAssetLibraryItem *item = nullptr;
 	RichTextLabel *description = nullptr;
@@ -130,7 +132,7 @@ public:
 };
 
 class EditorAssetLibraryItemDownload : public MarginContainer {
-	GDCLASS(EditorAssetLibraryItemDownload, MarginContainer);
+	GDCLASS(EditorAssetLibraryItemDownload, MarginContainer)
 
 	PanelContainer *panel = nullptr;
 	TextureRect *icon = nullptr;
@@ -174,7 +176,7 @@ public:
 };
 
 class EditorAssetLibrary : public PanelContainer {
-	GDCLASS(EditorAssetLibrary, PanelContainer);
+	GDCLASS(EditorAssetLibrary, PanelContainer)
 
 	String host;
 
@@ -331,7 +333,7 @@ public:
 };
 
 class AssetLibraryEditorPlugin : public EditorPlugin {
-	GDCLASS(AssetLibraryEditorPlugin, EditorPlugin);
+	GDCLASS(AssetLibraryEditorPlugin, EditorPlugin)
 
 	EditorAssetLibrary *addon_library = nullptr;
 

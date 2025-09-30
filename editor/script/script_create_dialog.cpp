@@ -43,6 +43,7 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/theme/theme_db.h"
 

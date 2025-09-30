@@ -39,7 +39,7 @@ class EditorFileDialog;
 class ScrollContainer;
 
 class AnimationTreeNodeEditorPlugin : public VBoxContainer {
-	GDCLASS(AnimationTreeNodeEditorPlugin, VBoxContainer);
+	GDCLASS(AnimationTreeNodeEditorPlugin, VBoxContainer)
 
 public:
 	virtual bool can_edit(const Ref<AnimationNode> &p_node) = 0;
@@ -47,7 +47,7 @@ public:
 };
 
 class AnimationTreeEditor : public VBoxContainer {
-	GDCLASS(AnimationTreeEditor, VBoxContainer);
+	GDCLASS(AnimationTreeEditor, VBoxContainer)
 
 	ScrollContainer *path_edit = nullptr;
 	HBoxContainer *path_hb = nullptr;
@@ -93,7 +93,7 @@ public:
 };
 
 class AnimationTreeEditorPlugin : public EditorPlugin {
-	GDCLASS(AnimationTreeEditorPlugin, EditorPlugin);
+	GDCLASS(AnimationTreeEditorPlugin, EditorPlugin)
 
 	AnimationTreeEditor *anim_tree_editor = nullptr;
 	Button *button = nullptr;

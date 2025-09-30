@@ -32,6 +32,7 @@
 
 #include "core/io/resource_saver.h"
 #include "editor/animation/animation_player_editor_plugin.h"
+#include "editor/animation/animation_track_editor.h"
 #include "editor/editor_node.h"
 #include "editor/editor_string_names.h"
 #include "editor/editor_undo_redo_manager.h"
@@ -41,6 +42,9 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/3d/mesh_instance_3d.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/resources/skeleton_profile.h"

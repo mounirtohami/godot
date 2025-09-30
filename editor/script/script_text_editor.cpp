@@ -49,9 +49,9 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/menu_button.h"
 #include "scene/gui/rich_text_label.h"
-#include "scene/gui/slider.h"
 #include "scene/gui/split_container.h"
 
 void ConnectionInfoDialog::ok_pressed() {

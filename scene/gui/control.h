@@ -42,7 +42,7 @@ class ThemeOwner;
 class ThemeContext;
 
 class Control : public CanvasItem {
-	GDCLASS(Control, CanvasItem);
+	GDCLASS(Control, CanvasItem)
 
 #ifdef TOOLS_ENABLED
 	bool saving = false;
@@ -445,24 +445,24 @@ public:
 	virtual Point2 _edit_get_position() const override;
 
 	virtual void _edit_set_scale(const Size2 &p_scale) override;
-	virtual Size2 _edit_get_scale() const override;
+	virtual Size2 _edit_get_scale() const override { return data.scale; }
 
 	virtual void _edit_set_rect(const Rect2 &p_edit_rect) override;
 
 	virtual void _edit_set_rotation(real_t p_rotation) override;
 	virtual real_t _edit_get_rotation() const override;
-	virtual bool _edit_use_rotation() const override;
+	virtual bool _edit_use_rotation() const override { return true; }
 
 	virtual void _edit_set_pivot(const Point2 &p_pivot) override;
 	virtual Point2 _edit_get_pivot() const override;
-	virtual bool _edit_use_pivot() const override;
+	virtual bool _edit_use_pivot() const override { return true; }
 
 	virtual Size2 _edit_get_minimum_size() const override;
 #endif //TOOLS_ENABLED
 
 #ifdef DEBUG_ENABLED
 	virtual Rect2 _edit_get_rect() const override;
-	virtual bool _edit_use_rect() const override;
+	virtual bool _edit_use_rect() const override { return true; }
 #endif // DEBUG_ENABLED
 
 	virtual void reparent(Node *p_parent, bool p_keep_global_transform = true) override;
@@ -563,7 +563,7 @@ public:
 
 	// Input events.
 
-	virtual void gui_input(const Ref<InputEvent> &p_event);
+	virtual void gui_input(const Ref<InputEvent> &p_event) {}
 	void accept_event();
 
 	virtual bool has_point(const Point2 &p_point) const;
@@ -631,19 +631,19 @@ public:
 	String get_accessibility_description() const;
 
 	void set_accessibility_live(DisplayServer::AccessibilityLiveMode p_mode);
-	DisplayServer::AccessibilityLiveMode get_accessibility_live() const;
+	_FORCE_INLINE_ DisplayServer::AccessibilityLiveMode get_accessibility_live() const { return data.accessibility_live; }
 
 	void set_accessibility_controls_nodes(const TypedArray<NodePath> &p_node_path);
-	TypedArray<NodePath> get_accessibility_controls_nodes() const;
+	_FORCE_INLINE_ TypedArray<NodePath> get_accessibility_controls_nodes() const { return data.accessibility_controls_nodes; }
 
 	void set_accessibility_described_by_nodes(const TypedArray<NodePath> &p_node_path);
-	TypedArray<NodePath> get_accessibility_described_by_nodes() const;
+	_FORCE_INLINE_ TypedArray<NodePath> get_accessibility_described_by_nodes() const { return data.accessibility_described_by_nodes; }
 
 	void set_accessibility_labeled_by_nodes(const TypedArray<NodePath> &p_node_path);
-	TypedArray<NodePath> get_accessibility_labeled_by_nodes() const;
+	_FORCE_INLINE_ TypedArray<NodePath> get_accessibility_labeled_by_nodes() const { return data.accessibility_labeled_by_nodes; }
 
 	void set_accessibility_flow_to_nodes(const TypedArray<NodePath> &p_node_path);
-	TypedArray<NodePath> get_accessibility_flow_to_nodes() const;
+	_FORCE_INLINE_ TypedArray<NodePath> get_accessibility_flow_to_nodes() const { return data.accessibility_flow_to_nodes; }
 
 	// Rendering.
 

@@ -37,9 +37,11 @@
 #include "core/io/json.h"
 #include "core/object/script_language.h"
 #include "core/os/keyboard.h"
+#include "core/os/thread.h"
 #include "core/string/string_builder.h"
 #include "core/version.h"
 #include "editor/doc/doc_data_compressed.gen.h"
+#include "editor/doc/doc_tools.h"
 #include "editor/docks/filesystem_dock.h"
 #include "editor/editor_main_screen.h"
 #include "editor/editor_node.h"
@@ -48,10 +50,16 @@
 #include "editor/file_system/editor_paths.h"
 #include "editor/gui/editor_toaster.h"
 #include "editor/inspector/editor_property_name_processor.h"
+#include "editor/plugins/editor_plugin.h"
 #include "editor/script/script_editor_plugin.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/dialogs.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/rich_text_label.h"
+#include "scene/gui/text_edit.h"
+#include "scene/main/timer.h"
 
 #include "modules/modules_enabled.gen.h" // For gdscript, mono.
 
@@ -3395,6 +3403,10 @@ void EditorHelp::popup_search() {
 
 String EditorHelp::get_class() {
 	return edited_class;
+}
+
+void EditorHelp::set_focused() {
+	class_desc->grab_focus();
 }
 
 void EditorHelp::search_again(bool p_search_previous) {

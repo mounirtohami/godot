@@ -200,9 +200,9 @@ private:
 
 	public:
 		void set_tab_size(int p_tab_size);
-		int get_tab_size() const;
+		_FORCE_INLINE_ int get_tab_size() const { return tab_size; }
 		void set_indent_wrapped_lines(bool p_enabled);
-		bool is_indent_wrapped_lines() const;
+		_FORCE_INLINE_ bool is_indent_wrapped_lines() const { return indent_wrapped_lines; }
 
 		void set_font(const Ref<Font> &p_font);
 		void set_font_size(int p_font_size);
@@ -213,23 +213,23 @@ private:
 		int get_line_height() const;
 		int get_line_width(int p_line, int p_wrap_index = -1) const;
 		int get_max_width() const;
-		int get_total_visible_line_count() const;
+		_FORCE_INLINE_ int get_total_visible_line_count() const { return total_visible_line_count; }
 
 		void set_use_default_word_separators(bool p_enabled);
-		bool is_default_word_separators_enabled() const;
+		_FORCE_INLINE_ bool is_default_word_separators_enabled() const { return use_default_word_separators; }
 
 		void set_use_custom_word_separators(bool p_enabled);
-		bool is_custom_word_separators_enabled() const;
+		_FORCE_INLINE_ bool is_custom_word_separators_enabled() const { return use_custom_word_separators; }
 
 		void set_custom_word_separators(const String &p_separators);
 		String get_enabled_word_separators() const;
-		String get_custom_word_separators() const;
+		_FORCE_INLINE_ String get_custom_word_separators() const { return custom_word_separators; }
 		String get_default_word_separators() const;
 
-		void set_width(float p_width);
-		float get_width() const;
-		void set_brk_flags(BitField<TextServer::LineBreakFlag> p_flags);
-		BitField<TextServer::LineBreakFlag> get_brk_flags() const;
+		_FORCE_INLINE_ void set_width(float p_width) { width = p_width; }
+		_FORCE_INLINE_ float get_width() const { return width; }
+		_FORCE_INLINE_ void set_brk_flags(BitField<TextServer::LineBreakFlag> p_flags) { brk_flags = p_flags; }
+		_FORCE_INLINE_ BitField<TextServer::LineBreakFlag> get_brk_flags() const { return brk_flags; }
 		int get_line_wrap_amount(int p_line) const;
 
 		const Vector<RID> get_accessibility_elements(int p_line);
@@ -662,7 +662,7 @@ private:
 	void _draw_rect_unfilled(RID p_canvas_item, const Rect2 &p_rect, const Color &p_color, real_t p_width = -1.0, bool p_antialiased = false) const;
 
 	/* Theme. */
-	Ref<StyleBox> _get_current_stylebox() const;
+	_FORCE_INLINE_ Ref<StyleBox> _get_current_stylebox() const { return editable ? theme_cache.style_normal : theme_cache.style_readonly; }
 
 	/*** Super internal Core API. Everything builds on it. ***/
 	bool text_changed_dirty = false;
@@ -780,7 +780,7 @@ public:
 	virtual void gui_input(const Ref<InputEvent> &p_gui_input) override;
 	bool alt_input(const Ref<InputEvent> &p_gui_input);
 	virtual Size2 get_minimum_size() const override;
-	virtual bool is_text_field() const override;
+	virtual bool is_text_field() const override { return true; }
 	virtual CursorShape get_cursor_shape(const Point2 &p_pos = Point2i()) const override;
 	virtual Variant get_drag_data(const Point2 &p_point) override;
 	virtual bool can_drop_data(const Point2 &p_point, const Variant &p_data) const override;
@@ -790,25 +790,25 @@ public:
 
 	/* Text */
 	// Text properties.
-	RID get_text_canvas_item() const;
+	_FORCE_INLINE_ RID get_text_canvas_item() const { return text_ci; }
 
 	bool has_ime_text() const;
 	void cancel_ime();
 	void apply_ime();
 
 	void set_editable(bool p_editable);
-	bool is_editable() const;
+	_FORCE_INLINE_ bool is_editable() const { return editable; }
 
 	void set_text_direction(TextDirection p_text_direction);
-	TextDirection get_text_direction() const;
+	_FORCE_INLINE_ TextDirection get_text_direction() const { return text_direction; }
 
 	void set_language(const String &p_language);
-	String get_language() const;
+	_FORCE_INLINE_ String get_language() const { return language; }
 
 	void set_structured_text_bidi_override(TextServer::StructuredTextParser p_parser);
-	TextServer::StructuredTextParser get_structured_text_bidi_override() const;
+	_FORCE_INLINE_ TextServer::StructuredTextParser get_structured_text_bidi_override() const { return st_parser; }
 	void set_structured_text_bidi_override_options(const Array &p_args);
-	Array get_structured_text_bidi_override_options() const;
+	_FORCE_INLINE_ Array get_structured_text_bidi_override_options() const { return Array(st_args); }
 
 	void set_tab_size(const int p_size);
 	int get_tab_size() const;
@@ -816,38 +816,38 @@ public:
 	void set_indent_wrapped_lines(bool p_enabled);
 	bool is_indent_wrapped_lines() const;
 
-	void set_tab_input_mode(bool p_enabled);
-	bool get_tab_input_mode() const;
+	_FORCE_INLINE_ void set_tab_input_mode(bool p_enabled) { tab_input_mode = p_enabled; }
+	_FORCE_INLINE_ bool get_tab_input_mode() const { return tab_input_mode; }
 
 	// User controls
 	void set_overtype_mode_enabled(bool p_enabled);
-	bool is_overtype_mode_enabled() const;
+	_FORCE_INLINE_ bool is_overtype_mode_enabled() const { return overtype_mode; }
 
-	void set_context_menu_enabled(bool p_enabled);
-	bool is_context_menu_enabled() const;
+	_FORCE_INLINE_ void set_context_menu_enabled(bool p_enabled) { context_menu_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_context_menu_enabled() const { return context_menu_enabled; }
 
 	void show_emoji_and_symbol_picker();
 
 	void set_emoji_menu_enabled(bool p_enabled);
-	bool is_emoji_menu_enabled() const;
+	_FORCE_INLINE_ bool is_emoji_menu_enabled() const { return emoji_menu_enabled; }
 
-	void set_backspace_deletes_composite_character_enabled(bool p_enabled);
-	bool is_backspace_deletes_composite_character_enabled() const;
+	_FORCE_INLINE_ void set_backspace_deletes_composite_character_enabled(bool p_enabled) { backspace_deletes_composite_character_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_backspace_deletes_composite_character_enabled() const { return backspace_deletes_composite_character_enabled; }
 
-	void set_shortcut_keys_enabled(bool p_enabled);
-	bool is_shortcut_keys_enabled() const;
+	_FORCE_INLINE_ void set_shortcut_keys_enabled(bool p_enabled) { shortcut_keys_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_shortcut_keys_enabled() const { return shortcut_keys_enabled; }
 
-	void set_virtual_keyboard_enabled(bool p_enabled);
-	bool is_virtual_keyboard_enabled() const;
+	_FORCE_INLINE_ void set_virtual_keyboard_enabled(bool p_enabled) { virtual_keyboard_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_virtual_keyboard_enabled() const { return virtual_keyboard_enabled; }
 
-	void set_virtual_keyboard_show_on_focus(bool p_show_on_focus);
-	bool get_virtual_keyboard_show_on_focus() const;
+	_FORCE_INLINE_ void set_virtual_keyboard_show_on_focus(bool p_show_on_focus) { virtual_keyboard_show_on_focus = p_show_on_focus; }
+	_FORCE_INLINE_ bool get_virtual_keyboard_show_on_focus() const { return virtual_keyboard_show_on_focus; }
 
-	void set_middle_mouse_paste_enabled(bool p_enabled);
-	bool is_middle_mouse_paste_enabled() const;
+	_FORCE_INLINE_ void set_middle_mouse_paste_enabled(bool p_enabled) { middle_mouse_paste_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_middle_mouse_paste_enabled() const { return middle_mouse_paste_enabled; }
 
-	void set_empty_selection_clipboard_enabled(bool p_enabled);
-	bool is_empty_selection_clipboard_enabled() const;
+	_FORCE_INLINE_ void set_empty_selection_clipboard_enabled(bool p_enabled) { empty_selection_clipboard_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_empty_selection_clipboard_enabled() const { return empty_selection_clipboard_enabled; }
 
 	// Text manipulation
 	void clear();
@@ -858,7 +858,7 @@ public:
 	int get_line_count() const;
 
 	void set_placeholder(const String &p_text);
-	String get_placeholder() const;
+	_FORCE_INLINE_ String get_placeholder() const { return placeholder_text; }
 
 	void set_line(int p_line, const String &p_new_text);
 	String get_line(int p_line) const;
@@ -902,27 +902,27 @@ public:
 	/* Versioning */
 	void start_action(EditAction p_action);
 	void end_action();
-	EditAction get_current_action() const;
+	_FORCE_INLINE_ EditAction get_current_action() const { return current_action; }
 
 	void begin_complex_operation();
 	void end_complex_operation();
 
 	bool has_undo() const;
-	bool has_redo() const;
+	_FORCE_INLINE_ bool has_redo() const { return undo_stack_pos != nullptr; }
 	void undo();
 	void redo();
 	void clear_undo_history();
 
 	bool is_insert_text_operation() const;
 
-	void tag_saved_version();
+	_FORCE_INLINE_ void tag_saved_version() { saved_version = current_op.version; }
 
-	uint32_t get_version() const;
-	uint32_t get_saved_version() const;
+	_FORCE_INLINE_ uint32_t get_version() const { return current_op.version; }
+	_FORCE_INLINE_ uint32_t get_saved_version() const { return saved_version; }
 
 	/* Search */
-	void set_search_text(const String &p_search_text);
-	void set_search_flags(uint32_t p_flags);
+	_FORCE_INLINE_ void set_search_text(const String &p_search_text) { search_text = p_search_text; }
+	_FORCE_INLINE_ void set_search_flags(uint32_t p_flags) { search_flags = p_flags; }
 
 	Point2i search(const String &p_key, uint32_t p_search_flags, int p_from_line, int p_from_column) const;
 
@@ -938,30 +938,30 @@ public:
 
 	int get_minimap_line_at_pos(const Point2i &p_pos) const;
 
-	bool is_dragging_cursor() const;
+	_FORCE_INLINE_ bool is_dragging_cursor() const { return dragging_selection || dragging_minimap; }
 	bool is_mouse_over_selection(bool p_edges = true, int p_caret = -1) const;
 
 	/* Caret */
 	void set_caret_type(CaretType p_type);
-	CaretType get_caret_type() const;
+	_FORCE_INLINE_ CaretType get_caret_type() const { return caret_type; }
 
 	void set_caret_blink_enabled(bool p_enabled);
-	bool is_caret_blink_enabled() const;
+	_FORCE_INLINE_ bool is_caret_blink_enabled() const { return caret_blink_enabled; }
 
 	void set_caret_blink_interval(const float p_interval);
 	float get_caret_blink_interval() const;
 
 	void set_draw_caret_when_editable_disabled(bool p_enable);
-	bool is_drawing_caret_when_editable_disabled() const;
+	_FORCE_INLINE_ bool is_drawing_caret_when_editable_disabled() const { return draw_caret_when_editable_disabled; }
 
-	void set_move_caret_on_right_click_enabled(bool p_enabled);
-	bool is_move_caret_on_right_click_enabled() const;
+	_FORCE_INLINE_ void set_move_caret_on_right_click_enabled(bool p_enabled) { move_caret_on_right_click = p_enabled; }
+	_FORCE_INLINE_ bool is_move_caret_on_right_click_enabled() const { return move_caret_on_right_click; }
 
-	void set_caret_mid_grapheme_enabled(bool p_enabled);
-	bool is_caret_mid_grapheme_enabled() const;
+	_FORCE_INLINE_ void set_caret_mid_grapheme_enabled(bool p_enabled) { caret_mid_grapheme_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_caret_mid_grapheme_enabled() const { return caret_mid_grapheme_enabled; }
 
 	void set_multiple_carets_enabled(bool p_enabled);
-	bool is_multiple_carets_enabled() const;
+	_FORCE_INLINE_ bool is_multiple_carets_enabled() const { return multi_carets_enabled; }
 
 	int add_caret(int p_line, int p_column);
 	void remove_caret(int p_caret);
@@ -976,7 +976,7 @@ public:
 	void merge_overlapping_carets();
 	void begin_multicaret_edit();
 	void end_multicaret_edit();
-	bool is_in_mulitcaret_edit() const;
+	_FORCE_INLINE_ bool is_in_mulitcaret_edit() const { return multicaret_edit_count > 0; }
 	bool multicaret_edit_ignore_caret(int p_caret) const;
 
 	bool is_caret_visible(int p_caret = 0) const;
@@ -996,16 +996,16 @@ public:
 
 	/* Selection. */
 	void set_selecting_enabled(bool p_enabled);
-	bool is_selecting_enabled() const;
+	_FORCE_INLINE_ bool is_selecting_enabled() const { return selecting_enabled; }
 
 	void set_deselect_on_focus_loss_enabled(bool p_enabled);
-	bool is_deselect_on_focus_loss_enabled() const;
+	_FORCE_INLINE_ bool is_deselect_on_focus_loss_enabled() const { return deselect_on_focus_loss_enabled; }
 
-	void set_drag_and_drop_selection_enabled(bool p_enabled);
-	bool is_drag_and_drop_selection_enabled() const;
+	_FORCE_INLINE_ void set_drag_and_drop_selection_enabled(bool p_enabled) { drag_and_drop_selection_enabled = p_enabled; }
+	_FORCE_INLINE_ bool is_drag_and_drop_selection_enabled() const { return drag_and_drop_selection_enabled; }
 
-	void set_selection_mode(SelectionMode p_mode);
-	SelectionMode get_selection_mode() const;
+	_FORCE_INLINE_ void set_selection_mode(SelectionMode p_mode) { selecting_mode = p_mode; }
+	_FORCE_INLINE_ SelectionMode get_selection_mode() const { return selecting_mode; }
 
 	void select_all();
 	void select_word_under_caret(int p_caret = -1);
@@ -1037,10 +1037,10 @@ public:
 
 	/* Line wrapping. */
 	void set_line_wrapping_mode(LineWrappingMode p_wrapping_mode);
-	LineWrappingMode get_line_wrapping_mode() const;
+	_FORCE_INLINE_ LineWrappingMode get_line_wrapping_mode() const { return line_wrapping_mode; }
 
 	void set_autowrap_mode(TextServer::AutowrapMode p_mode);
-	TextServer::AutowrapMode get_autowrap_mode() const;
+	_FORCE_INLINE_ TextServer::AutowrapMode get_autowrap_mode() const { return autowrap_mode; }
 
 	bool is_line_wrapped(int p_line) const;
 	int get_line_wrap_count(int p_line) const;
@@ -1051,13 +1051,13 @@ public:
 	/* Viewport. */
 	// Scrolling.
 	void set_smooth_scroll_enabled(bool p_enabled);
-	bool is_smooth_scroll_enabled() const;
+	_FORCE_INLINE_ bool is_smooth_scroll_enabled() const { return smooth_scroll_enabled; }
 
 	void set_scroll_past_end_of_file_enabled(bool p_enabled);
-	bool is_scroll_past_end_of_file_enabled() const;
+	_FORCE_INLINE_ bool is_scroll_past_end_of_file_enabled() const { return scroll_past_end_of_file_enabled; }
 
-	VScrollBar *get_v_scroll_bar() const;
-	HScrollBar *get_h_scroll_bar() const;
+	_FORCE_INLINE_ VScrollBar *get_v_scroll_bar() const { return v_scroll; }
+	_FORCE_INLINE_ HScrollBar *get_h_scroll_bar() const { return h_scroll; }
 
 	void set_v_scroll(double p_scroll);
 	double get_v_scroll() const;
@@ -1066,13 +1066,13 @@ public:
 	int get_h_scroll() const;
 
 	void set_v_scroll_speed(float p_speed);
-	float get_v_scroll_speed() const;
+	_FORCE_INLINE_ float get_v_scroll_speed() const { return v_scroll_speed; }
 
 	void set_fit_content_height_enabled(bool p_enabled);
-	bool is_fit_content_height_enabled() const;
+	_FORCE_INLINE_ bool is_fit_content_height_enabled() const { return fit_content_height; }
 
 	void set_fit_content_width_enabled(bool p_enabled);
-	bool is_fit_content_width_enabled() const;
+	_FORCE_INLINE_ bool is_fit_content_width_enabled() const { return fit_content_width; }
 
 	double get_scroll_pos_for_line(int p_line, int p_wrap_index = 0) const;
 
@@ -1096,10 +1096,10 @@ public:
 
 	// Minimap
 	void set_draw_minimap(bool p_enabled);
-	bool is_drawing_minimap() const;
+	_FORCE_INLINE_ bool is_drawing_minimap() const { return draw_minimap; }
 
 	void set_minimap_width(int p_minimap_width);
-	int get_minimap_width() const;
+	_FORCE_INLINE_ int get_minimap_width() const { return minimap_width; }
 
 	int get_minimap_visible_lines() const;
 
@@ -1154,25 +1154,25 @@ public:
 
 	/* Syntax Highlighting. */
 	void set_syntax_highlighter(Ref<SyntaxHighlighter> p_syntax_highlighter);
-	Ref<SyntaxHighlighter> get_syntax_highlighter() const;
+	_FORCE_INLINE_ Ref<SyntaxHighlighter> get_syntax_highlighter() const { return syntax_highlighter; }
 
 	/* Visual. */
 	void set_highlight_current_line(bool p_enabled);
-	bool is_highlight_current_line_enabled() const;
+	_FORCE_INLINE_ bool is_highlight_current_line_enabled() const { return highlight_current_line; }
 
 	void set_highlight_all_occurrences(bool p_enabled);
-	bool is_highlight_all_occurrences_enabled() const;
+	_FORCE_INLINE_ bool is_highlight_all_occurrences_enabled() const { return highlight_all_occurrences; }
 
 	void set_draw_control_chars(bool p_enabled);
-	bool get_draw_control_chars() const;
+	_FORCE_INLINE_ bool get_draw_control_chars() const { return draw_control_chars; }
 
 	void set_draw_tabs(bool p_enabled);
-	bool is_drawing_tabs() const;
+	_FORCE_INLINE_ bool is_drawing_tabs() const { return draw_tabs; }
 
 	void set_draw_spaces(bool p_enabled);
-	bool is_drawing_spaces() const;
+	_FORCE_INLINE_ bool is_drawing_spaces() const { return draw_spaces; }
 
-	Color get_font_color() const;
+	_FORCE_INLINE_ Color get_font_color() const { return theme_cache.font_color; }
 
 	/* Behavior */
 

@@ -37,7 +37,7 @@ class ButtonGroup;
 class Timer;
 
 class BaseButton : public Control {
-	GDCLASS(BaseButton, Control);
+	GDCLASS(BaseButton, Control)
 
 public:
 	enum ActionMode {
@@ -96,7 +96,7 @@ protected:
 
 	Size2 _get_final_minimum_size(const Size2 &p_min_size) const;
 
-	bool _was_pressed_by_mouse() const;
+	_FORCE_INLINE_ bool _was_pressed_by_mouse() const { return was_mouse_pressed; }
 	void _accessibility_action_click(const Variant &p_data);
 
 	GDVIRTUAL0(_pressed)
@@ -115,43 +115,43 @@ public:
 
 	/* Signals */
 
-	bool is_pressed() const; ///< return whether button is pressed (toggled in)
-	bool is_pressing() const; ///< return whether button is pressed (toggled in)
-	bool is_hovered() const;
+	_FORCE_INLINE_ bool is_pressed() const { return toggle_mode ? status.pressed : status.press_attempt; } ///< return whether button is pressed (toggled in)
+	_FORCE_INLINE_ bool is_pressing() const { return status.press_attempt; } ///< return whether button is pressed (toggled in)
+	_FORCE_INLINE_ bool is_hovered() const { return status.hovering; }
 
 	void set_pressed(bool p_pressed); // Only works in toggle mode.
 	void set_pressed_no_signal(bool p_pressed);
 	void set_toggle_mode(bool p_on);
-	bool is_toggle_mode() const;
+	_FORCE_INLINE_ bool is_toggle_mode() const { return toggle_mode; }
 
 	void set_shortcut_in_tooltip(bool p_on);
-	bool is_shortcut_in_tooltip_enabled() const;
+	_FORCE_INLINE_ bool is_shortcut_in_tooltip_enabled() const { return shortcut_in_tooltip; }
 
 	void set_disabled(bool p_disabled);
-	bool is_disabled() const;
+	_FORCE_INLINE_ bool is_disabled() const { return status.disabled; }
 
 	void set_action_mode(ActionMode p_mode);
-	ActionMode get_action_mode() const;
+	_FORCE_INLINE_ ActionMode get_action_mode() const { return action_mode; }
 
 	void set_size_mode(SizeMode p_size_mode);
-	SizeMode get_size_mode() const;
+	_FORCE_INLINE_ SizeMode get_size_mode() const { return size_mode; }
 
 	void set_keep_pressed_outside(bool p_on);
-	bool is_keep_pressed_outside() const;
+	_FORCE_INLINE_ bool is_keep_pressed_outside() const { return keep_pressed_outside; }
 
 	void set_shortcut_feedback(bool p_enable);
-	bool is_shortcut_feedback() const;
+	_FORCE_INLINE_ bool is_shortcut_feedback() const { return shortcut_feedback; }
 
 	void set_button_mask(BitField<MouseButtonMask> p_mask);
-	BitField<MouseButtonMask> get_button_mask() const;
+	_FORCE_INLINE_ BitField<MouseButtonMask> get_button_mask() const { return button_mask; }
 
 	void set_shortcut(const Ref<Shortcut> &p_shortcut);
-	Ref<Shortcut> get_shortcut() const;
+	_FORCE_INLINE_ Ref<Shortcut> get_shortcut() const { return shortcut; }
 
 	virtual Control *make_custom_tooltip(const String &p_text) const override;
 
 	void set_button_group(const Ref<ButtonGroup> &p_group);
-	Ref<ButtonGroup> get_button_group() const;
+	_FORCE_INLINE_ Ref<ButtonGroup> get_button_group() const { return button_group; }
 
 	PackedStringArray get_configuration_warnings() const override;
 
@@ -164,7 +164,7 @@ VARIANT_ENUM_CAST(BaseButton::ActionMode)
 VARIANT_ENUM_CAST(BaseButton::SizeMode)
 
 class ButtonGroup : public Resource {
-	GDCLASS(ButtonGroup, Resource);
+	GDCLASS(ButtonGroup, Resource)
 	friend class BaseButton;
 	HashSet<BaseButton *> buttons;
 	bool allow_unpress = false;
@@ -177,6 +177,6 @@ public:
 	void get_buttons(List<BaseButton *> *r_buttons);
 	TypedArray<BaseButton> _get_buttons();
 	void set_allow_unpress(bool p_enabled);
-	bool is_allow_unpress();
+	_FORCE_INLINE_ bool is_allow_unpress() const { return allow_unpress; }
 	ButtonGroup();
 };

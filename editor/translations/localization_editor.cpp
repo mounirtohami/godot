@@ -38,7 +38,7 @@
 #include "editor/settings/editor_settings.h"
 #include "editor/translations/editor_translation_parser.h"
 #include "editor/translations/pot_generator.h"
-#include "scene/gui/control.h"
+#include "scene/gui/label.h"
 #include "scene/gui/tab_container.h"
 
 void LocalizationEditor::_notification(int p_what) {

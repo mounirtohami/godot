@@ -30,16 +30,17 @@
 
 #pragma once
 
-#include "editor/plugins/editor_plugin.h"
-#include "scene/audio/audio_stream_player.h"
-#include "scene/gui/color_rect.h"
 #include "scene/gui/dialogs.h"
-#include "scene/gui/spin_box.h"
 
+class AudioStream;
+class AudioStreamPlayer;
 class CheckBox;
+class ColorRect;
+class HScrollBar;
+class SpinBox;
 
 class AudioStreamImportSettingsDialog : public ConfirmationDialog {
-	GDCLASS(AudioStreamImportSettingsDialog, ConfirmationDialog);
+	GDCLASS(AudioStreamImportSettingsDialog, ConfirmationDialog)
 
 	CheckBox *bpm_enabled = nullptr;
 	SpinBox *bpm_edit = nullptr;

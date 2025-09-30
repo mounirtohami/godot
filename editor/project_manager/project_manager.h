@@ -30,14 +30,18 @@
 
 #pragma once
 
-#include "scene/gui/dialogs.h"
-#include "scene/gui/scroll_container.h"
+#include "scene/gui/control.h"
 
+class AcceptDialog;
+class Button;
+class ButtonGroup;
 class CheckBox;
+class ConfirmationDialog;
 class EditorAbout;
 class EditorAssetLibrary;
 class EditorFileDialog;
 class EditorTitleBar;
+class HBoxContainer;
 class HFlowContainer;
 class LineEdit;
 class MarginContainer;
@@ -50,9 +54,10 @@ class QuickSettingsDialog;
 class RichTextLabel;
 class TabContainer;
 class VBoxContainer;
+class Control;
 
 class ProjectManager : public Control {
-	GDCLASS(ProjectManager, Control);
+	GDCLASS(ProjectManager, Control)
 
 	static ProjectManager *singleton;
 

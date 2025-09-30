@@ -30,13 +30,14 @@
 
 #pragma once
 
-#include "editor/plugins/plugin_config_dialog.h"
+#include "scene/gui/box_container.h"
 
+class PluginConfigDialog;
 class TextureRect;
 class Tree;
 
 class EditorPluginSettings : public VBoxContainer {
-	GDCLASS(EditorPluginSettings, VBoxContainer);
+	GDCLASS(EditorPluginSettings, VBoxContainer)
 
 	enum {
 		BUTTON_PLUGIN_EDIT

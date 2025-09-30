@@ -56,6 +56,9 @@
 #endif // _3D_DISABLED
 #include "scene/gui/color_picker.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
+#include "scene/gui/text_edit.h"
+#include "scene/gui/texture_button.h"
 #include "scene/main/window.h"
 #include "scene/resources/font.h"
 #include "scene/resources/mesh.h"

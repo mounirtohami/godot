@@ -34,7 +34,7 @@
 #include "scene/resources/text_paragraph.h"
 
 class Button : public BaseButton {
-	GDCLASS(Button, BaseButton);
+	GDCLASS(Button, BaseButton)
 
 private:
 	bool flat = false;
@@ -126,42 +126,43 @@ public:
 	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon) const;
 
 	void set_text(const String &p_text);
-	String get_text() const;
+	_FORCE_INLINE_ String get_text() const { return text; }
 
 	void set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior);
-	TextServer::OverrunBehavior get_text_overrun_behavior() const;
+	_FORCE_INLINE_ TextServer::OverrunBehavior get_text_overrun_behavior() const { return overrun_behavior; }
 
 	void set_autowrap_mode(TextServer::AutowrapMode p_mode);
-	TextServer::AutowrapMode get_autowrap_mode() const;
+	_FORCE_INLINE_ TextServer::AutowrapMode get_autowrap_mode() const { return autowrap_mode; }
 
 	void set_autowrap_trim_flags(BitField<TextServer::LineBreakFlag> p_flags);
-	BitField<TextServer::LineBreakFlag> get_autowrap_trim_flags() const;
+	_FORCE_INLINE_ BitField<TextServer::LineBreakFlag> get_autowrap_trim_flags() const { return autowrap_flags_trim; }
 
 	void set_text_direction(TextDirection p_text_direction);
-	TextDirection get_text_direction() const;
+	_FORCE_INLINE_ TextDirection get_text_direction() const { return text_direction; }
 
 	void set_language(const String &p_language);
-	String get_language() const;
+	_FORCE_INLINE_ String get_language() const { return language; }
 
 	void set_button_icon(const Ref<Texture2D> &p_icon);
-	Ref<Texture2D> get_button_icon() const;
+	_FORCE_INLINE_ Ref<Texture2D> get_button_icon() const { return icon; }
 
 	void set_expand_icon(bool p_enabled);
-	bool is_expand_icon() const;
+	_FORCE_INLINE_ bool is_expand_icon() const { return expand_icon; }
 
 	void set_flat(bool p_enabled);
-	bool is_flat() const;
+	_FORCE_INLINE_ bool is_flat() const { return flat; }
 
 	void set_clip_text(bool p_enabled);
-	bool get_clip_text() const;
+	_FORCE_INLINE_ bool get_clip_text() const { return clip_text; }
 
 	void set_text_alignment(HorizontalAlignment p_alignment);
-	HorizontalAlignment get_text_alignment() const;
+	_FORCE_INLINE_ HorizontalAlignment get_text_alignment() const { return alignment; }
 
 	void set_icon_alignment(HorizontalAlignment p_alignment);
+	_FORCE_INLINE_ HorizontalAlignment get_icon_alignment() const { return horizontal_icon_alignment; }
+
 	void set_vertical_icon_alignment(VerticalAlignment p_alignment);
-	HorizontalAlignment get_icon_alignment() const;
-	VerticalAlignment get_vertical_icon_alignment() const;
+	_FORCE_INLINE_ VerticalAlignment get_vertical_icon_alignment() const { return vertical_icon_alignment; }
 
 	Button(const String &p_text = String());
 	~Button();

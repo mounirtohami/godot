@@ -58,18 +58,6 @@ void CenterContainer::set_use_top_left(bool p_enable) {
 	queue_sort();
 }
 
-bool CenterContainer::is_using_top_left() const {
-	return use_top_left;
-}
-
-Vector<int> CenterContainer::get_allowed_size_flags_horizontal() const {
-	return Vector<int>();
-}
-
-Vector<int> CenterContainer::get_allowed_size_flags_vertical() const {
-	return Vector<int>();
-}
-
 void CenterContainer::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_SORT_CHILDREN: {

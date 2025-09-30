@@ -62,5 +62,4 @@ protected:
 
 public:
 	CheckButton(const String &p_text = String());
-	~CheckButton();
 };

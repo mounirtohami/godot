@@ -336,24 +336,12 @@ void FlowContainer::_validate_property(PropertyInfo &p_property) const {
 	}
 }
 
-int FlowContainer::get_line_count() const {
-	return cached_line_count;
-}
-
-int FlowContainer::get_line_max_child_count() const {
-	return cached_line_max_child_count;
-}
-
 void FlowContainer::set_alignment(AlignmentMode p_alignment) {
 	if (alignment == p_alignment) {
 		return;
 	}
 	alignment = p_alignment;
 	_resort();
-}
-
-FlowContainer::AlignmentMode FlowContainer::get_alignment() const {
-	return alignment;
 }
 
 void FlowContainer::set_last_wrap_alignment(LastWrapAlignmentMode p_last_wrap_alignment) {
@@ -364,19 +352,11 @@ void FlowContainer::set_last_wrap_alignment(LastWrapAlignmentMode p_last_wrap_al
 	_resort();
 }
 
-FlowContainer::LastWrapAlignmentMode FlowContainer::get_last_wrap_alignment() const {
-	return last_wrap_alignment;
-}
-
 void FlowContainer::set_vertical(bool p_vertical) {
 	ERR_FAIL_COND_MSG(is_fixed, "Can't change orientation of " + get_class() + ".");
 	vertical = p_vertical;
 	update_minimum_size();
 	_resort();
-}
-
-bool FlowContainer::is_vertical() const {
-	return vertical;
 }
 
 void FlowContainer::set_reverse_fill(bool p_reverse_fill) {
@@ -385,10 +365,6 @@ void FlowContainer::set_reverse_fill(bool p_reverse_fill) {
 	}
 	reverse_fill = p_reverse_fill;
 	_resort();
-}
-
-bool FlowContainer::is_reverse_fill() const {
-	return reverse_fill;
 }
 
 FlowContainer::FlowContainer(bool p_vertical) {

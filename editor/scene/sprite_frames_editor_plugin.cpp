@@ -49,6 +49,7 @@
 #endif // _3D_DISABLED
 #include "scene/gui/center_container.h"
 #include "scene/gui/flow_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/option_button.h"
 #include "scene/gui/panel_container.h"

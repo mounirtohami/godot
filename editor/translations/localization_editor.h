@@ -31,6 +31,7 @@
 #pragma once
 
 #include "editor/translations/editor_locale_dialog.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/tree.h"
 
@@ -38,7 +39,7 @@ class EditorFileDialog;
 class FileSystemDock;
 
 class LocalizationEditor : public VBoxContainer {
-	GDCLASS(LocalizationEditor, VBoxContainer);
+	GDCLASS(LocalizationEditor, VBoxContainer)
 
 	Tree *translation_list = nullptr;
 

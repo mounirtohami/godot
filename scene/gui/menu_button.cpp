@@ -69,10 +69,6 @@ void MenuButton::pressed() {
 	show_popup();
 }
 
-PopupMenu *MenuButton::get_popup() const {
-	return popup;
-}
-
 void MenuButton::show_popup() {
 	if (!get_viewport()) {
 		return;
@@ -117,10 +113,6 @@ void MenuButton::show_popup() {
 
 void MenuButton::set_switch_on_hover(bool p_enabled) {
 	switch_on_hover = p_enabled;
-}
-
-bool MenuButton::is_switch_on_hover() {
-	return switch_on_hover;
 }
 
 void MenuButton::set_item_count(int p_count) {

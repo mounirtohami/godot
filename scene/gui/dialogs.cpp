@@ -31,8 +31,14 @@
 #include "dialogs.h"
 #include "dialogs.compat.inc"
 
+#include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/panel.h"
 #include "scene/theme/theme_db.h"
+
+// #include "scene/gui/popup.h"
 
 // AcceptDialog
 
@@ -182,16 +188,8 @@ void AcceptDialog::set_hide_on_ok(bool p_hide) {
 	hide_on_ok = p_hide;
 }
 
-bool AcceptDialog::get_hide_on_ok() const {
-	return hide_on_ok;
-}
-
 void AcceptDialog::set_close_on_escape(bool p_hide) {
 	close_on_escape = p_hide;
-}
-
-bool AcceptDialog::get_close_on_escape() const {
-	return close_on_escape;
 }
 
 void AcceptDialog::set_autowrap(bool p_autowrap) {
@@ -205,10 +203,6 @@ bool AcceptDialog::has_autowrap() {
 void AcceptDialog::set_ok_button_text(String p_ok_button_text) {
 	ok_text = p_ok_button_text;
 	_update_ok_text();
-}
-
-String AcceptDialog::get_ok_button_text() const {
-	return ok_text;
 }
 
 void AcceptDialog::register_text_enter(LineEdit *p_line_edit) {
@@ -520,10 +514,6 @@ void ConfirmationDialog::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "cancel_button_text"), "set_cancel_button_text", "get_cancel_button_text");
 
 	ADD_CLASS_DEPENDENCY("Button");
-}
-
-Button *ConfirmationDialog::get_cancel_button() {
-	return cancel;
 }
 
 ConfirmationDialog::ConfirmationDialog() {

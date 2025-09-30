@@ -31,6 +31,7 @@
 #include "scene_create_dialog.h"
 
 #include "core/io/dir_access.h"
+#include "core/io/resource_saver.h"
 #include "editor/editor_node.h"
 #include "editor/editor_string_names.h"
 #include "editor/gui/create_dialog.h"
@@ -40,6 +41,7 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/option_button.h"
 #include "scene/resources/packed_scene.h"

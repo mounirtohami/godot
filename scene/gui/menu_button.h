@@ -60,11 +60,11 @@ protected:
 public:
 	virtual void pressed() override;
 
-	PopupMenu *get_popup() const;
+	_FORCE_INLINE_ PopupMenu *get_popup() const { return popup; }
 	void show_popup();
 
 	void set_switch_on_hover(bool p_enabled);
-	bool is_switch_on_hover();
+	_FORCE_INLINE_ bool is_switch_on_hover() const { return switch_on_hover; }
 	void set_disable_shortcuts(bool p_disabled);
 
 	void set_item_count(int p_count);

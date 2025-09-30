@@ -39,10 +39,9 @@
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/button.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/separator.h"
-
-#include "modules/modules_enabled.gen.h" // For mono.
 
 const char *EditorBuildProfile::build_option_identifiers[BUILD_OPTION_MAX] = {
 	// This maps to SCons build options.

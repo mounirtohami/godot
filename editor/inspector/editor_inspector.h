@@ -31,6 +31,7 @@
 #pragma once
 
 #include "editor/inspector/editor_property_name_processor.h"
+
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/panel_container.h"
@@ -59,7 +60,7 @@ public:
 };
 
 class EditorInspectorActionButton : public Button {
-	GDCLASS(EditorInspectorActionButton, Button);
+	GDCLASS(EditorInspectorActionButton, Button)
 
 	StringName icon_name;
 
@@ -71,7 +72,7 @@ public:
 };
 
 class EditorProperty : public Container {
-	GDCLASS(EditorProperty, Container);
+	GDCLASS(EditorProperty, Container)
 
 public:
 	enum MenuItems {
@@ -273,7 +274,7 @@ public:
 };
 
 class EditorInspectorPlugin : public RefCounted {
-	GDCLASS(EditorInspectorPlugin, RefCounted);
+	GDCLASS(EditorInspectorPlugin, RefCounted)
 
 public:
 	friend class EditorInspector;
@@ -314,7 +315,7 @@ public:
 };
 
 class EditorInspectorCategory : public Control {
-	GDCLASS(EditorInspectorCategory, Control);
+	GDCLASS(EditorInspectorCategory, Control)
 
 	friend class EditorInspector;
 
@@ -374,7 +375,7 @@ public:
 };
 
 class EditorInspectorSection : public Container {
-	GDCLASS(EditorInspectorSection, Container);
+	GDCLASS(EditorInspectorSection, Container)
 
 	friend class EditorInspector;
 
@@ -481,7 +482,7 @@ public:
 };
 
 class ArrayPanelContainer : public PanelContainer {
-	GDCLASS(ArrayPanelContainer, PanelContainer);
+	GDCLASS(ArrayPanelContainer, PanelContainer)
 
 protected:
 	void _notification(int p_what);
@@ -493,7 +494,7 @@ public:
 };
 
 class EditorInspectorArray : public EditorInspectorSection {
-	GDCLASS(EditorInspectorArray, EditorInspectorSection);
+	GDCLASS(EditorInspectorArray, EditorInspectorSection)
 
 	enum Mode {
 		MODE_NONE,
@@ -605,7 +606,7 @@ public:
 };
 
 class EditorPaginator : public HBoxContainer {
-	GDCLASS(EditorPaginator, HBoxContainer);
+	GDCLASS(EditorPaginator, HBoxContainer)
 
 	int page = 0;
 	int max_page = 0;
@@ -633,7 +634,7 @@ public:
 };
 
 class EditorInspector : public ScrollContainer {
-	GDCLASS(EditorInspector, ScrollContainer);
+	GDCLASS(EditorInspector, ScrollContainer)
 
 	friend class EditorPropertyResource;
 

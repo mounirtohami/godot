@@ -33,15 +33,19 @@
 #include "core/io/resource_importer.h"
 
 #include "scene/gui/dialogs.h"
-#include "scene/gui/tab_container.h"
-#include "scene/gui/text_edit.h"
-#include "scene/gui/tree.h"
-#include "scene/resources/font.h"
 
 class DynamicFontImportSettingsDialog;
+class EditorFileDialog;
+class EditorInspector;
+class EditorLocaleDialog;
+class TabContainer;
+class TextEdit;
+class Tree;
+class TreeItem;
 
 class DynamicFontImportSettingsData : public RefCounted {
 	GDCLASS(DynamicFontImportSettingsData, RefCounted)
+
 	friend class DynamicFontImportSettingsDialog;
 
 	HashMap<StringName, Variant> settings;
@@ -62,12 +66,9 @@ public:
 	Ref<FontFile> get_font() const;
 };
 
-class EditorFileDialog;
-class EditorInspector;
-class EditorLocaleDialog;
-
 class DynamicFontImportSettingsDialog : public ConfirmationDialog {
 	GDCLASS(DynamicFontImportSettingsDialog, ConfirmationDialog)
+
 	friend class DynamicFontImportSettingsData;
 
 	enum ItemButton {

@@ -33,7 +33,7 @@
 #include "scene/gui/container.h"
 
 class FlowContainer : public Container {
-	GDCLASS(FlowContainer, Container);
+	GDCLASS(FlowContainer, Container)
 
 public:
 	enum AlignmentMode {
@@ -74,20 +74,20 @@ protected:
 	static void _bind_methods();
 
 public:
-	int get_line_count() const;
-	int get_line_max_child_count() const;
+	_FORCE_INLINE_ int get_line_count() const { return cached_line_count; }
+	_FORCE_INLINE_ int get_line_max_child_count() const { return cached_line_max_child_count; }
 
 	void set_alignment(AlignmentMode p_alignment);
-	AlignmentMode get_alignment() const;
+	_FORCE_INLINE_ AlignmentMode get_alignment() const { return alignment; }
 
 	void set_last_wrap_alignment(LastWrapAlignmentMode p_last_wrap_alignment);
-	LastWrapAlignmentMode get_last_wrap_alignment() const;
+	_FORCE_INLINE_ LastWrapAlignmentMode get_last_wrap_alignment() const { return last_wrap_alignment; }
 
 	void set_vertical(bool p_vertical);
-	bool is_vertical() const;
+	_FORCE_INLINE_ bool is_vertical() const { return vertical; }
 
 	void set_reverse_fill(bool p_reverse_fill);
-	bool is_reverse_fill() const;
+	_FORCE_INLINE_ bool is_reverse_fill() const { return reverse_fill; }
 
 	virtual Size2 get_minimum_size() const override;
 

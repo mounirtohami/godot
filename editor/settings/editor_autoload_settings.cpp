@@ -38,6 +38,8 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/settings/project_settings_editor.h"
+#include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
 #include "scene/main/window.h"
 #include "scene/resources/packed_scene.h"
 

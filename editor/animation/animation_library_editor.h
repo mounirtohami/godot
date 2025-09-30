@@ -30,15 +30,16 @@
 
 #pragma once
 
-#include "core/io/config_file.h"
-#include "core/templates/vector.h"
-#include "editor/plugins/editor_plugin.h"
-#include "scene/animation/animation_mixer.h"
 #include "scene/gui/dialogs.h"
-#include "scene/gui/tree.h"
 
+class Button;
 class AnimationMixer;
+class ConfigFile;
 class EditorFileDialog;
+class Label;
+class PopupMenu;
+class Tree;
+class TreeItem;
 
 class AnimationLibraryEditor : public AcceptDialog {
 	GDCLASS(AnimationLibraryEditor, AcceptDialog)

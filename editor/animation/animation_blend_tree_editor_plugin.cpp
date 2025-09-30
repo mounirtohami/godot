@@ -45,6 +45,7 @@
 #endif // _3D_DISABLED
 #include "scene/gui/check_box.h"
 #include "scene/gui/grid_container.h"
+#include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/menu_button.h"
 #include "scene/gui/option_button.h"

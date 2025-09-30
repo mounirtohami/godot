@@ -42,7 +42,6 @@
 #include "scene/gui/scroll_container.h"
 #include "scene/gui/slider.h"
 #include "scene/gui/texture_progress_bar.h"
-#include "scene/gui/texture_rect.h"
 #include "scene/gui/tree.h"
 
 class EditorAudioBuses;

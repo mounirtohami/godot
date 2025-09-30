@@ -39,6 +39,8 @@
 #include "editor/settings/editor_command_palette.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
 
 void ResourcePreloaderEditor::_notification(int p_what) {
 	switch (p_what) {

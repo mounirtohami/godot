@@ -32,6 +32,7 @@
 
 #include "core/object/script_language.h"
 #include "editor/plugins/editor_plugin.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
 #include "scene/gui/panel_container.h"
 #include "scene/resources/syntax_highlighter.h"
@@ -41,6 +42,7 @@ class CodeTextEditor;
 class EditorFileDialog;
 class EditorHelpSearch;
 class FindReplaceBar;
+class HBoxContainer;
 class HSplitContainer;
 class ItemList;
 class MenuButton;
@@ -163,7 +165,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 class ScriptEditorQuickOpen : public ConfirmationDialog {
-	GDCLASS(ScriptEditorQuickOpen, ConfirmationDialog);
+	GDCLASS(ScriptEditorQuickOpen, ConfirmationDialog)
 
 	LineEdit *search_box = nullptr;
 	Tree *search_options = nullptr;
@@ -189,7 +191,7 @@ public:
 class EditorDebuggerNode;
 
 class ScriptEditorBase : public VBoxContainer {
-	GDCLASS(ScriptEditorBase, VBoxContainer);
+	GDCLASS(ScriptEditorBase, VBoxContainer)
 
 protected:
 	static void _bind_methods();
@@ -253,7 +255,7 @@ class FindInFilesDialog;
 class FindInFilesPanel;
 
 class ScriptEditor : public PanelContainer {
-	GDCLASS(ScriptEditor, PanelContainer);
+	GDCLASS(ScriptEditor, PanelContainer)
 
 	enum MenuOptions {
 		// File.
@@ -628,7 +630,7 @@ public:
 };
 
 class ScriptEditorPlugin : public EditorPlugin {
-	GDCLASS(ScriptEditorPlugin, EditorPlugin);
+	GDCLASS(ScriptEditorPlugin, EditorPlugin)
 
 	ScriptEditor *script_editor = nullptr;
 	WindowWrapper *window_wrapper = nullptr;
