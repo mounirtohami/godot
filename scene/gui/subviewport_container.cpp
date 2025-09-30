@@ -219,7 +219,7 @@ void SubViewportContainer::gui_input(const Ref<InputEvent> &p_event) {
 
 	if (stretch && shrink > 1) {
 		Transform2D xform;
-		xform.scale(Vector2(1, 1) / shrink);
+		xform.scale(VEC2S(1 / shrink));
 		_send_event_to_viewports(p_event->xformed_by(xform));
 	} else {
 		_send_event_to_viewports(p_event);

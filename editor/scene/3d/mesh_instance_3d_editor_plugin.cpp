@@ -934,7 +934,7 @@ MeshInstance3DEditor::MeshInstance3DEditor() {
 	debug_uv_dialog->add_child(debug_uv_arc);
 
 	debug_uv = memnew(Control);
-	debug_uv->set_custom_minimum_size(Size2(600, 600) * EDSCALE);
+	debug_uv->set_custom_minimum_size(VEC2S(600 * EDSCALE));
 	debug_uv->connect(SceneStringName(draw), callable_mp(this, &MeshInstance3DEditor::_debug_uv_draw));
 	debug_uv_arc->add_child(debug_uv);
 

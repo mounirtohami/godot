@@ -145,3 +145,11 @@ typedef double real_t;
 #else
 typedef float real_t;
 #endif
+
+// Vector from scalar helpers.
+#define VEC2S(scalar) Vector2(scalar)
+#define VEC3S(scalar) Vector3(scalar)
+#define VEC4S(scalar) Vector4(scalar)
+#define VEC2IS(scalar) Vector2i(scalar)
+#define VEC3IS(scalar) Vector3i(scalar)
+#define VEC4IS(scalar) Vector4i(scalar)
