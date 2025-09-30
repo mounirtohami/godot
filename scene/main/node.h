@@ -200,6 +200,8 @@ private:
 		Ref<SceneState> instance_state;
 		Ref<SceneState> inherited_state;
 
+		mutable bool updating_cache = false;
+
 		Node *parent = nullptr;
 		Node *owner = nullptr;
 		HashMap<StringName, Node *> children;
@@ -297,8 +299,8 @@ private:
 
 	} data;
 
-	String _get_tree_string_pretty(const String &p_prefix, bool p_last);
-	String _get_tree_string(const Node *p_node);
+	String _get_tree_string_pretty(const String &p_prefix, bool p_last) const;
+	String _get_tree_string(const Node *p_node) const;
 
 	Node *_get_child_by_name(const StringName &p_name) const;
 
