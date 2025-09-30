@@ -537,11 +537,17 @@ void EditorSpinSlider::_draw_spin_slider() {
 			draw_rect(Rect2(begin, svofs, width, slider_bg_height), c);
 
 			c.a = 0.45;
-			// Draw the horizontal slider's filled part.
-			if (rtl) {
-				draw_rect(Rect2(grabber_pos + begin, svofs, width - grabber_pos, slider_bg_height), c);
+			if (symmetric_fill && get_min() < 0 && get_max() > 0 && !Math::is_equal_approx(get_min(), get_max())) {
+				const double zero_ratio = get_min() / (get_min() - get_max());
+				const int initial_pos = (rtl ? 1 - zero_ratio : zero_ratio) * width;
+				draw_rect(Rect2(initial_pos + begin, svofs, grabber_pos - initial_pos, slider_bg_height), c);
 			} else {
-				draw_rect(Rect2(begin, svofs, grabber_pos, slider_bg_height), c);
+				// Draw the horizontal slider's filled part.
+				if (rtl) {
+					draw_rect(Rect2(grabber_pos + begin, svofs, width - grabber_pos, slider_bg_height), c);
+				} else {
+					draw_rect(Rect2(begin, svofs, grabber_pos, slider_bg_height), c);
+				}
 			}
 
 			bool display_grabber = false;
@@ -921,6 +927,19 @@ bool EditorSpinSlider::is_read_only() const {
 	return read_only;
 }
 
+void EditorSpinSlider::set_symmetric_fill(bool p_enable) {
+	if (symmetric_fill == p_enable) {
+		return;
+	}
+
+	symmetric_fill = p_enable;
+	queue_redraw();
+}
+
+bool EditorSpinSlider::is_symmetric_fill() const {
+	return symmetric_fill;
+}
+
 void EditorSpinSlider::set_flat(bool p_enable) {
 	if (flat == p_enable) {
 		return;
@@ -984,6 +1003,9 @@ void EditorSpinSlider::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_float_prefer_arrows", "float_prefer_arrows"), &EditorSpinSlider::set_float_prefer_arrows);
 	ClassDB::bind_method(D_METHOD("is_float_preferring_arrows"), &EditorSpinSlider::is_float_preferring_arrows);
 
+	ClassDB::bind_method(D_METHOD("set_symmetric_fill", "symmetric_fill"), &EditorSpinSlider::set_symmetric_fill);
+	ClassDB::bind_method(D_METHOD("is_symmetric_fill"), &EditorSpinSlider::is_symmetric_fill);
+
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "label"), "set_label", "get_label");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "suffix"), "set_suffix", "get_suffix");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "read_only"), "set_read_only", "is_read_only");
@@ -993,6 +1015,7 @@ void EditorSpinSlider::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hide_slider"), "set_hide_slider", "is_hiding_slider");
 #endif
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "editing_integer"), "set_editing_integer", "is_editing_integer");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "symmetric_fill"), "set_symmetric_fill", "is_symmetric_fill");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "integer_prefer_slider"), "set_integer_prefer_slider", "is_integer_preferring_slider");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "float_prefer_arrows"), "set_float_prefer_arrows", "is_float_preferring_arrows");
 
@@ -1049,6 +1072,7 @@ EditorSpinSlider::EditorSpinSlider() {
 	text_rid = TS->create_shaped_text();
 
 	set_focus_mode(FOCUS_ALL);
+	set_symmetric_fill(true);
 	grabber = memnew(TextureRect);
 	add_child(grabber);
 	grabber->hide();

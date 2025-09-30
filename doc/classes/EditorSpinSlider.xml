@@ -43,6 +43,9 @@
 		<member name="suffix" type="String" setter="set_suffix" getter="get_suffix" default="&quot;&quot;">
 			The suffix to display after the value (in a faded color). This should generally be a plural word. You may have to use an abbreviation if the suffix is too long to be displayed.
 		</member>
+		<member name="symmetric_fill" type="bool" setter="set_symmetric_fill" getter="is_symmetric_fill" default="true">
+			If [code]true[/code], the slider's grabber will be filled from the point representing the 0.0 value to the point of the current value.
+		</member>
 	</members>
 	<signals>
 		<signal name="grabbed">

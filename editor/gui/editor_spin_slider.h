@@ -93,6 +93,7 @@ private:
 	bool hide_control = false;
 	bool float_prefer_arrows = false;
 	bool integer_prefer_slider = false;
+	bool symmetric_fill = false;
 
 	void _grab_start();
 	void _grab_end();
@@ -176,6 +177,9 @@ public:
 
 	void set_read_only(bool p_enable);
 	bool is_read_only() const;
+
+	void set_symmetric_fill(bool p_enable);
+	bool is_symmetric_fill() const;
 
 	void set_flat(bool p_enable);
 	bool is_flat() const;
