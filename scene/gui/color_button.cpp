@@ -45,27 +45,28 @@ void ColorButton::set_color_no_signal(const Color &p_color) {
 }
 
 void ColorButton::set_color(const Color &p_color) {
-	if (color != p_color) {
-		color = p_color;
-		queue_redraw();
-		queue_accessibility_update();
-		emit_signal(SNAME("color_changed"), color);
+	if (color == p_color) {
+		return;
 	}
-}
 
-Color ColorButton::get_color() const {
-	return color;
+	Color ret;
+	if (GDVIRTUAL_CALL(_color_changed, color, p_color, ret)) {
+		color = ret;
+	} else {
+		color = p_color;
+	}
+
+	queue_redraw();
+	queue_accessibility_update();
 }
 
 void ColorButton::set_flat(bool p_enabled) {
-	if (flat != p_enabled) {
-		flat = p_enabled;
-		queue_redraw();
+	if (flat == p_enabled) {
+		return;
 	}
-}
 
-bool ColorButton::is_flat() const {
-	return flat;
+	flat = p_enabled;
+	queue_redraw();
 }
 
 void ColorButton::set_edit_alpha(bool p_enabled) {
@@ -77,23 +78,25 @@ void ColorButton::set_edit_alpha(bool p_enabled) {
 	notify_property_list_changed();
 }
 
-bool ColorButton::is_editing_alpha() const {
-	return edit_alpha;
-}
-
 Ref<StyleBox> ColorButton::_get_current_style() const {
-	BaseButton::DrawMode mode = get_draw_mode();
-	if (mode == DRAW_NORMAL) {
-		return theme_cache.normal;
-	} else if (mode == DRAW_HOVER_PRESSED) {
-		return has_theme_stylebox("hover_pressed") ? theme_cache.hover_pressed : theme_cache.pressed;
-	} else if (mode == DRAW_PRESSED) {
-		return theme_cache.pressed;
-	} else if (mode == DRAW_HOVER) {
-		return theme_cache.hover;
-	} else {
-		return theme_cache.disabled;
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+			return theme_cache.normal;
+		} break;
+		case DRAW_HOVER_PRESSED: {
+			return has_theme_stylebox("hover_pressed") ? theme_cache.hover_pressed : theme_cache.pressed;
+		} break;
+		case DRAW_PRESSED: {
+			return theme_cache.pressed;
+		} break;
+		case DRAW_HOVER: {
+			return theme_cache.hover;
+		} break;
+		case DRAW_DISABLED: {
+			return theme_cache.disabled;
+		} break;
 	}
+	return Ref<StyleBox>();
 }
 
 void ColorButton::_validate_property(PropertyInfo &p_property) const {
@@ -151,11 +154,11 @@ void ColorButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_edit_alpha", "enabled"), &ColorButton::set_edit_alpha);
 	ClassDB::bind_method(D_METHOD("is_editing_alpha"), &ColorButton::is_editing_alpha);
 
+	GDVIRTUAL_BIND(_color_changed, "old_color", "new_color");
+
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color_no_signal", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "edit_alpha"), "set_edit_alpha", "is_editing_alpha");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flat"), "set_flat", "is_flat");
-
-	ADD_SIGNAL(MethodInfo("color_changed", PropertyInfo(Variant::COLOR, "color")));
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, ColorButton, normal);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, ColorButton, hover);

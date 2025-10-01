@@ -33,7 +33,7 @@
 #include "scene/gui/base_button.h"
 
 class ColorButton : public BaseButton {
-	GDCLASS(ColorButton, BaseButton);
+	GDCLASS(ColorButton, BaseButton)
 
 	bool flat = false;
 	Color color = Color(1, 1, 1);
@@ -58,19 +58,21 @@ protected:
 	void _notification(int);
 	static void _bind_methods();
 
+	GDVIRTUAL2RC(Color, _color_changed, Color, Color)
+
 public:
 	virtual Size2 get_minimum_size() const override;
 
 	void set_color_no_signal(const Color &p_color);
 
 	void set_color(const Color &p_color);
-	Color get_color() const;
+	_FORCE_INLINE_ Color get_color() const { return color; }
 
 	void set_edit_alpha(bool p_enabled);
-	bool is_editing_alpha() const;
+	_FORCE_INLINE_ bool is_editing_alpha() const { return edit_alpha; }
 
 	void set_flat(bool p_enabled);
-	bool is_flat() const;
+	_FORCE_INLINE_ bool is_flat() const { return flat; }
 
 	ColorButton(const Color &p_color = Color(1, 1, 1));
 };

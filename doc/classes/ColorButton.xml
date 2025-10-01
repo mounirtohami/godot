@@ -9,6 +9,14 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="_color_changed" qualifiers="virtual const">
+			<return type="Color" />
+			<param index="0" name="old_color" type="Color" />
+			<param index="1" name="new_color" type="Color" />
+			<description>
+				Called when the color is changed, this method should return the final color after any desired transformations. This allows the color to be modified before it is applied to the button.
+			</description>
+		</method>
 		<method name="set_color">
 			<return type="void" />
 			<param index="0" name="color" type="Color" />
@@ -28,14 +36,6 @@
 			Draws the buttons without the styles.
 		</member>
 	</members>
-	<signals>
-		<signal name="color_changed">
-			<param index="0" name="color" type="Color" />
-			<description>
-				Emitted when the color is changed.
-			</description>
-		</signal>
-	</signals>
 	<theme_items>
 		<theme_item name="bg" data_type="icon" type="Texture2D">
 			The background image displayed behind the color when the color alpha is less than one.
