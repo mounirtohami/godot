@@ -284,8 +284,6 @@ if env["freetype_enabled"]:
     )
     env.Append(LIBS=[lib])
 
-
-env.Append(CPPDEFINES=["GDEXTENSION"])
 env.Append(CPPPATH=["../"])
 sources = Glob("../*.cpp")
 

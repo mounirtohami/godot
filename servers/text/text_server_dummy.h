@@ -30,12 +30,13 @@
 
 #pragma once
 
-#include "servers/text/text_server_extension.h"
+#include "core/variant/typed_array.h"
+#include "servers/text/text_server.h"
 
 /*************************************************************************/
 
-class TextServerDummy : public TextServerExtension {
-	GDCLASS(TextServerDummy, TextServerExtension);
+class TextServerDummy : public TextServer {
+	GDCLASS(TextServerDummy, TextServer);
 	_THREAD_SAFE_CLASS_
 
 public:
@@ -44,6 +45,21 @@ public:
 	virtual int64_t get_features() const override { return 0; }
 	virtual void free_rid(const RID &p_rid) override {}
 	virtual bool has(const RID &p_rid) override { return false; }
+	virtual bool load_support_data(const String &p_filename) override { return false; }
+	virtual String get_support_data_filename() const override { return String(); }
+	virtual String get_support_data_info() const override { return String(); }
+	virtual bool save_support_data(const String &p_filename) const override { return false; }
+	virtual PackedByteArray get_support_data() const override { return PackedByteArray(); }
+	virtual bool is_locale_right_to_left(const String &p_locale) const override { return false; }
+	virtual RID create_font_linked_variation(const RID &p_font_rid) override { return RID(); }
+	virtual String format_number(const String &p_string, const String &p_language = "") const override { return p_string; }
+	virtual String parse_number(const String &p_string, const String &p_language = "") const override { return p_string; }
+	virtual String percent_sign(const String &p_language = "") const override { return "%"; }
+
+	virtual PackedInt32Array string_get_word_breaks(const String &p_string, const String &p_language = "", int64_t p_chars_per_line = 0) const override { return PackedInt32Array(); }
+	virtual String string_to_upper(const String &p_string, const String &p_language = "") const override { return p_string; }
+	virtual String string_to_lower(const String &p_string, const String &p_language = "") const override { return p_string; }
+	virtual String string_to_title(const String &p_string, const String &p_language = "") const override { return p_string; }
 
 	virtual RID create_font() override { return RID(); }
 	virtual void font_set_fixed_size(const RID &p_font_rid, int64_t p_fixed_size) override {}
@@ -91,6 +107,81 @@ public:
 	virtual PackedInt32Array font_get_supported_glyphs(const RID &p_font_rid) const override { return PackedInt32Array(); }
 	virtual void font_draw_glyph(const RID &p_font_rid, const RID &p_canvas, int64_t p_size, const Vector2 &p_pos, int64_t p_index, const Color &p_color, float p_oversampling) const override {}
 	virtual void font_draw_glyph_outline(const RID &p_font_rid, const RID &p_canvas, int64_t p_size, int64_t p_outline_size, const Vector2 &p_pos, int64_t p_index, const Color &p_color, float p_oversampling) const override {}
+	virtual void font_set_data(const RID &p_font_rid, const PackedByteArray &p_data) override {}
+	virtual void font_set_data_ptr(const RID &p_font_rid, const uint8_t *p_data_ptr, int64_t p_data_size) override {}
+	virtual void font_set_face_index(const RID &p_font_rid, int64_t p_index) override {}
+	virtual int64_t font_get_face_index(const RID &p_font_rid) const override { return 0; }
+	virtual int64_t font_get_face_count(const RID &p_font_rid) const override { return 0; }
+	virtual void font_set_style(const RID &p_font_rid, BitField<FontStyle> p_style) override {}
+	virtual BitField<FontStyle> font_get_style(const RID &p_font_rid) const override { return BitField<FontStyle>(); }
+	virtual void font_set_name(const RID &p_font_rid, const String &p_name) override {}
+	virtual void font_set_style_name(const RID &p_font_rid, const String &p_name) override {}
+	virtual String font_get_style_name(const RID &p_font_rid) const override { return String(); }
+	virtual void font_set_weight(const RID &p_font_rid, int64_t p_weight) override {}
+	virtual int64_t font_get_weight(const RID &p_font_rid) const override { return 0; }
+	virtual void font_set_stretch(const RID &p_font_rid, int64_t p_stretch) override {}
+	virtual int64_t font_get_stretch(const RID &p_font_rid) const override { return 0; }
+	virtual void font_set_baseline_offset(const RID &p_font_rid, double p_baseline_offset) override {}
+	virtual double font_get_baseline_offset(const RID &p_font_rid) const override { return 0.0; }
+	virtual void font_set_transform(const RID &p_font_rid, const Transform2D &p_transform) override {}
+	virtual Transform2D font_get_transform(const RID &p_font_rid) const override { return Transform2D(); }
+	virtual void font_set_variation_coordinates(const RID &p_font_rid, const Dictionary &p_variation_coordinates) override {}
+	virtual Dictionary font_get_variation_coordinates(const RID &p_font_rid) const override { return Dictionary(); }
+	virtual void font_set_oversampling(const RID &p_font_rid, double p_oversampling) override {}
+	virtual double font_get_oversampling(const RID &p_font_rid) const override { return 1.0; }
+	virtual void font_set_texture_offsets(const RID &p_font_rid, const Vector2i &p_size, int64_t p_texture_index, const PackedInt32Array &p_offset) override {}
+	virtual PackedInt32Array font_get_texture_offsets(const RID &p_font_rid, const Vector2i &p_size, int64_t p_texture_index) const override { return PackedInt32Array(); }
+	virtual Dictionary font_get_glyph_contours(const RID &p_font, int64_t p_size, int64_t p_index) const override { return Dictionary(); }
+	virtual TypedArray<Vector2i> font_get_kerning_list(const RID &p_font_rid, int64_t p_size) const override { return TypedArray<Vector2i>(); }
+	virtual void font_clear_kerning_map(const RID &p_font_rid, int64_t p_size) override {}
+	virtual void font_remove_kerning(const RID &p_font_rid, int64_t p_size, const Vector2i &p_glyph_pair) override {}
+	virtual void font_set_kerning(const RID &p_font_rid, int64_t p_size, const Vector2i &p_glyph_pair, const Vector2 &p_kerning) override {}
+	virtual Vector2 font_get_kerning(const RID &p_font_rid, int64_t p_size, const Vector2i &p_glyph_pair) const override { return Vector2(); }
+	virtual void font_render_range(const RID &p_font, const Vector2i &p_size, int64_t p_start, int64_t p_end) override {}
+	virtual void font_render_glyph(const RID &p_font_rid, const Vector2i &p_size, int64_t p_index) override {}
+	virtual bool font_is_language_supported(const RID &p_font_rid, const String &p_language) const override { return false; }
+	virtual void font_set_language_support_override(const RID &p_font_rid, const String &p_language, bool p_supported) override {}
+	virtual bool font_get_language_support_override(const RID &p_font_rid, const String &p_language) override { return false; }
+	virtual void font_remove_language_support_override(const RID &p_font_rid, const String &p_language) override {}
+	virtual PackedStringArray font_get_language_support_overrides(const RID &p_font_rid) override { return PackedStringArray(); }
+	virtual bool font_is_script_supported(const RID &p_font_rid, const String &p_script) const override { return false; }
+	virtual void font_set_script_support_override(const RID &p_font_rid, const String &p_script, bool p_supported) override {}
+	virtual bool font_get_script_support_override(const RID &p_font_rid, const String &p_script) override { return false; }
+	virtual void font_remove_script_support_override(const RID &p_font_rid, const String &p_script) override {}
+	virtual PackedStringArray font_get_script_support_overrides(const RID &p_font_rid) override { return PackedStringArray(); }
+	virtual void font_set_opentype_feature_overrides(const RID &p_font_rid, const Dictionary &p_overrides) override {}
+	virtual Dictionary font_get_opentype_feature_overrides(const RID &p_font_rid) const override { return Dictionary(); }
+	virtual Dictionary font_supported_feature_list(const RID &p_font_rid) const override { return Dictionary(); }
+	virtual Dictionary font_supported_variation_list(const RID &p_font_rid) const override { return Dictionary(); }
+	virtual String font_get_name(const RID &p_font_rid) const override { return String("DummyFont"); }
+	virtual void font_set_antialiasing(const RID &p_font_rid, FontAntialiasing p_antialiasing) override {}
+	virtual FontAntialiasing font_get_antialiasing(const RID &p_font_rid) const override { return FONT_ANTIALIASING_NONE; }
+	virtual void font_set_disable_embedded_bitmaps(const RID &p_font_rid, bool p_disable_embedded_bitmaps) override {}
+	virtual bool font_get_disable_embedded_bitmaps(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_generate_mipmaps(const RID &p_font_rid, bool p_generate_mipmaps) override {}
+	virtual bool font_get_generate_mipmaps(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_multichannel_signed_distance_field(const RID &p_font_rid, bool p_msdf) override {}
+	virtual bool font_is_multichannel_signed_distance_field(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_msdf_pixel_range(const RID &p_font_rid, int64_t p_msdf_pixel_range) override {}
+	virtual int64_t font_get_msdf_pixel_range(const RID &p_font_rid) const override { return 0; }
+	virtual void font_set_msdf_size(const RID &p_font_rid, int64_t p_msdf_size) override {}
+	virtual int64_t font_get_msdf_size(const RID &p_font_rid) const override { return 0; }
+	virtual void font_set_allow_system_fallback(const RID &p_font_rid, bool p_allow_system_fallback) override {}
+	virtual bool font_is_allow_system_fallback(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_force_autohinter(const RID &p_font_rid, bool p_force_autohinter) override {}
+	virtual bool font_is_force_autohinter(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_modulate_color_glyphs(const RID &p_font_rid, bool p_modulate) override {}
+	virtual bool font_is_modulate_color_glyphs(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_hinting(const RID &p_font_rid, Hinting p_hinting) override {}
+	virtual Hinting font_get_hinting(const RID &p_font_rid) const override { return HINTING_NONE; }
+	virtual void font_set_subpixel_positioning(const RID &p_font_rid, SubpixelPositioning p_subpixel) override {}
+	virtual SubpixelPositioning font_get_subpixel_positioning(const RID &p_font_rid) const override { return SUBPIXEL_POSITIONING_DISABLED; }
+	virtual void font_set_keep_rounding_remainders(const RID &p_font_rid, bool p_keep_rounding_remainders) override {}
+	virtual bool font_get_keep_rounding_remainders(const RID &p_font_rid) const override { return false; }
+	virtual void font_set_embolden(const RID &p_font_rid, double p_strength) override {}
+	virtual double font_get_embolden(const RID &p_font_rid) const override { return 0.0; }
+	virtual void font_set_spacing(const RID &p_font_rid, SpacingType p_spacing, int64_t p_value) override {}
+	virtual int64_t font_get_spacing(const RID &p_font_rid, SpacingType p_spacing) const override { return 0; }
 
 	virtual RID create_shaped_text(TextServer::Direction p_direction, TextServer::Orientation p_orientation) override { return RID(); }
 	virtual void shaped_text_clear(const RID &p_shaped) override {}
@@ -123,4 +214,37 @@ public:
 	virtual double shaped_text_get_width(const RID &p_shaped) const override { return 0; }
 	virtual double shaped_text_get_underline_position(const RID &p_shaped) const override { return 0; }
 	virtual double shaped_text_get_underline_thickness(const RID &p_shaped) const override { return 0; }
+	virtual void shaped_text_set_direction(const RID &p_shaped, Direction p_direction = DIRECTION_AUTO) override {}
+	virtual Direction shaped_text_get_direction(const RID &p_shaped) const override { return DIRECTION_AUTO; }
+	virtual Direction shaped_text_get_inferred_direction(const RID &p_shaped) const override { return DIRECTION_AUTO; }
+	virtual void shaped_text_set_bidi_override(const RID &p_shaped, const Array &p_override) override {}
+	virtual void shaped_text_set_custom_punctuation(const RID &p_shaped, const String &p_punct) override {}
+	virtual String shaped_text_get_custom_punctuation(const RID &p_shaped) const override { return String(); }
+	virtual void shaped_text_set_custom_ellipsis(const RID &p_shaped, int64_t p_char) override {}
+	virtual int64_t shaped_text_get_custom_ellipsis(const RID &p_shaped) const override { return 0; }
+	virtual void shaped_text_set_orientation(const RID &p_shaped, Orientation p_orientation = ORIENTATION_HORIZONTAL) override {}
+	virtual Orientation shaped_text_get_orientation(const RID &p_shaped) const override { return ORIENTATION_HORIZONTAL; }
+	virtual void shaped_text_set_preserve_invalid(const RID &p_shaped, bool p_enabled) override {}
+	virtual bool shaped_text_get_preserve_invalid(const RID &p_shaped) const override { return false; }
+	virtual void shaped_text_set_preserve_control(const RID &p_shaped, bool p_enabled) override {}
+	virtual bool shaped_text_get_preserve_control(const RID &p_shaped) const override { return false; }
+	virtual void shaped_text_set_spacing(const RID &p_shaped, SpacingType p_spacing, int64_t p_value) override {}
+	virtual int64_t shaped_text_get_spacing(const RID &p_shaped, SpacingType p_spacing) const override { return 0; }
+	virtual String shaped_get_text(const RID &p_shaped) const override { return String(); }
+	virtual String shaped_get_span_text(const RID &p_shaped, int64_t p_index) const override { return String(); }
+	virtual Variant shaped_get_span_object(const RID &p_shaped, int64_t p_index) const override { return Variant(); }
+	virtual int64_t shaped_get_run_count(const RID &p_shaped) const override { return 0; }
+	virtual String shaped_get_run_text(const RID &p_shaped, int64_t p_index) const override { return String(); }
+	virtual Vector2i shaped_get_run_range(const RID &p_shaped, int64_t p_index) const override { return Vector2i(); }
+	virtual RID shaped_get_run_font_rid(const RID &p_shaped, int64_t p_index) const override { return RID(); }
+	virtual int shaped_get_run_font_size(const RID &p_shaped, int64_t p_index) const override { return 0; }
+	virtual String shaped_get_run_language(const RID &p_shaped, int64_t p_index) const override { return String(); }
+	virtual Direction shaped_get_run_direction(const RID &p_shaped, int64_t p_index) const override { return DIRECTION_AUTO; }
+	virtual Variant shaped_get_run_object(const RID &p_shaped, int64_t p_index) const override { return Variant(); }
+	virtual double shaped_text_fit_to_width(const RID &p_shaped, double p_width, BitField<TextServer::JustificationFlag> p_jst_flags = JUSTIFICATION_WORD_BOUND | JUSTIFICATION_KASHIDA) override { return 0.0; }
+	virtual double shaped_text_tab_align(const RID &p_shaped, const PackedFloat32Array &p_tab_stops) override { return 0.0; }
+	virtual bool shaped_text_update_breaks(const RID &p_shaped) override { return false; }
+	virtual bool shaped_text_update_justification_ops(const RID &p_shaped) override { return false; }
+	virtual void shaped_text_overrun_trim_to_width(const RID &p_shaped, double p_width, BitField<TextServer::TextOverrunFlag> p_trim_flags) override {}
+	virtual PackedInt32Array shaped_text_get_character_breaks(const RID &p_shaped) const override { return PackedInt32Array(); }
 };
