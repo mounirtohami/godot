@@ -1295,19 +1295,46 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_constant(SceneStringName(v_separation), "VFlowContainer", p_config.separation_margin);
 
 		// SplitContainer.
+		p_theme->set_color("grabber_icon_normal", "SplitContainer", p_config.icon_disabled_color);
+		p_theme->set_color("grabber_icon_hovered", "SplitContainer", p_config.icon_normal_color);
+		p_theme->set_color("grabber_icon_pressed", "SplitContainer", p_config.icon_pressed_color);
 
-		p_theme->set_icon("h_grabber", "SplitContainer", p_theme->get_icon(SNAME("GuiHsplitter"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("v_grabber", "SplitContainer", p_theme->get_icon(SNAME("GuiVsplitter"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("grabber", "VSplitContainer", p_theme->get_icon(SNAME("GuiVsplitter"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("grabber", "HSplitContainer", p_theme->get_icon(SNAME("GuiHsplitter"), EditorStringName(EditorIcons)));
+		p_theme->set_stylebox("h_split_bar_background", "SplitContainer", p_config.base_empty_style);
+		p_theme->set_stylebox("v_split_bar_background", "SplitContainer", p_config.base_empty_style);
+		p_theme->set_stylebox("split_bar_background", "HSplitContainer", p_config.base_empty_style);
+		p_theme->set_stylebox("split_bar_background", "VSplitContainer", p_config.base_empty_style);
 
-		p_theme->set_constant(SceneStringName(separation), "SplitContainer", p_config.separation_margin);
-		p_theme->set_constant(SceneStringName(separation), "HSplitContainer", p_config.separation_margin);
-		p_theme->set_constant(SceneStringName(separation), "VSplitContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "SplitContainer", MAX(2, p_config.extra_spacing * EDSCALE));
+		p_theme->set_constant(SceneStringName(separation), "HSplitContainer", MAX(2, p_config.extra_spacing * EDSCALE));
+		p_theme->set_constant(SceneStringName(separation), "VSplitContainer", MAX(2, p_config.extra_spacing * EDSCALE));
 
-		p_theme->set_constant("minimum_grab_thickness", "SplitContainer", p_config.increased_margin * EDSCALE);
-		p_theme->set_constant("minimum_grab_thickness", "HSplitContainer", p_config.increased_margin * EDSCALE);
-		p_theme->set_constant("minimum_grab_thickness", "VSplitContainer", p_config.increased_margin * EDSCALE);
+		p_theme->set_constant("minimum_grab_thickness", "SplitContainer", p_config.separation_margin + (8 * EDSCALE));
+		p_theme->set_constant("minimum_grab_thickness", "HSplitContainer", p_config.separation_margin + (8 * EDSCALE));
+		p_theme->set_constant("minimum_grab_thickness", "VSplitContainer", p_config.separation_margin + (8 * EDSCALE));
+
+		p_theme->set_constant("draw_grabber_icon", "SplitContainer", 0);
+		p_theme->set_constant("draw_grabber_icon", "HSplitContainer", 0);
+		p_theme->set_constant("draw_grabber_icon", "VSplitContainer", 0);
+
+		p_theme->set_constant("draw_split_bar", "SplitContainer", 1);
+		p_theme->set_constant("draw_split_bar", "HSplitContainer", 1);
+		p_theme->set_constant("draw_split_bar", "VSplitContainer", 1);
+
+		p_theme->set_constant("autohide_split_bar", "SplitContainer", 1);
+		p_theme->set_constant("autohide_split_bar", "HSplitContainer", 1);
+		p_theme->set_constant("autohide_split_bar", "VSplitContainer", 1);
+
+		Ref<StyleBox> split_bar_style = make_flat_stylebox(p_config.icon_disabled_color);
+		p_theme->set_stylebox("h_split_bar_background", "SplitContainer", split_bar_style);
+		p_theme->set_stylebox("v_split_bar_background", "SplitContainer", split_bar_style);
+		p_theme->set_stylebox("split_bar_background", "HSplitContainer", split_bar_style);
+		p_theme->set_stylebox("split_bar_background", "VSplitContainer", split_bar_style);
+
+		Ref<StyleBox> split_bar_pressed_style = make_flat_stylebox(p_config.accent_color);
+		p_theme->set_stylebox("h_split_bar_background_pressed", "SplitContainer", split_bar_pressed_style);
+		p_theme->set_stylebox("v_split_bar_background_pressed", "SplitContainer", split_bar_pressed_style);
+		p_theme->set_stylebox("split_bar_background_pressed", "HSplitContainer", split_bar_pressed_style);
+		p_theme->set_stylebox("split_bar_background_pressed", "VSplitContainer", split_bar_pressed_style);
 
 		// GridContainer.
 		p_theme->set_constant(SceneStringName(v_separation), "GridContainer", Math::round(p_config.widget_margin.y - 2 * EDSCALE));

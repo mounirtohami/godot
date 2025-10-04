@@ -32,12 +32,15 @@
 
 #include "scene/gui/container.h"
 
+class SplitContainer;
 class TextureRect;
 
 class SplitContainerDragger : public Control {
-	GDCLASS(SplitContainerDragger, Control);
+	GDCLASS(SplitContainerDragger, Control)
+
 	friend class SplitContainer;
-	Rect2 split_bar_rect;
+
+	SplitContainer *sc = nullptr;
 
 protected:
 	void _notification(int p_what);
@@ -58,11 +61,12 @@ private:
 public:
 	virtual CursorShape get_cursor_shape(const Point2 &p_pos = Point2i()) const override;
 
-	SplitContainerDragger();
+	SplitContainerDragger(SplitContainer *p_sc);
 };
 
 class SplitContainer : public Container {
-	GDCLASS(SplitContainer, Container);
+	GDCLASS(SplitContainer, Container)
+
 	friend class SplitContainerDragger;
 
 public:
@@ -72,15 +76,22 @@ public:
 		DRAGGER_HIDDEN_COLLAPSED
 	};
 
+	enum CollapseMode {
+		COLLAPSE_NONE,
+		COLLAPSE_FIRST,
+		COLLAPSE_SECOND,
+		COLLAPSE_ALL
+	};
+
 private:
-	int show_drag_area = false;
-	int drag_area_margin_begin = 0;
-	int drag_area_margin_end = 0;
-	int drag_area_offset = 0;
 	int split_offset = 0;
 	int computed_split_offset = 0;
 	bool vertical = false;
 	bool collapsed = false;
+	bool child_collapsed = false;
+	bool show_drag_area = false;
+
+	CollapseMode collapse_mode = COLLAPSE_NONE;
 	DraggerVisibility dragger_visibility = DRAGGER_VISIBLE;
 	bool dragging_enabled = true;
 
@@ -93,27 +104,45 @@ private:
 		Color touch_dragger_color;
 		Color touch_dragger_pressed_color;
 		Color touch_dragger_hover_color;
+		Color grabber_icon_normal;
+		Color grabber_icon_hovered;
+		Color grabber_icon_pressed;
+
 		int separation = 0;
 		int minimum_grab_thickness = 0;
+		bool draw_grabber_icon = false;
 		bool autohide = false;
+		bool draw_split_bar = false;
+		bool autohide_split_bar = false;
+
 		Ref<Texture2D> touch_dragger_icon;
 		Ref<Texture2D> touch_dragger_icon_h;
 		Ref<Texture2D> touch_dragger_icon_v;
 		Ref<Texture2D> grabber_icon;
 		Ref<Texture2D> grabber_icon_h;
 		Ref<Texture2D> grabber_icon_v;
-		float base_scale = 1.0;
+
 		Ref<StyleBox> split_bar_background;
+		Ref<StyleBox> h_split_bar_background;
+		Ref<StyleBox> v_split_bar_background;
+
+		Ref<StyleBox> split_bar_background_pressed;
+		Ref<StyleBox> h_split_bar_background_pressed;
+		Ref<StyleBox> v_split_bar_background_pressed;
 	} theme_cache;
 
-	Ref<Texture2D> _get_grabber_icon() const;
-	Ref<Texture2D> _get_touch_dragger_icon() const;
-	void _touch_dragger_mouse_exited();
-	void _touch_dragger_gui_input(const Ref<InputEvent> &p_event);
-	void _compute_split_offset(bool p_clamp);
+	_FORCE_INLINE_ Ref<Texture2D> _get_grabber_icon() const { return is_fixed ? theme_cache.grabber_icon : (vertical ? theme_cache.grabber_icon_v : theme_cache.grabber_icon_h); }
+	_FORCE_INLINE_ Ref<Texture2D> _get_touch_dragger_icon() const { return is_fixed ? theme_cache.touch_dragger_icon : (vertical ? theme_cache.touch_dragger_icon_v : theme_cache.touch_dragger_icon_h); }
+	_FORCE_INLINE_ Ref<StyleBox> _get_split_bar_background() const { return is_fixed ? theme_cache.split_bar_background : (vertical ? theme_cache.v_split_bar_background : theme_cache.h_split_bar_background); }
+	_FORCE_INLINE_ Ref<StyleBox> _get_split_bar_pressed_background() const { return is_fixed ? theme_cache.split_bar_background_pressed : (vertical ? theme_cache.v_split_bar_background_pressed : theme_cache.h_split_bar_background_pressed); }
+
+	_FORCE_INLINE_ void _touch_dragger_mouse_exited();
+	_FORCE_INLINE_ void _compute_split_offset(bool p_clamp);
 	int _get_separation() const;
+
+	void _touch_dragger_gui_input(const Ref<InputEvent> &p_event);
 	void _resort();
-	Control *_get_sortable_child(int p_idx, SortableVisibilityMode p_visibility_mode = SortableVisibilityMode::VISIBLE_IN_TREE) const;
+	Control *_get_sortable_child(int p_idx) const;
 
 protected:
 	bool is_fixed = false;
@@ -124,50 +153,46 @@ protected:
 
 public:
 	void set_split_offset(int p_offset);
-	int get_split_offset() const;
+	_FORCE_INLINE_ int get_split_offset() const { return split_offset; }
+
 	void clamp_split_offset();
 
 	void set_collapsed(bool p_collapsed);
-	bool is_collapsed() const;
+	_FORCE_INLINE_ bool is_collapsed() const { return collapsed; }
 
 	void set_dragger_visibility(DraggerVisibility p_visibility);
-	DraggerVisibility get_dragger_visibility() const;
+	_FORCE_INLINE_ DraggerVisibility get_dragger_visibility() const { return dragger_visibility; }
 
 	void set_vertical(bool p_vertical);
-	bool is_vertical() const;
+	_FORCE_INLINE_ bool is_vertical() const { return vertical; }
 
 	void set_dragging_enabled(bool p_enabled);
-	bool is_dragging_enabled() const;
+	_FORCE_INLINE_ bool is_dragging_enabled() const { return dragging_enabled; }
+
+	void set_collapse_mode(CollapseMode p_mode);
+	_FORCE_INLINE_ CollapseMode get_collapse_mode() const { return collapse_mode; }
 
 	virtual Size2 get_minimum_size() const override;
 
 	virtual Vector<int> get_allowed_size_flags_horizontal() const override;
 	virtual Vector<int> get_allowed_size_flags_vertical() const override;
 
-	void set_drag_area_margin_begin(int p_margin);
-	int get_drag_area_margin_begin() const;
-
-	void set_drag_area_margin_end(int p_margin);
-	int get_drag_area_margin_end() const;
-
-	void set_drag_area_offset(int p_offset);
-	int get_drag_area_offset() const;
-
 	void set_show_drag_area_enabled(bool p_enabled);
-	bool is_show_drag_area_enabled() const;
+	_FORCE_INLINE_ bool is_show_drag_area_enabled() const { return show_drag_area; }
 
-	Control *get_drag_area_control() { return dragging_area_control; }
+	_FORCE_INLINE_ Control *get_drag_area_control() const { return dragging_area_control; }
 
 	void set_touch_dragger_enabled(bool p_enabled);
-	bool is_touch_dragger_enabled() const;
+	_FORCE_INLINE_ bool is_touch_dragger_enabled() const { return touch_dragger_enabled; }
 
 	SplitContainer(bool p_vertical = false);
 };
 
 VARIANT_ENUM_CAST(SplitContainer::DraggerVisibility);
+VARIANT_ENUM_CAST(SplitContainer::CollapseMode);
 
 class HSplitContainer : public SplitContainer {
-	GDCLASS(HSplitContainer, SplitContainer);
+	GDCLASS(HSplitContainer, SplitContainer)
 
 public:
 	HSplitContainer() :
@@ -175,7 +200,7 @@ public:
 };
 
 class VSplitContainer : public SplitContainer {
-	GDCLASS(VSplitContainer, SplitContainer);
+	GDCLASS(VSplitContainer, SplitContainer)
 
 public:
 	VSplitContainer() :

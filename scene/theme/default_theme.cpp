@@ -1239,9 +1239,39 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// Containers
 
+	// PanelContainer
+	theme->set_stylebox(SceneStringName(panel), "PanelContainer", make_flat_stylebox(style_normal_color, 0, 0, 0, 0));
+
+	// GridContainer
+	theme->set_constant(SceneStringName(h_separation), "GridContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(v_separation), "GridContainer", Math::round(4 * scale));
+
+	// BoxContainer
+	theme->set_constant(SceneStringName(separation), "BoxContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(separation), "HBoxContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(separation), "VBoxContainer", Math::round(4 * scale));
+
+	// MarginContainer;
+	theme->set_constant("margin_left", "MarginContainer", 0);
+	theme->set_constant("margin_top", "MarginContainer", 0);
+	theme->set_constant("margin_right", "MarginContainer", 0);
+	theme->set_constant("margin_bottom", "MarginContainer", 0);
+
+	// FlowContainer
+	theme->set_constant(SceneStringName(h_separation), "FlowContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(v_separation), "FlowContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(h_separation), "HFlowContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(v_separation), "HFlowContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(h_separation), "VFlowContainer", Math::round(4 * scale));
+	theme->set_constant(SceneStringName(v_separation), "VFlowContainer", Math::round(4 * scale));
+
+	// SplitContainer
 	theme->set_color("touch_dragger_color", "SplitContainer", Color(1, 1, 1, 0.3));
 	theme->set_color("touch_dragger_pressed_color", "SplitContainer", Color(1, 1, 1, 1));
 	theme->set_color("touch_dragger_hover_color", "SplitContainer", Color(1, 1, 1, 0.6));
+	theme->set_color("grabber_icon_normal", "SplitContainer", control_font_color);
+	theme->set_color("grabber_icon_hovered", "SplitContainer", control_font_hover_color);
+	theme->set_color("grabber_icon_pressed", "SplitContainer", control_font_pressed_color);
 
 	theme->set_icon("h_touch_dragger", "SplitContainer", icons["h_dragger"]);
 	theme->set_icon("v_touch_dragger", "SplitContainer", icons["v_dragger"]);
@@ -1252,59 +1282,31 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_icon("grabber", "VSplitContainer", icons["vsplitter"]);
 	theme->set_icon("grabber", "HSplitContainer", icons["hsplitter"]);
 
-	theme->set_constant(SceneStringName(separation), "BoxContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(separation), "HBoxContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(separation), "VBoxContainer", Math::round(4 * scale));
-	theme->set_constant("margin_left", "MarginContainer", 0);
-	theme->set_constant("margin_top", "MarginContainer", 0);
-	theme->set_constant("margin_right", "MarginContainer", 0);
-	theme->set_constant("margin_bottom", "MarginContainer", 0);
-	theme->set_constant(SceneStringName(h_separation), "GridContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(v_separation), "GridContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(separation), "SplitContainer", Math::round(12 * scale));
-	theme->set_constant(SceneStringName(separation), "HSplitContainer", Math::round(12 * scale));
-	theme->set_constant(SceneStringName(separation), "VSplitContainer", Math::round(12 * scale));
-	theme->set_constant("minimum_grab_thickness", "SplitContainer", Math::round(6 * scale));
-	theme->set_constant("minimum_grab_thickness", "HSplitContainer", Math::round(6 * scale));
-	theme->set_constant("minimum_grab_thickness", "VSplitContainer", Math::round(6 * scale));
+	theme->set_constant(SceneStringName(separation), "SplitContainer", Math::round(5 * scale));
+	theme->set_constant(SceneStringName(separation), "HSplitContainer", Math::round(5 * scale));
+	theme->set_constant(SceneStringName(separation), "VSplitContainer", Math::round(5 * scale));
+	theme->set_constant("minimum_grab_thickness", "SplitContainer", Math::round(10 * scale));
+	theme->set_constant("minimum_grab_thickness", "HSplitContainer", Math::round(10 * scale));
+	theme->set_constant("minimum_grab_thickness", "VSplitContainer", Math::round(10 * scale));
 	theme->set_constant("autohide", "SplitContainer", 1);
 	theme->set_constant("autohide", "HSplitContainer", 1);
 	theme->set_constant("autohide", "VSplitContainer", 1);
-	theme->set_constant(SceneStringName(h_separation), "FlowContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(v_separation), "FlowContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(h_separation), "HFlowContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(v_separation), "HFlowContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(h_separation), "VFlowContainer", Math::round(4 * scale));
-	theme->set_constant(SceneStringName(v_separation), "VFlowContainer", Math::round(4 * scale));
+	theme->set_constant("draw_grabber_icon", "SplitContainer", 1);
+	theme->set_constant("draw_grabber_icon", "HSplitContainer", 1);
+	theme->set_constant("draw_grabber_icon", "VSplitContainer", 1);
+	theme->set_constant("draw_split_bar", "SplitContainer", 0);
+	theme->set_constant("draw_split_bar", "HSplitContainer", 0);
+	theme->set_constant("draw_split_bar", "VSplitContainer", 0);
 
-	theme->set_stylebox(SceneStringName(panel), "PanelContainer", make_flat_stylebox(style_normal_color, 0, 0, 0, 0));
-	theme->set_stylebox("split_bar_background", "SplitContainer", make_empty_stylebox(0, 0, 0, 0));
-	theme->set_stylebox("split_bar_background", "VSplitContainer", make_empty_stylebox(0, 0, 0, 0));
-	theme->set_stylebox("split_bar_background", "HSplitContainer", make_empty_stylebox(0, 0, 0, 0));
+	theme->set_stylebox("h_split_bar_background", "SplitContainer", empty);
+	theme->set_stylebox("v_split_bar_background", "SplitContainer", empty);
+	theme->set_stylebox("split_bar_background", "HSplitContainer", empty);
+	theme->set_stylebox("split_bar_background", "VSplitContainer", empty);
 
-	theme->set_icon("zoom_out", "GraphEdit", icons["zoom_less"]);
-	theme->set_icon("zoom_in", "GraphEdit", icons["zoom_more"]);
-	theme->set_icon("zoom_reset", "GraphEdit", icons["zoom_reset"]);
-	theme->set_icon("grid_toggle", "GraphEdit", icons["grid_toggle"]);
-	theme->set_icon("minimap_toggle", "GraphEdit", icons["grid_minimap"]);
-	theme->set_icon("snapping_toggle", "GraphEdit", icons["grid_snap"]);
-	theme->set_icon("layout", "GraphEdit", icons["grid_layout"]);
-
-	theme->set_stylebox(SceneStringName(panel), "GraphEdit", make_flat_stylebox(style_normal_color, 4, 4, 4, 5));
-	theme->set_stylebox("panel_focus", "GraphEdit", focus);
-
-	Ref<StyleBoxFlat> graph_toolbar_style = make_flat_stylebox(Color(0.24, 0.24, 0.24, 0.6), 4, 2, 4, 2);
-	theme->set_stylebox("menu_panel", "GraphEdit", graph_toolbar_style);
-
-	theme->set_color("grid_minor", "GraphEdit", Color(1, 1, 1, 0.05));
-	theme->set_color("grid_major", "GraphEdit", Color(1, 1, 1, 0.2));
-	theme->set_color("selection_fill", "GraphEdit", Color(1, 1, 1, 0.3));
-	theme->set_color("selection_stroke", "GraphEdit", Color(1, 1, 1, 0.8));
-	theme->set_color("activity", "GraphEdit", Color(1, 1, 1));
-	theme->set_color("connection_hover_tint_color", "GraphEdit", Color(0, 0, 0, 0.3));
-	theme->set_constant("connection_hover_thickness", "GraphEdit", 0);
-	theme->set_color("connection_valid_target_tint_color", "GraphEdit", Color(1, 1, 1, 0.4));
-	theme->set_color("connection_rim_color", "GraphEdit", style_normal_color);
+	theme->set_stylebox("h_split_bar_background_pressed", "SplitContainer", empty);
+	theme->set_stylebox("v_split_bar_background_pressed", "SplitContainer", empty);
+	theme->set_stylebox("split_bar_background_pressed", "HSplitContainer", empty);
+	theme->set_stylebox("split_bar_background_pressed", "VSplitContainer", empty);
 
 	// FoldableContainer
 	Ref<StyleBoxFlat> foldable_container_title = make_flat_stylebox(style_pressed_color);
@@ -1348,9 +1350,35 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// Visual Node Ports
 
+	// GraphEdit
+	theme->set_icon("zoom_out", "GraphEdit", icons["zoom_less"]);
+	theme->set_icon("zoom_in", "GraphEdit", icons["zoom_more"]);
+	theme->set_icon("zoom_reset", "GraphEdit", icons["zoom_reset"]);
+	theme->set_icon("grid_toggle", "GraphEdit", icons["grid_toggle"]);
+	theme->set_icon("minimap_toggle", "GraphEdit", icons["grid_minimap"]);
+	theme->set_icon("snapping_toggle", "GraphEdit", icons["grid_snap"]);
+	theme->set_icon("layout", "GraphEdit", icons["grid_layout"]);
+
+	theme->set_stylebox(SceneStringName(panel), "GraphEdit", make_flat_stylebox(style_normal_color, 4, 4, 4, 5));
+	theme->set_stylebox("panel_focus", "GraphEdit", focus);
+
+	Ref<StyleBoxFlat> graph_toolbar_style = make_flat_stylebox(Color(0.24, 0.24, 0.24, 0.6), 4, 2, 4, 2);
+	theme->set_stylebox("menu_panel", "GraphEdit", graph_toolbar_style);
+
+	theme->set_color("grid_minor", "GraphEdit", Color(1, 1, 1, 0.05));
+	theme->set_color("grid_major", "GraphEdit", Color(1, 1, 1, 0.2));
+	theme->set_color("selection_fill", "GraphEdit", Color(1, 1, 1, 0.3));
+	theme->set_color("selection_stroke", "GraphEdit", Color(1, 1, 1, 0.8));
+	theme->set_color("activity", "GraphEdit", Color(1, 1, 1));
+	theme->set_color("connection_hover_tint_color", "GraphEdit", Color(0, 0, 0, 0.3));
+	theme->set_constant("connection_hover_thickness", "GraphEdit", 0);
+	theme->set_color("connection_valid_target_tint_color", "GraphEdit", Color(1, 1, 1, 0.4));
+	theme->set_color("connection_rim_color", "GraphEdit", style_normal_color);
+
 	theme->set_constant("port_hotzone_inner_extent", "GraphEdit", 22 * scale);
 	theme->set_constant("port_hotzone_outer_extent", "GraphEdit", 26 * scale);
 
+	// GraphEditMinimap
 	theme->set_stylebox(SceneStringName(panel), "GraphEditMinimap", make_flat_stylebox(Color(0.24, 0.24, 0.24), 0, 0, 0, 0));
 	Ref<StyleBoxFlat> style_minimap_camera = make_flat_stylebox(Color(0.65, 0.65, 0.65, 0.2), 0, 0, 0, 0, 0);
 	style_minimap_camera->set_border_color(Color(0.65, 0.65, 0.65, 0.45));

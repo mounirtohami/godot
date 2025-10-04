@@ -228,6 +228,10 @@ void EditorColorMap::create() {
 	add_conversion_exception("CodeRegionFoldDownArrow");
 	add_conversion_exception("TextEditorPlay");
 	add_conversion_exception("Breakpoint");
+
+	/// SplitContainer
+	add_conversion_exception("GuiHsplitter");
+	add_conversion_exception("GuiVsplitter");
 }
 
 void EditorColorMap::finish() {
