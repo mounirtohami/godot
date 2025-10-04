@@ -245,17 +245,17 @@ void ColorPicker::_notification(int p_what) {
 			internal_margin->add_theme_constant_override(SNAME("margin_top"), margin);
 			internal_margin->end_bulk_theme_override();
 
-			main_vbox->add_theme_constant_override(SNAME("separation"), get_theme_constant(SNAME("separation")));
+			main_vbox->add_theme_constant_override(SceneStringName(separation), get_theme_constant(SceneStringName(separation)));
 
 			const Size2 cursor_size = (theme_cache.picker_cursor->get_size() * 0.5).round();
-			shape_vbox->add_theme_constant_override(SNAME("separation"), cursor_size.height);
-			shape_container->add_theme_constant_override(SNAME("separation"), cursor_size.width);
+			shape_vbox->add_theme_constant_override(SceneStringName(separation), cursor_size.height);
+			shape_container->add_theme_constant_override(SceneStringName(separation), cursor_size.width);
 
 			sliders_panel->add_theme_style_override(SceneStringName(panel), theme_cache.sliders_panel);
 
 			slider_gc->begin_bulk_theme_override();
-			slider_gc->add_theme_constant_override(SNAME("v_separation"), sliders_separation.height);
-			slider_gc->add_theme_constant_override(SNAME("h_separation"), sliders_separation.width);
+			slider_gc->add_theme_constant_override(SceneStringName(v_separation), sliders_separation.height);
+			slider_gc->add_theme_constant_override(SceneStringName(h_separation), sliders_separation.width);
 			slider_gc->end_bulk_theme_override();
 
 #ifdef TOOLS_ENABLED
@@ -2019,12 +2019,12 @@ ColorPicker::ColorPicker() {
 
 	slider_vbc = memnew(VBoxContainer);
 	slider_vbc->set_name("SliderVBoxContainer");
-	slider_vbc->add_theme_constant_override("separation", 0);
+	slider_vbc->add_theme_constant_override(SceneStringName(separation), 0);
 	main_vbox->add_child(slider_vbc);
 
 	mode_hbc = memnew(HBoxContainer);
 	mode_hbc->set_name("ModeHBoxContainer");
-	mode_hbc->add_theme_constant_override("separation", 0);
+	mode_hbc->add_theme_constant_override(SceneStringName(separation), 0);
 	slider_vbc->add_child(mode_hbc);
 
 	mode_group.instantiate();

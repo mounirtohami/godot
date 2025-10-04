@@ -2995,7 +2995,7 @@ void CodeEdit::_bind_methods() {
 
 	/* Code Completion */
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_completion_style, "completion");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_icon_separation, "h_separation", "ItemList");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_icon_separation, SceneStringName(h_separation), "ItemList");
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_width, "completion_max_width");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_lines, "completion_lines");

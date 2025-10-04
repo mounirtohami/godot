@@ -157,6 +157,10 @@ public:
 	const StringName state_started = "state_started";
 	const StringName state_finished = "state_finished";
 
+	const StringName separation = "separation";
+	const StringName h_separation = "h_separation";
+	const StringName v_separation = "v_separation";
+
 	const StringName FlatButton = "FlatButton";
 };
 

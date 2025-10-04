@@ -753,7 +753,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("icon_pressed_color", "Button", p_config.icon_pressed_color);
 		p_theme->set_color("icon_disabled_color", "Button", p_config.icon_disabled_color);
 
-		p_theme->set_constant("h_separation", "Button", 4 * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "Button", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "Button", 0);
 
 		p_theme->set_constant("align_to_largest_stylebox", "Button", 1); // Enabled.
@@ -795,7 +795,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("icon_pressed_color", "MenuBar", p_config.icon_pressed_color);
 		p_theme->set_color("icon_disabled_color", "MenuBar", p_config.icon_disabled_color);
 
-		p_theme->set_constant("h_separation", "MenuBar", 4 * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "MenuBar", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "MenuBar", 0);
 
 		// OptionButton.
@@ -840,7 +840,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_icon("arrow", "OptionButton", p_theme->get_icon(SNAME("GuiOptionArrow"), EditorStringName(EditorIcons)));
 			p_theme->set_constant("arrow_margin", "OptionButton", p_config.widget_margin.x - 2 * EDSCALE);
 			p_theme->set_constant("modulate_arrow", "OptionButton", true);
-			p_theme->set_constant("h_separation", "OptionButton", 4 * EDSCALE);
+			p_theme->set_constant(SceneStringName(h_separation), "OptionButton", 4 * EDSCALE);
 			p_theme->set_constant("outline_size", "OptionButton", 0);
 		}
 
@@ -876,7 +876,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("icon_pressed_color", "CheckButton", p_config.icon_pressed_color);
 		p_theme->set_color("icon_disabled_color", "CheckButton", p_config.icon_disabled_color);
 
-		p_theme->set_constant("h_separation", "CheckButton", 8 * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "CheckButton", 8 * EDSCALE);
 		p_theme->set_constant("check_v_offset", "CheckButton", 0);
 		p_theme->set_constant("outline_size", "CheckButton", 0);
 
@@ -912,7 +912,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color("icon_pressed_color", "CheckBox", p_config.icon_pressed_color);
 			p_theme->set_color("icon_disabled_color", "CheckBox", p_config.icon_disabled_color);
 
-			p_theme->set_constant("h_separation", "CheckBox", 8 * EDSCALE);
+			p_theme->set_constant(SceneStringName(h_separation), "CheckBox", 8 * EDSCALE);
 			p_theme->set_constant("check_v_offset", "CheckBox", 0);
 			p_theme->set_constant("outline_size", "CheckBox", 0);
 		}
@@ -972,8 +972,8 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color("title_button_color", "Tree", p_config.font_color);
 			p_theme->set_color("drop_position_color", "Tree", p_config.accent_color);
 
-			p_theme->set_constant("v_separation", "Tree", p_config.separation_margin);
-			p_theme->set_constant("h_separation", "Tree", (p_config.increased_margin + 2) * EDSCALE);
+			p_theme->set_constant(SceneStringName(v_separation), "Tree", p_config.separation_margin);
+			p_theme->set_constant(SceneStringName(h_separation), "Tree", (p_config.increased_margin + 2) * EDSCALE);
 			p_theme->set_constant("guide_width", "Tree", p_config.border_width);
 			p_theme->set_constant("item_margin", "Tree", MAX(3 * p_config.increased_margin * EDSCALE, 12 * EDSCALE));
 			p_theme->set_constant("inner_item_margin_top", "Tree", p_config.separation_margin);
@@ -1093,8 +1093,8 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color("font_selected_color", "ItemList", p_config.mono_color);
 			p_theme->set_color("font_outline_color", "ItemList", p_config.font_outline_color);
 			p_theme->set_color("guide_color", "ItemList", Color(1, 1, 1, 0));
-			p_theme->set_constant("v_separation", "ItemList", p_config.forced_even_separation * EDSCALE);
-			p_theme->set_constant("h_separation", "ItemList", (p_config.increased_margin + 2) * EDSCALE);
+			p_theme->set_constant(SceneStringName(v_separation), "ItemList", p_config.forced_even_separation * EDSCALE);
+			p_theme->set_constant(SceneStringName(h_separation), "ItemList", (p_config.increased_margin + 2) * EDSCALE);
 			p_theme->set_constant("icon_margin", "ItemList", (p_config.increased_margin + 2) * EDSCALE);
 			p_theme->set_constant(SceneStringName(line_separation), "ItemList", p_config.separation_margin);
 			p_theme->set_constant("outline_size", "ItemList", 0);
@@ -1202,7 +1202,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 		p_theme->set_constant("side_margin", "TabContainer", 0);
 		p_theme->set_constant("outline_size", "TabContainer", 0);
-		p_theme->set_constant("h_separation", "TabBar", 4 * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "TabBar", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "TabBar", 0);
 	}
 
@@ -1278,21 +1278,21 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 	// Containers.
 	{
-		p_theme->set_constant("separation", "BoxContainer", p_config.separation_margin);
-		p_theme->set_constant("separation", "HBoxContainer", p_config.separation_margin);
-		p_theme->set_constant("separation", "VBoxContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "BoxContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "HBoxContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "VBoxContainer", p_config.separation_margin);
 		p_theme->set_constant("margin_left", "MarginContainer", 0);
 		p_theme->set_constant("margin_top", "MarginContainer", 0);
 		p_theme->set_constant("margin_right", "MarginContainer", 0);
 		p_theme->set_constant("margin_bottom", "MarginContainer", 0);
-		p_theme->set_constant("h_separation", "GridContainer", p_config.separation_margin);
-		p_theme->set_constant("v_separation", "GridContainer", p_config.separation_margin);
-		p_theme->set_constant("h_separation", "FlowContainer", p_config.separation_margin);
-		p_theme->set_constant("v_separation", "FlowContainer", p_config.separation_margin);
-		p_theme->set_constant("h_separation", "HFlowContainer", p_config.separation_margin);
-		p_theme->set_constant("v_separation", "HFlowContainer", p_config.separation_margin);
-		p_theme->set_constant("h_separation", "VFlowContainer", p_config.separation_margin);
-		p_theme->set_constant("v_separation", "VFlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(h_separation), "GridContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(v_separation), "GridContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(h_separation), "FlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(v_separation), "FlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(h_separation), "HFlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(v_separation), "HFlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(h_separation), "VFlowContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(v_separation), "VFlowContainer", p_config.separation_margin);
 
 		// SplitContainer.
 
@@ -1301,16 +1301,16 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_icon("grabber", "VSplitContainer", p_theme->get_icon(SNAME("GuiVsplitter"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("grabber", "HSplitContainer", p_theme->get_icon(SNAME("GuiHsplitter"), EditorStringName(EditorIcons)));
 
-		p_theme->set_constant("separation", "SplitContainer", p_config.separation_margin);
-		p_theme->set_constant("separation", "HSplitContainer", p_config.separation_margin);
-		p_theme->set_constant("separation", "VSplitContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "SplitContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "HSplitContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(separation), "VSplitContainer", p_config.separation_margin);
 
 		p_theme->set_constant("minimum_grab_thickness", "SplitContainer", p_config.increased_margin * EDSCALE);
 		p_theme->set_constant("minimum_grab_thickness", "HSplitContainer", p_config.increased_margin * EDSCALE);
 		p_theme->set_constant("minimum_grab_thickness", "VSplitContainer", p_config.increased_margin * EDSCALE);
 
 		// GridContainer.
-		p_theme->set_constant("v_separation", "GridContainer", Math::round(p_config.widget_margin.y - 2 * EDSCALE));
+		p_theme->set_constant(SceneStringName(v_separation), "GridContainer", Math::round(p_config.widget_margin.y - 2 * EDSCALE));
 
 		// FoldableContainer
 
@@ -1349,7 +1349,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_icon("folded_arrow_mirrored", "FoldableContainer", p_theme->get_icon(SNAME("GuiTreeArrowLeft"), EditorStringName(EditorIcons)));
 
 		p_theme->set_constant("outline_size", "FoldableContainer", 0);
-		p_theme->set_constant("h_separation", "FoldableContainer", p_config.separation_margin);
+		p_theme->set_constant(SceneStringName(h_separation), "FoldableContainer", p_config.separation_margin);
 
 		// EditorScrollBox
 		p_theme->set_icon("arrow_left", "EditorScrollBox", p_theme->get_icon(SNAME("GuiTreeArrowLeft"), EditorStringName(EditorIcons)));
@@ -1448,7 +1448,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_icon("submenu", "PopupMenu", p_theme->get_icon(SNAME("ArrowRight"), EditorStringName(EditorIcons)));
 			p_theme->set_icon("submenu_mirrored", "PopupMenu", p_theme->get_icon(SNAME("ArrowLeft"), EditorStringName(EditorIcons)));
 
-			p_theme->set_constant("v_separation", "PopupMenu", p_config.forced_even_separation * EDSCALE);
+			p_theme->set_constant(SceneStringName(v_separation), "PopupMenu", p_config.forced_even_separation * EDSCALE);
 			p_theme->set_constant("outline_size", "PopupMenu", 0);
 			p_theme->set_constant("item_start_padding", "PopupMenu", p_config.separation_margin);
 			p_theme->set_constant("item_end_padding", "PopupMenu", p_config.separation_margin);
@@ -1747,7 +1747,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color("resizer_color", "GraphNode", gn_decoration_color);
 
 			p_theme->set_constant("port_h_offset", "GraphNode", 1);
-			p_theme->set_constant("separation", "GraphNode", 1 * EDSCALE);
+			p_theme->set_constant(SceneStringName(separation), "GraphNode", 1 * EDSCALE);
 
 			Ref<DPITexture> port_icon = p_theme->get_icon(SNAME("GuiGraphNodePort"), EditorStringName(EditorIcons));
 			// The true size is 24x24 This is necessary for sharp port icons at high zoom levels in GraphEdit (up to ~200%).
@@ -2048,7 +2048,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color("icon_hover_pressed_color", "BottomPanelButton", icon_hover_color);
 
 		// Audio bus.
-		p_theme->set_stylebox("normal", "EditorAudioBus", style_bottom_panel);
+		p_theme->set_stylebox(CoreStringName(normal), "EditorAudioBus", style_bottom_panel);
 		p_theme->set_stylebox("master", "EditorAudioBus", p_config.button_style_disabled);
 		p_theme->set_stylebox("focus", "EditorAudioBus", p_config.button_style_focus);
 	}
@@ -2164,7 +2164,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_type_variation("InspectorActionButton", "Button");
 
 			const float action_extra_margin = 32 * EDSCALE;
-			p_theme->set_constant("h_separation", "InspectorActionButton", action_extra_margin);
+			p_theme->set_constant(SceneStringName(h_separation), "InspectorActionButton", action_extra_margin);
 
 			Color color_inspector_action = p_config.dark_color_1.lerp(p_config.mono_color, 0.12);
 			color_inspector_action.a = 0.5;
@@ -2329,7 +2329,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox(SceneStringName(panel), "EditorInspector", editor_inspector_panel);
 
 		// Vertical separation between inspector categories and sections.
-		p_theme->set_constant("v_separation", "EditorInspector", 0);
+		p_theme->set_constant(SceneStringName(v_separation), "EditorInspector", 0);
 
 		// EditorProperty.
 
@@ -2345,7 +2345,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("bg_selected", "EditorProperty", style_property_bg);
 		p_theme->set_stylebox("child_bg", "EditorProperty", style_property_child_bg);
 		p_theme->set_constant("font_offset", "EditorProperty", 8 * EDSCALE);
-		p_theme->set_constant("v_separation", "EditorProperty", p_config.increased_margin * EDSCALE);
+		p_theme->set_constant(SceneStringName(v_separation), "EditorProperty", p_config.increased_margin * EDSCALE);
 
 		const Color property_color = p_config.font_color.lerp(Color(0.5, 0.5, 0.5), 0.5);
 		const Color readonly_color = property_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.25);
@@ -2372,7 +2372,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		Ref<StyleBoxFlat> inspector_indent_style = make_flat_stylebox(inspector_indent_color, 2.0 * EDSCALE, 0, 2.0 * EDSCALE, 0);
 		p_theme->set_stylebox("indent_box", "EditorInspectorSection", inspector_indent_style);
 		p_theme->set_constant("indent_size", "EditorInspectorSection", 6.0 * EDSCALE);
-		p_theme->set_constant("h_separation", "EditorInspectorSection", 2.0 * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "EditorInspectorSection", 2.0 * EDSCALE);
 
 		Color prop_category_color = p_config.dark_color_1.lerp(p_config.mono_color, 0.12);
 		Color prop_section_color = p_config.dark_color_1.lerp(p_config.mono_color, 0.09);
@@ -2509,7 +2509,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 		p_theme->set_color("h_line_color", "AnimationTrackEdit", p_config.font_color * Color(1, 1, 1, 0.2));
 
-		p_theme->set_constant("h_separation", "AnimationTrackEdit", (p_config.increased_margin + 2) * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "AnimationTrackEdit", (p_config.increased_margin + 2) * EDSCALE);
 		p_theme->set_constant("outer_margin", "AnimationTrackEdit", p_config.increased_margin * 6 * EDSCALE);
 
 		// AnimationTrackEditGroup.
@@ -2521,8 +2521,8 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color("h_line_color", "AnimationTrackEditGroup", p_config.font_color * Color(1, 1, 1, 0.2));
 		p_theme->set_color("v_line_color", "AnimationTrackEditGroup", p_config.font_color * Color(1, 1, 1, 0.2));
 
-		p_theme->set_constant("h_separation", "AnimationTrackEditGroup", (p_config.increased_margin + 2) * EDSCALE);
-		p_theme->set_constant("v_separation", "AnimationTrackEditGroup", 0);
+		p_theme->set_constant(SceneStringName(h_separation), "AnimationTrackEditGroup", (p_config.increased_margin + 2) * EDSCALE);
+		p_theme->set_constant(SceneStringName(v_separation), "AnimationTrackEditGroup", 0);
 
 		// AnimationBezierTrackEdit.
 
@@ -2531,8 +2531,8 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color("h_line_color", "AnimationBezierTrackEdit", p_config.font_color * Color(1, 1, 1, 0.2));
 		p_theme->set_color("v_line_color", "AnimationBezierTrackEdit", p_config.font_color * Color(1, 1, 1, 0.2));
 
-		p_theme->set_constant("h_separation", "AnimationBezierTrackEdit", (p_config.increased_margin + 2) * EDSCALE);
-		p_theme->set_constant("v_separation", "AnimationBezierTrackEdit", p_config.forced_even_separation * EDSCALE);
+		p_theme->set_constant(SceneStringName(h_separation), "AnimationBezierTrackEdit", (p_config.increased_margin + 2) * EDSCALE);
+		p_theme->set_constant(SceneStringName(v_separation), "AnimationBezierTrackEdit", p_config.forced_even_separation * EDSCALE);
 	}
 
 	// Editor help.

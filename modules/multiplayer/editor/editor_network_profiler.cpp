@@ -302,8 +302,8 @@ bool EditorNetworkProfiler::is_profiling() {
 
 EditorNetworkProfiler::EditorNetworkProfiler() {
 	FlowContainer *container = memnew(FlowContainer);
-	container->add_theme_constant_override(SNAME("h_separation"), 8 * EDSCALE);
-	container->add_theme_constant_override(SNAME("v_separation"), 2 * EDSCALE);
+	container->add_theme_constant_override(SceneStringName(h_separation), 8 * EDSCALE);
+	container->add_theme_constant_override(SceneStringName(v_separation), 2 * EDSCALE);
 	add_child(container);
 
 	activate = memnew(Button);
@@ -330,7 +330,7 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 	container->add_child(c);
 
 	HBoxContainer *hb = memnew(HBoxContainer);
-	hb->add_theme_constant_override(SNAME("separation"), 8 * EDSCALE);
+	hb->add_theme_constant_override(SceneStringName(separation), 8 * EDSCALE);
 	container->add_child(hb);
 
 	Label *lb = memnew(Label);
