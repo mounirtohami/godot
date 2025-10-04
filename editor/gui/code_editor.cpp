@@ -1573,13 +1573,13 @@ void CodeTextEditor::_update_text_editor_theme() {
 	const int status_bar_font_size = get_theme_font_size(SNAME("status_source_size"), EditorStringName(EditorFonts));
 	const Color &error_color = get_theme_color(SNAME("error_color"), EditorStringName(Editor));
 	const Color &warning_color = get_theme_color(SNAME("warning_color"), EditorStringName(Editor));
-	const Ref<StyleBox> label_stylebox = get_theme_stylebox(SNAME("normal"), SNAME("Label")); // Empty stylebox.
+	const Ref<StyleBox> label_stylebox = get_theme_stylebox(CoreStringName(normal), SNAME("Label")); // Empty stylebox.
 
 	error->begin_bulk_theme_override();
 	error->add_theme_font_override(SNAME("normal_font"), status_bar_font);
 	error->add_theme_font_size_override(SNAME("normal_font_size"), status_bar_font_size);
 	error->add_theme_color_override(SNAME("default_color"), error_color);
-	error->add_theme_style_override(SNAME("normal"), label_stylebox);
+	error->add_theme_style_override(CoreStringName(normal), label_stylebox);
 	error->end_bulk_theme_override();
 
 	error_button->set_button_icon(get_editor_theme_icon(SNAME("StatusError")));

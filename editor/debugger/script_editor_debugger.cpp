@@ -1083,7 +1083,7 @@ void ScriptEditorDebugger::_notification(int p_what) {
 			search->set_right_icon(get_editor_theme_icon(SNAME("Search")));
 
 			reason->add_theme_color_override(SNAME("default_color"), get_theme_color(SNAME("error_color"), EditorStringName(Editor)));
-			reason->add_theme_style_override(SNAME("normal"), get_theme_stylebox(SNAME("normal"), SNAME("Label"))); // Empty stylebox.
+			reason->add_theme_style_override(CoreStringName(normal), get_theme_stylebox(CoreStringName(normal), SNAME("Label"))); // Empty stylebox.
 
 			TreeItem *error_root = error_tree->get_root();
 			if (error_root) {

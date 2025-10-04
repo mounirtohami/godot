@@ -147,7 +147,7 @@ void EditorAudioBus::_notification(int p_what) {
 			} else if (has_focus()) {
 				draw_style_box(get_theme_stylebox(SNAME("focus"), SNAME("EditorAudioBus")), Rect2(Vector2(), get_size()));
 			} else {
-				draw_style_box(get_theme_stylebox(SNAME("normal"), SNAME("EditorAudioBus")), Rect2(Vector2(), get_size()));
+				draw_style_box(get_theme_stylebox(CoreStringName(normal), SNAME("EditorAudioBus")), Rect2(Vector2(), get_size()));
 			}
 
 			if (get_index() != 0 && hovering_drop) {
