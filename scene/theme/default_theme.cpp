@@ -659,6 +659,9 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	focus_style->set_border_color(style_focus_color);
 	theme->set_stylebox("focus", "ScrollContainer", focus_style);
 
+	theme->set_constant(SceneStringName(h_separation), "ScrollContainer", 0);
+	theme->set_constant(SceneStringName(v_separation), "ScrollContainer", 0);
+
 	// Window
 
 	theme->set_stylebox("embedded_border", "Window", sb_expand(make_flat_stylebox(style_popup_color, 10, 28, 10, 8), 8, 32, 8, 6));

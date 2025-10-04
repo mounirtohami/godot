@@ -30,14 +30,13 @@
 
 #pragma once
 
-#include "container.h"
-
-#include "scroll_bar.h"
+#include "scene/gui/container.h"
+#include "scene/gui/scroll_bar.h"
 
 class PanelContainer;
 
 class ScrollContainer : public Container {
-	GDCLASS(ScrollContainer, Container);
+	GDCLASS(ScrollContainer, Container)
 
 public:
 	enum ScrollMode {
@@ -67,8 +66,8 @@ private:
 	bool beyond_deadzone = false;
 	bool scroll_on_drag_hover = false;
 
-	ScrollMode horizontal_scroll_mode = SCROLL_MODE_AUTO;
-	ScrollMode vertical_scroll_mode = SCROLL_MODE_AUTO;
+	ScrollMode h_scroll_mode = SCROLL_MODE_AUTO;
+	ScrollMode v_scroll_mode = SCROLL_MODE_AUTO;
 
 	int deadzone = 0;
 	bool follow_focus = false;
@@ -78,12 +77,15 @@ private:
 	struct ThemeCache {
 		Ref<StyleBox> panel_style;
 		Ref<StyleBox> focus_style;
+
+		int h_separation = 0;
+		int v_separation = 0;
 	} theme_cache;
 
 	void _cancel_drag();
 
-	bool _is_h_scroll_visible() const;
-	bool _is_v_scroll_visible() const;
+	_FORCE_INLINE_ bool _is_h_scroll_visible() const { return h_scroll->is_visible() && h_scroll->get_parent() == this; }
+	_FORCE_INLINE_ bool _is_v_scroll_visible() const { return v_scroll->is_visible() && v_scroll->get_parent() == this; }
 
 	Rect2 _get_margins() const;
 
@@ -102,7 +104,7 @@ protected:
 
 	bool _updating_scrollbars = false;
 	void _update_scrollbar_position();
-	void _scroll_moved(float);
+	_FORCE_INLINE_ void _scroll_moved(float) { queue_sort(); }
 
 #ifdef ACCESSKIT_ENABLED
 	void _accessibility_action_scroll_set(const Variant &p_data);
@@ -116,39 +118,39 @@ public:
 	virtual void gui_input(const Ref<InputEvent> &p_gui_input) override;
 
 	void set_h_scroll(int p_pos);
-	int get_h_scroll() const;
+	_FORCE_INLINE_ int get_h_scroll() const { return h_scroll->get_value(); }
 
 	void set_v_scroll(int p_pos);
-	int get_v_scroll() const;
+	_FORCE_INLINE_ int get_v_scroll() const { return v_scroll->get_value(); }
 
-	void set_horizontal_custom_step(float p_custom_step);
-	float get_horizontal_custom_step() const;
+	_FORCE_INLINE_ void set_horizontal_custom_step(float p_custom_step) { h_scroll->set_custom_step(p_custom_step); }
+	_FORCE_INLINE_ float get_horizontal_custom_step() const { return h_scroll->get_custom_step(); }
 
-	void set_vertical_custom_step(float p_custom_step);
-	float get_vertical_custom_step() const;
+	_FORCE_INLINE_ void set_vertical_custom_step(float p_custom_step) { v_scroll->set_custom_step(p_custom_step); }
+	_FORCE_INLINE_ float get_vertical_custom_step() const { return v_scroll->get_custom_step(); }
 
 	void set_horizontal_scroll_mode(ScrollMode p_mode);
-	ScrollMode get_horizontal_scroll_mode() const;
+	_FORCE_INLINE_ ScrollMode get_horizontal_scroll_mode() const { return h_scroll_mode; }
 
 	void set_vertical_scroll_mode(ScrollMode p_mode);
-	ScrollMode get_vertical_scroll_mode() const;
+	_FORCE_INLINE_ ScrollMode get_vertical_scroll_mode() const { return v_scroll_mode; }
 
-	int get_deadzone() const;
-	void set_deadzone(int p_deadzone);
+	_FORCE_INLINE_ int get_deadzone() const { return deadzone; }
+	_FORCE_INLINE_ void set_deadzone(int p_deadzone) { deadzone = p_deadzone; }
 
-	bool is_following_focus() const;
-	void set_follow_focus(bool p_follow);
+	_FORCE_INLINE_ bool is_following_focus() const { return follow_focus; }
+	_FORCE_INLINE_ void set_follow_focus(bool p_follow) { follow_focus = p_follow; }
 
-	void set_scroll_on_drag_hover(bool p_scroll);
+	_FORCE_INLINE_ void set_scroll_on_drag_hover(bool p_scroll) { scroll_on_drag_hover = p_scroll; }
 
-	HScrollBar *get_h_scroll_bar();
-	VScrollBar *get_v_scroll_bar();
+	_FORCE_INLINE_ HScrollBar *get_h_scroll_bar() { return h_scroll; }
+	_FORCE_INLINE_ VScrollBar *get_v_scroll_bar() { return v_scroll; }
 	void ensure_control_visible(Control *p_control);
 
 	PackedStringArray get_configuration_warnings() const override;
 
 	void set_draw_focus_border(bool p_draw);
-	bool get_draw_focus_border();
+	_FORCE_INLINE_ bool get_draw_focus_border() { return draw_focus_border; }
 
 	ScrollContainer();
 };

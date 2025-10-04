@@ -1951,8 +1951,12 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		style_widget_focus_viewport->set_border_color(p_config.accent_color * Color(1, 1, 1, 0.5));
 		p_theme->set_stylebox("FocusViewport", EditorStringName(EditorStyles), style_widget_focus_viewport);
 
+		// ScrollContainer
 		Ref<StyleBoxFlat> style_widget_scroll_container = p_config.button_style_focus->duplicate();
 		p_theme->set_stylebox("focus", "ScrollContainer", style_widget_scroll_container);
+
+		p_theme->set_constant(SceneStringName(h_separation), "ScrollContainer", 2 * EDSCALE);
+		p_theme->set_constant(SceneStringName(v_separation), "ScrollContainer", 2 * EDSCALE);
 
 		// This stylebox is used in 3d and 2d viewports (no borders).
 		Ref<StyleBoxFlat> style_content_panel_vp = p_config.content_panel_style->duplicate();
