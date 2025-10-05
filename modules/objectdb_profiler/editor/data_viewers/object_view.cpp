@@ -100,6 +100,7 @@ void SnapshotObjectView::show_snapshot(GameStateSnapshot *p_data, GameStateSnaps
 	object_list->set_column_custom_minimum_width(offset + 3, 64 * EDSCALE);
 	object_list->connect(SceneStringName(item_selected), callable_mp(this, &SnapshotObjectView::_object_selected));
 	object_list->set_v_size_flags(SIZE_EXPAND_FILL);
+	object_list->add_theme_constant_override("draw_guides", 1);
 	object_column->add_child(object_list);
 
 	object_details = memnew(VBoxContainer);
@@ -246,6 +247,7 @@ Tree *SnapshotObjectView::_make_references_list(Control *p_container, const Stri
 	tree->set_column_title_tooltip_text(1, p_col_2_tooltip);
 	tree->set_v_scroll_enabled(false);
 	tree->set_v_size_flags(SIZE_EXPAND_FILL);
+	tree->add_theme_constant_override("draw_guides", 1);
 	vbox->add_child(tree);
 
 	return tree;

@@ -562,7 +562,7 @@
 			The width of the relationship lines between the selected [TreeItem] and its children.
 		</theme_item>
 		<theme_item name="draw_guides" data_type="constant" type="int" default="1">
-			Draws the guidelines if not zero, this acts as a boolean. The guideline is a horizontal line drawn at the bottom of each item.
+			Draws the guides if not zero, this acts as a boolean. The guides highlights odd rows to help with visual scanning when having many columns.
 		</theme_item>
 		<theme_item name="draw_relationship_lines" data_type="constant" type="int" default="0">
 			Draws the relationship lines if not zero, this acts as a boolean. Relationship lines are drawn at the start of child items to show hierarchy.
