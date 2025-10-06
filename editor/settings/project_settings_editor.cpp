@@ -43,6 +43,7 @@
 #include "scene/gui/check_button.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/main/timer.h"
 #include "servers/movie_writer/movie_writer.h"
 
 void ProjectSettingsEditor::connect_filesystem_dock_signals(FileSystemDock *p_fs_dock) {

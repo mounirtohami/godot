@@ -69,6 +69,7 @@
 #include "scene/audio/audio_stream_player.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/check_box.h"
+#include "scene/main/timer.h"
 #include "scene/property_utils.h"
 #include "scene/resources/material.h"
 #include "scene/resources/packed_scene.h"

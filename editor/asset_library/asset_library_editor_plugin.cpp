@@ -57,6 +57,7 @@
 #include "scene/gui/texture_button.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/main/http_request.h"
+#include "scene/main/timer.h"
 #include "scene/resources/image_texture.h"
 
 static inline void setup_http_request(HTTPRequest *request) {

@@ -40,10 +40,6 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/inspector/editor_property_name_processor.h"
 #include "editor/inspector/editor_sectioned_inspector.h"
-#ifndef _3D_DISABLED
-#include "editor/scene/3d/node_3d_editor_plugin.h"
-#include "editor/settings/project_settings_editor.h"
-#endif // _3D_DISABLED
 #include "editor/settings/editor_event_search_bar.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/settings/event_listener_line_edit.h"
@@ -57,6 +53,12 @@
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/gui/tree.h"
+#include "scene/main/timer.h"
+
+#ifndef _3D_DISABLED
+#include "editor/scene/3d/node_3d_editor_plugin.h"
+#include "editor/settings/project_settings_editor.h"
+#endif // _3D_DISABLED
 
 void EditorSettingsDialog::ok_pressed() {
 	if (!EditorSettings::get_singleton()) {

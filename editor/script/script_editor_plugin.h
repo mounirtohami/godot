@@ -48,6 +48,7 @@ class ItemList;
 class MenuButton;
 class TabContainer;
 class TextureRect;
+class Timer;
 class Tree;
 class VSplitContainer;
 class WindowWrapper;

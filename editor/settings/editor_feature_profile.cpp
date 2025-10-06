@@ -43,6 +43,7 @@
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/separator.h"
+#include "scene/main/timer.h"
 
 const char *EditorFeatureProfile::feature_names[FEATURE_MAX] = {
 #ifndef _3D_DISABLED

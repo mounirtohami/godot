@@ -42,6 +42,7 @@ class LineEdit;
 class RichTextLabel;
 class RichTextLabel;
 class TextEdit;
+class Timer;
 
 class FindBar : public HBoxContainer {
 	GDCLASS(FindBar, HBoxContainer)

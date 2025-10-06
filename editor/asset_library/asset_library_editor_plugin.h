@@ -49,6 +49,7 @@ class RichTextLabel;
 class ScrollContainer;
 class TextureButton;
 class TextureRect;
+class Timer;
 class VBoxContainer;
 
 class EditorAssetLibraryItem : public PanelContainer {

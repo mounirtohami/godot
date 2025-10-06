@@ -45,7 +45,7 @@ class Tree;
 class VScrollBar;
 
 class TreeItem : public Object {
-	GDCLASS(TreeItem, Object);
+	GDCLASS(TreeItem, Object)
 
 public:
 	enum TreeCellMode {
@@ -159,8 +159,6 @@ private:
 	Vector<TreeItem *> children_cache;
 	bool is_root = false; // For tree root.
 	Tree *tree = nullptr; // Tree (for reference).
-
-	TreeItem(Tree *p_tree);
 
 	void _changed_notify(int p_cell);
 	void _changed_notify();
@@ -354,14 +352,14 @@ public:
 	Callable get_custom_draw_callback(int p_column) const;
 
 	void set_collapsed(bool p_collapsed);
-	bool is_collapsed();
+	_FORCE_INLINE_ bool is_collapsed() const { return collapsed; }
 
 	void set_collapsed_recursive(bool p_collapsed);
 	bool is_any_collapsed(bool p_only_visible = false);
 
 	void set_visible(bool p_visible);
-	bool is_visible();
-	bool is_visible_in_tree() const;
+	_FORCE_INLINE_ bool is_visible() const { return visible; }
+	_FORCE_INLINE_ bool is_visible_in_tree() const { return visible && parent_visible_in_tree; }
 
 	void uncollapse_tree();
 
@@ -407,7 +405,7 @@ public:
 	bool get_expand_right(int p_column) const;
 
 	void set_disable_folding(bool p_disable);
-	bool is_folding_disabled() const;
+	_FORCE_INLINE_ bool is_folding_disabled() const { return disable_folding; }
 
 	Size2 get_minimum_size(int p_column);
 
@@ -416,12 +414,12 @@ public:
 	void add_child(TreeItem *p_item);
 	void remove_child(TreeItem *p_item);
 
-	Tree *get_tree() const;
+	_FORCE_INLINE_ Tree *get_tree() const { return tree; }
 
 	TreeItem *get_prev();
-	TreeItem *get_next() const;
-	TreeItem *get_parent() const;
-	TreeItem *get_first_child() const;
+	_FORCE_INLINE_ TreeItem *get_next() const { return next; }
+	_FORCE_INLINE_ TreeItem *get_parent() const { return parent; }
+	_FORCE_INLINE_ TreeItem *get_first_child() const { return first_child; }
 
 	TreeItem *get_prev_in_tree(bool p_wrap = false);
 	TreeItem *get_next_in_tree(bool p_wrap = false);
@@ -446,15 +444,16 @@ public:
 	void move_before(TreeItem *p_item);
 	void move_after(TreeItem *p_item);
 
-	void call_recursive(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error);
+	_FORCE_INLINE_ void call_recursive(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error);
 
+	TreeItem(Tree *p_tree) { tree = p_tree; }
 	~TreeItem();
 };
 
 VARIANT_ENUM_CAST(TreeItem::TreeCellMode);
 
 class Tree : public Control {
-	GDCLASS(Tree, Control);
+	GDCLASS(Tree, Control)
 
 public:
 	enum SelectMode {
@@ -715,7 +714,6 @@ private:
 	Size2 get_internal_min_size() const;
 	void update_scrollbars();
 
-	Rect2 search_item_rect(TreeItem *p_from, TreeItem *p_item);
 	uint64_t last_keypress = 0;
 	String incr_search;
 	bool cursor_can_exit_tree = true;
@@ -829,7 +827,7 @@ public:
 	void clear();
 
 	TreeItem *create_item(TreeItem *p_parent = nullptr, int p_index = -1);
-	TreeItem *get_root() const;
+	_FORCE_INLINE_ TreeItem *get_root() const { return root; }
 	TreeItem *get_last_item() const;
 
 	void set_column_custom_minimum_width(int p_column, int p_min_width);
@@ -844,19 +842,19 @@ public:
 	bool is_column_clipping_content(int p_column) const;
 
 	void set_hide_root(bool p_enabled);
-	bool is_root_hidden() const;
+	_FORCE_INLINE_ bool is_root_hidden() const { return hide_root; }
 	TreeItem *get_next_selected(TreeItem *p_item);
-	TreeItem *get_selected() const;
+	_FORCE_INLINE_ TreeItem *get_selected() const { return selected_item; }
 	void set_selected(TreeItem *p_item, int p_column = 0);
-	int get_selected_column() const;
-	int get_pressed_button() const;
-	void set_select_mode(SelectMode p_mode);
-	SelectMode get_select_mode() const;
+	_FORCE_INLINE_ int get_selected_column() const { return selected_col; }
+	_FORCE_INLINE_ int get_pressed_button() const { return pressed_button; }
+	_FORCE_INLINE_ void set_select_mode(SelectMode p_mode) { select_mode = p_mode; }
+	_FORCE_INLINE_ SelectMode get_select_mode() const { return select_mode; }
 	void deselect_all();
-	bool is_anything_selected();
+	_FORCE_INLINE_ bool is_anything_selected() const { return (selected_item != nullptr); }
 
 	void set_columns(int p_columns);
-	int get_columns() const;
+	_FORCE_INLINE_ int get_columns() const { return columns.size(); }
 
 	void set_column_title(int p_column, const String &p_title);
 	String get_column_title(int p_column) const;
@@ -876,17 +874,17 @@ public:
 	void set_column_titles_visible(bool p_show);
 	bool are_column_titles_visible() const;
 
-	TreeItem *get_edited() const;
-	int get_edited_column() const;
+	_FORCE_INLINE_ TreeItem *get_edited() const { return edited_item; }
+	_FORCE_INLINE_ int get_edited_column() const { return edited_col; }
 
 	void ensure_cursor_is_visible();
 
-	Rect2 get_custom_popup_rect() const;
+	_FORCE_INLINE_ Rect2 get_custom_popup_rect() const { return custom_popup_rect; }
 
 	int get_item_offset(TreeItem *p_item) const;
 	Rect2 get_item_rect(TreeItem *p_item, int p_column = -1, int p_button = -1) const;
 	bool edit_selected(bool p_force_edit = false);
-	bool is_editing();
+	bool is_editing() const;
 	void set_editor_selection(int p_from_line, int p_to_line, int p_from_column = -1, int p_to_column = -1, int p_caret = 0);
 
 	// First item that starts with the text, from the current focused item down and wraps around.
@@ -898,37 +896,37 @@ public:
 	Point2 get_scroll() const;
 	void scroll_to_item(TreeItem *p_item, bool p_center_on_item = false);
 	void set_h_scroll_enabled(bool p_enable);
-	bool is_h_scroll_enabled() const;
+	_FORCE_INLINE_ bool is_h_scroll_enabled() const { return h_scroll_enabled; }
 	void set_v_scroll_enabled(bool p_enable);
-	bool is_v_scroll_enabled() const;
+	_FORCE_INLINE_ bool is_v_scroll_enabled() const { return v_scroll_enabled; }
 
-	void set_cursor_can_exit_tree(bool p_enable);
+	_FORCE_INLINE_ void set_cursor_can_exit_tree(bool p_enable) { cursor_can_exit_tree = p_enable; }
 
-	VScrollBar *get_vscroll_bar() { return v_scroll; }
+	_FORCE_INLINE_ VScrollBar *get_vscroll_bar() const { return v_scroll; }
 
 	void set_hide_folding(bool p_hide);
-	bool is_folding_hidden() const;
+	_FORCE_INLINE_ bool is_folding_hidden() const { return hide_folding; }
 
-	void set_enable_recursive_folding(bool p_enable);
-	bool is_recursive_folding_enabled() const;
+	_FORCE_INLINE_ void set_enable_recursive_folding(bool p_enable) { enable_recursive_folding = p_enable; }
+	_FORCE_INLINE_ bool is_recursive_folding_enabled() const { return enable_recursive_folding; }
 
 	void set_drop_mode_flags(int p_flags);
-	int get_drop_mode_flags() const;
+	_FORCE_INLINE_ int get_drop_mode_flags() const { return drop_mode_flags; }
 
-	void set_edit_checkbox_cell_only_when_checkbox_is_pressed(bool p_enable);
-	bool get_edit_checkbox_cell_only_when_checkbox_is_pressed() const;
+	_FORCE_INLINE_ void set_edit_checkbox_cell_only_when_checkbox_is_pressed(bool p_enable) { force_edit_checkbox_only_on_checkbox = p_enable; }
+	_FORCE_INLINE_ bool get_edit_checkbox_cell_only_when_checkbox_is_pressed() const { return force_edit_checkbox_only_on_checkbox; }
 
-	void set_allow_rmb_select(bool p_allow);
-	bool get_allow_rmb_select() const;
+	_FORCE_INLINE_ void set_allow_rmb_select(bool p_allow) { allow_rmb_select = p_allow; }
+	_FORCE_INLINE_ bool get_allow_rmb_select() const { return allow_rmb_select; }
 
-	void set_allow_reselect(bool p_allow);
-	bool get_allow_reselect() const;
+	_FORCE_INLINE_ void set_allow_reselect(bool p_allow) { allow_reselect = p_allow; }
+	_FORCE_INLINE_ bool get_allow_reselect() const { return allow_reselect; }
 
-	void set_allow_search(bool p_allow);
-	bool get_allow_search() const;
+	_FORCE_INLINE_ void set_allow_search(bool p_allow) { allow_search = p_allow; }
+	_FORCE_INLINE_ bool get_allow_search() const { return allow_search; }
 
-	void set_auto_tooltip(bool p_enable);
-	bool is_auto_tooltip_enabled() const;
+	_FORCE_INLINE_ void set_auto_tooltip(bool p_enable) { enable_auto_tooltip = p_enable; }
+	_FORCE_INLINE_ bool is_auto_tooltip_enabled() const { return enable_auto_tooltip; }
 
 	Size2 get_minimum_size() const override;
 
