@@ -94,6 +94,24 @@ protected:
 #endif
 
 public:
+	enum ViewportRenderInfo {
+		VIEWPORT_RENDER_INFO_OBJECTS_IN_FRAME,
+		VIEWPORT_RENDER_INFO_PRIMITIVES_IN_FRAME,
+		VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME,
+		VIEWPORT_RENDER_INFO_MAX,
+	};
+
+	enum ViewportRenderInfoType {
+		VIEWPORT_RENDER_INFO_TYPE_VISIBLE,
+		VIEWPORT_RENDER_INFO_TYPE_SHADOW,
+		VIEWPORT_RENDER_INFO_TYPE_CANVAS,
+		VIEWPORT_RENDER_INFO_TYPE_MAX
+	};
+
+	struct RenderInfo {
+		int info[VIEWPORT_RENDER_INFO_TYPE_MAX][VIEWPORT_RENDER_INFO_MAX] = {};
+	};
+
 	static RenderingServer *get_singleton();
 	static RenderingServer *create();
 
@@ -1106,20 +1124,6 @@ public:
 	};
 
 	virtual void viewport_set_occlusion_culling_build_quality(ViewportOcclusionCullingBuildQuality p_quality) = 0;
-
-	enum ViewportRenderInfo {
-		VIEWPORT_RENDER_INFO_OBJECTS_IN_FRAME,
-		VIEWPORT_RENDER_INFO_PRIMITIVES_IN_FRAME,
-		VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME,
-		VIEWPORT_RENDER_INFO_MAX,
-	};
-
-	enum ViewportRenderInfoType {
-		VIEWPORT_RENDER_INFO_TYPE_VISIBLE,
-		VIEWPORT_RENDER_INFO_TYPE_SHADOW,
-		VIEWPORT_RENDER_INFO_TYPE_CANVAS,
-		VIEWPORT_RENDER_INFO_TYPE_MAX
-	};
 
 	virtual int viewport_get_render_info(RID p_viewport, ViewportRenderInfoType p_type, ViewportRenderInfo p_info) = 0;
 

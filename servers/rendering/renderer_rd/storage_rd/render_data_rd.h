@@ -74,7 +74,7 @@ public:
 
 	bool lightmap_bicubic_filter = false;
 
-	RenderingMethod::RenderInfo *render_info = nullptr;
+	RenderingServer::RenderInfo *render_info = nullptr;
 
 	/* Viewport data */
 	bool transparent_bg = false;

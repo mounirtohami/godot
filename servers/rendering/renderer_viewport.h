@@ -150,7 +150,7 @@ public:
 
 		HashMap<RID, CanvasData> canvas_map;
 
-		RenderingMethod::RenderInfo render_info;
+		RenderingServer::RenderInfo render_info;
 
 		Viewport() {
 			view_count = 1;
