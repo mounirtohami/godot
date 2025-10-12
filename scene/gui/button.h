@@ -104,19 +104,30 @@ private:
 	} theme_cache;
 
 	void _shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "") const;
-	void _texture_changed();
-	void _update_style_margins(const Ref<StyleBox> &p_stylebox);
+
+	_FORCE_INLINE_ void _update_style_margins(const Ref<StyleBox> &p_stylebox) {
+		theme_cache.max_style_size = theme_cache.max_style_size.max(p_stylebox->get_minimum_size());
+		theme_cache.style_margin_left = MAX(theme_cache.style_margin_left, p_stylebox->get_margin(SIDE_LEFT));
+		theme_cache.style_margin_right = MAX(theme_cache.style_margin_right, p_stylebox->get_margin(SIDE_RIGHT));
+		theme_cache.style_margin_top = MAX(theme_cache.style_margin_top, p_stylebox->get_margin(SIDE_TOP));
+		theme_cache.style_margin_bottom = MAX(theme_cache.style_margin_bottom, p_stylebox->get_margin(SIDE_BOTTOM));
+	}
+
+	_FORCE_INLINE_ void _update_and_redraw() {
+		queue_redraw();
+		update_minimum_size();
+	}
 
 protected:
 	virtual void _update_theme_item_cache() override;
 
 	void _set_internal_margin(Side p_side, float p_value);
-	virtual void _queue_update_size_cache();
+	virtual void _queue_update_size_cache() {}
 	virtual String _get_translated_text(const String &p_text) const;
 
 	Size2 _fit_icon_size(const Size2 &p_size) const;
 	Ref<StyleBox> _get_current_stylebox() const;
-	Size2 _get_largest_stylebox_size() const;
+	_FORCE_INLINE_ Size2 _get_largest_stylebox_size() const { return theme_cache.max_style_size; }
 	void _notification(int p_what);
 	static void _bind_methods();
 

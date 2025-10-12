@@ -47,9 +47,6 @@ void Button::_set_internal_margin(Side p_side, float p_value) {
 	_internal_margin[p_side] = p_value;
 }
 
-void Button::_queue_update_size_cache() {
-}
-
 String Button::_get_translated_text(const String &p_text) const {
 	return atr(p_text);
 }
@@ -92,10 +89,6 @@ void Button::_update_theme_item_cache() {
 		_update_style_margins(theme_cache.disabled);
 	}
 	theme_cache.max_style_size = theme_cache.max_style_size.max(Vector2(theme_cache.style_margin_left + theme_cache.style_margin_right, theme_cache.style_margin_top + theme_cache.style_margin_bottom));
-}
-
-Size2 Button::_get_largest_stylebox_size() const {
-	return theme_cache.max_style_size;
 }
 
 Ref<StyleBox> Button::_get_current_stylebox() const {
@@ -180,25 +173,19 @@ void Button::_notification(int p_what) {
 		case NOTIFICATION_TRANSLATION_CHANGED: {
 			xl_text = _get_translated_text(text);
 			_shape();
-
-			update_minimum_size();
+			_update_and_redraw();
 			queue_accessibility_update();
-			queue_redraw();
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
 			_shape();
-
-			update_minimum_size();
-			queue_redraw();
+			_update_and_redraw();
 		} break;
 
 		case NOTIFICATION_RESIZED: {
 			if (autowrap_mode != TextServer::AUTOWRAP_OFF) {
 				_shape();
-
-				update_minimum_size();
-				queue_redraw();
+				_update_and_redraw();
 			}
 		} break;
 
@@ -582,8 +569,7 @@ void Button::set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior) {
 		if (need_update_cache) {
 			_queue_update_size_cache();
 		}
-		queue_redraw();
-		update_minimum_size();
+		_update_and_redraw();
 	}
 }
 
@@ -595,18 +581,15 @@ void Button::set_text(const String &p_text) {
 	text = p_text;
 	xl_text = translated_text;
 	_shape();
-
+	_update_and_redraw();
 	queue_accessibility_update();
-	queue_redraw();
-	update_minimum_size();
 }
 
 void Button::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 	if (autowrap_mode != p_mode) {
 		autowrap_mode = p_mode;
 		_shape();
-		queue_redraw();
-		update_minimum_size();
+		_update_and_redraw();
 	}
 }
 
@@ -614,8 +597,7 @@ void Button::set_autowrap_trim_flags(BitField<TextServer::LineBreakFlag> p_flags
 	if (autowrap_flags_trim != (p_flags & TextServer::BREAK_TRIM_MASK)) {
 		autowrap_flags_trim = p_flags & TextServer::BREAK_TRIM_MASK;
 		_shape();
-		queue_redraw();
-		update_minimum_size();
+		_update_and_redraw();
 	}
 }
 
@@ -644,38 +626,23 @@ void Button::set_button_icon(const Ref<Texture2D> &p_icon) {
 	}
 
 	if (icon.is_valid()) {
-		icon->disconnect_changed(callable_mp(this, &Button::_texture_changed));
+		icon->disconnect_changed(callable_mp(this, &Button::_update_and_redraw));
 	}
 
 	icon = p_icon;
 
 	if (icon.is_valid()) {
-		icon->connect_changed(callable_mp(this, &Button::_texture_changed));
+		icon->connect_changed(callable_mp(this, &Button::_update_and_redraw));
 	}
 
-	queue_redraw();
-	update_minimum_size();
-}
-
-void Button::_texture_changed() {
-	queue_redraw();
-	update_minimum_size();
-}
-
-void Button::_update_style_margins(const Ref<StyleBox> &p_stylebox) {
-	theme_cache.max_style_size = theme_cache.max_style_size.max(p_stylebox->get_minimum_size());
-	theme_cache.style_margin_left = MAX(theme_cache.style_margin_left, p_stylebox->get_margin(SIDE_LEFT));
-	theme_cache.style_margin_right = MAX(theme_cache.style_margin_right, p_stylebox->get_margin(SIDE_RIGHT));
-	theme_cache.style_margin_top = MAX(theme_cache.style_margin_top, p_stylebox->get_margin(SIDE_TOP));
-	theme_cache.style_margin_bottom = MAX(theme_cache.style_margin_bottom, p_stylebox->get_margin(SIDE_BOTTOM));
+	_update_and_redraw();
 }
 
 void Button::set_expand_icon(bool p_enabled) {
 	if (expand_icon != p_enabled) {
 		expand_icon = p_enabled;
 		_queue_update_size_cache();
-		queue_redraw();
-		update_minimum_size();
+		_update_and_redraw();
 	}
 }
 
@@ -691,8 +658,7 @@ void Button::set_clip_text(bool p_enabled) {
 		clip_text = p_enabled;
 
 		_queue_update_size_cache();
-		queue_redraw();
-		update_minimum_size();
+		_update_and_redraw();
 	}
 }
 
@@ -710,8 +676,7 @@ void Button::set_icon_alignment(HorizontalAlignment p_alignment) {
 	}
 
 	horizontal_icon_alignment = p_alignment;
-	update_minimum_size();
-	queue_redraw();
+	_update_and_redraw();
 }
 
 void Button::set_vertical_icon_alignment(VerticalAlignment p_alignment) {
@@ -724,8 +689,7 @@ void Button::set_vertical_icon_alignment(VerticalAlignment p_alignment) {
 	if (need_update_cache) {
 		_queue_update_size_cache();
 	}
-	update_minimum_size();
-	queue_redraw();
+	_update_and_redraw();
 }
 
 void Button::_bind_methods() {
