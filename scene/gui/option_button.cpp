@@ -144,9 +144,9 @@ void OptionButton::_notification(int p_what) {
 			if (has_theme_icon(SNAME("arrow"))) {
 				if (is_layout_rtl()) {
 					_set_internal_margin(SIDE_LEFT, theme_cache.arrow_icon->get_width());
-					_set_internal_margin(SIDE_RIGHT, 0.f);
+					_set_internal_margin(SIDE_RIGHT, 0);
 				} else {
-					_set_internal_margin(SIDE_LEFT, 0.f);
+					_set_internal_margin(SIDE_LEFT, 0);
 					_set_internal_margin(SIDE_RIGHT, theme_cache.arrow_icon->get_width());
 				}
 			}

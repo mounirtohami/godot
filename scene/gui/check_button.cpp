@@ -99,9 +99,9 @@ void CheckButton::_notification(int p_what) {
 		case NOTIFICATION_TRANSLATION_CHANGED: {
 			if (is_layout_rtl()) {
 				_set_internal_margin(SIDE_LEFT, get_icon_size().width);
-				_set_internal_margin(SIDE_RIGHT, 0.f);
+				_set_internal_margin(SIDE_RIGHT, 0);
 			} else {
-				_set_internal_margin(SIDE_LEFT, 0.f);
+				_set_internal_margin(SIDE_LEFT, 0);
 				_set_internal_margin(SIDE_RIGHT, get_icon_size().width);
 			}
 		} break;

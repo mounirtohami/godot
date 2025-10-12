@@ -54,7 +54,7 @@ private:
 	HorizontalAlignment alignment = HORIZONTAL_ALIGNMENT_CENTER;
 	HorizontalAlignment horizontal_icon_alignment = HORIZONTAL_ALIGNMENT_LEFT;
 	VerticalAlignment vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER;
-	float _internal_margin[4] = {};
+	int _internal_margin[4] = {};
 
 	struct ThemeCache {
 		Ref<StyleBox> normal;
@@ -70,10 +70,10 @@ private:
 		Ref<StyleBox> focus;
 
 		Size2 max_style_size;
-		float style_margin_left = 0;
-		float style_margin_right = 0;
-		float style_margin_top = 0;
-		float style_margin_bottom = 0;
+		int style_margin_left = 0;
+		int style_margin_right = 0;
+		int style_margin_top = 0;
+		int style_margin_bottom = 0;
 
 		bool align_to_largest_stylebox = false;
 
@@ -121,7 +121,7 @@ private:
 protected:
 	virtual void _update_theme_item_cache() override;
 
-	void _set_internal_margin(Side p_side, float p_value);
+	void _set_internal_margin(Side p_side, int p_value);
 	virtual void _queue_update_size_cache() {}
 	virtual String _get_translated_text(const String &p_text) const;
 

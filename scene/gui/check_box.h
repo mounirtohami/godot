@@ -64,5 +64,4 @@ protected:
 
 public:
 	CheckBox(const String &p_text = String());
-	~CheckBox();
 };

@@ -43,7 +43,7 @@ Size2 Button::get_minimum_size() const {
 	return _get_final_minimum_size(get_minimum_size_for_text_and_icon("", _icon));
 }
 
-void Button::_set_internal_margin(Side p_side, float p_value) {
+void Button::_set_internal_margin(Side p_side, int p_value) {
 	_internal_margin[p_side] = p_value;
 }
 
@@ -199,6 +199,7 @@ void Button::_notification(int p_what) {
 
 			const RID ci = get_canvas_item();
 			const Size2 size = get_size();
+			const bool rtl = is_layout_rtl();
 
 			Ref<StyleBox> style = _get_current_stylebox();
 			// Draws the stylebox in the current state.
@@ -215,16 +216,17 @@ void Button::_notification(int p_what) {
 				_icon = theme_cache.icon;
 			}
 
-			if (xl_text.is_empty() && _icon.is_null()) {
+			const bool draw_text = !xl_text.is_empty();
+			if (!draw_text && _icon.is_null()) {
 				break;
 			}
 
-			const float style_margin_left = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_left : style->get_margin(SIDE_LEFT);
-			const float style_margin_right = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_right : style->get_margin(SIDE_RIGHT);
-			const float style_margin_top = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_top : style->get_margin(SIDE_TOP);
-			const float style_margin_bottom = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_bottom : style->get_margin(SIDE_BOTTOM);
+			const int style_margin_left = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_left : style->get_margin(SIDE_LEFT);
+			const int style_margin_right = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_right : style->get_margin(SIDE_RIGHT);
+			const int style_margin_top = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_top : style->get_margin(SIDE_TOP);
+			const int style_margin_bottom = (theme_cache.align_to_largest_stylebox) ? theme_cache.style_margin_bottom : style->get_margin(SIDE_BOTTOM);
 
-			Size2 drawable_size_remained = size;
+			Size2i drawable_size_remained = size;
 
 			{ // The size after the stelybox is stripped.
 				drawable_size_remained.width -= style_margin_left + style_margin_right;
@@ -233,8 +235,8 @@ void Button::_notification(int p_what) {
 
 			const int h_separation = MAX(0, theme_cache.h_separation);
 
-			float left_internal_margin_with_h_separation = _internal_margin[SIDE_LEFT];
-			float right_internal_margin_with_h_separation = _internal_margin[SIDE_RIGHT];
+			int left_internal_margin_with_h_separation = _internal_margin[SIDE_LEFT];
+			int right_internal_margin_with_h_separation = _internal_margin[SIDE_RIGHT];
 			{ // The width reserved for internal element in derived classes (and h_separation if needed).
 
 				if (_internal_margin[SIDE_LEFT] > 0.0f) {
@@ -251,7 +253,7 @@ void Button::_notification(int p_what) {
 			HorizontalAlignment icon_align_rtl_checked = horizontal_icon_alignment;
 			HorizontalAlignment align_rtl_checked = alignment;
 			// Swap icon and text alignment sides if right-to-left layout is set.
-			if (is_layout_rtl()) {
+			if (rtl) {
 				if (horizontal_icon_alignment == HORIZONTAL_ALIGNMENT_RIGHT) {
 					icon_align_rtl_checked = HORIZONTAL_ALIGNMENT_LEFT;
 				} else if (horizontal_icon_alignment == HORIZONTAL_ALIGNMENT_LEFT) {
@@ -319,19 +321,21 @@ void Button::_notification(int p_what) {
 			}
 
 			const bool is_clipped = clip_text || overrun_behavior != TextServer::OVERRUN_NO_TRIMMING || autowrap_mode != TextServer::AUTOWRAP_OFF;
-			const Size2 custom_element_size = drawable_size_remained;
+			const Size2i custom_element_size = drawable_size_remained;
 
+			Size2i icon_size;
+			Point2i icon_ofs;
+			bool align_center_fill = icon_align_rtl_checked == HORIZONTAL_ALIGNMENT_CENTER && vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER;
 			// Draw the icon.
+			bool draw_icon = false;
 			if (_icon.is_valid()) {
-				Size2 icon_size;
-
 				{ // Calculate the drawing size of the icon.
 					icon_size = _icon->get_size();
 
 					if (expand_icon) {
-						const Size2 text_buf_size = text_buf->get_size();
-						Size2 _size = custom_element_size;
-						if (!is_clipped && icon_align_rtl_checked != HORIZONTAL_ALIGNMENT_CENTER && text_buf_size.width > 0.0f) {
+						const Size2i text_buf_size = text_buf->get_size();
+						Size2i _size = custom_element_size;
+						if (!is_clipped && !align_center_fill && text_buf_size.width > 0.0f) {
 							// If there is not enough space for icon and h_separation, h_separation will occupy the space first,
 							// so the icon's width may be negative. Keep it negative to make it easier to calculate the space
 							// reserved for text later.
@@ -341,27 +345,26 @@ void Button::_notification(int p_what) {
 							_size.height -= text_buf_size.height;
 						}
 
-						float icon_width = icon_size.width * _size.height / icon_size.height;
-						float icon_height = _size.height;
+						int icon_width = icon_size.width * _size.height / icon_size.height;
+						int icon_height = _size.height;
 
 						if (icon_width > _size.width) {
 							icon_width = _size.width;
 							icon_height = icon_size.height * icon_width / icon_size.width;
 						}
 
-						icon_size = Size2(icon_width, icon_height);
+						icon_size = Size2i(icon_width, icon_height);
 					}
 					icon_size = _fit_icon_size(icon_size);
-					icon_size = icon_size.round();
 				}
 
 				if (icon_size.width > 0.0f) {
+					draw_icon = true;
 					// Calculate the drawing position of the icon.
-					Point2 icon_ofs;
 
 					switch (icon_align_rtl_checked) {
 						case HORIZONTAL_ALIGNMENT_CENTER: {
-							icon_ofs.x = (custom_element_size.width - icon_size.width) / 2.0f;
+							icon_ofs.x = (custom_element_size.width - icon_size.width) / 2;
 						}
 							[[fallthrough]];
 						case HORIZONTAL_ALIGNMENT_FILL:
@@ -379,7 +382,7 @@ void Button::_notification(int p_what) {
 
 					switch (vertical_icon_alignment) {
 						case VERTICAL_ALIGNMENT_CENTER: {
-							icon_ofs.y = (custom_element_size.height - icon_size.height) / 2.0f;
+							icon_ofs.y = (custom_element_size.height - icon_size.height) / 2;
 						}
 							[[fallthrough]];
 						case VERTICAL_ALIGNMENT_FILL:
@@ -391,15 +394,10 @@ void Button::_notification(int p_what) {
 							icon_ofs.y = size.y - style_margin_bottom - icon_size.height;
 						} break;
 					}
-					icon_ofs = icon_ofs.floor();
-
-					Rect2 icon_region = Rect2(icon_ofs, icon_size);
-					draw_texture_rect(_icon, icon_region, false, icon_modulate_color);
 				}
 
-				if (!xl_text.is_empty()) {
-					// Update the size after the icon is stripped. Stripping only when the icon alignments are not center.
-					if (icon_align_rtl_checked != HORIZONTAL_ALIGNMENT_CENTER) {
+				if (draw_text) {
+					if (draw_icon) {
 						// Subtract the space's width occupied by icon and h_separation together.
 						drawable_size_remained.width -= icon_size.width + h_separation;
 					}
@@ -410,21 +408,31 @@ void Button::_notification(int p_what) {
 				}
 			}
 
+			Point2 text_ofs;
+			int text_buf_width = 0; // The space's width filled by the text_buf.
 			// Draw the text.
-			if (!xl_text.is_empty()) {
+			if (draw_text) {
 				text_buf->set_alignment(align_rtl_checked);
-
-				float text_buf_width = Math::ceil(MAX(1.0f, drawable_size_remained.width)); // The space's width filled by the text_buf.
+				if (!align_center_fill) {
+					text_buf_width = MAX(1, drawable_size_remained.width); // The space's width filled by the text_buf.
+				} else {
+					text_buf->set_width(drawable_size_remained.width);
+					if (!is_clipped) {
+						text_buf_width = text_buf->get_size().width;
+					} else {
+						text_buf_width = MAX(1, MIN(text_buf->get_size().width, drawable_size_remained.width));
+					}
+				}
 				if (autowrap_mode != TextServer::AUTOWRAP_OFF && !Math::is_equal_approx(text_buf_width, text_buf->get_width())) {
 					update_minimum_size();
 				}
 				text_buf->set_width(text_buf_width);
 
-				Point2 text_ofs;
-
 				switch (align_rtl_checked) {
 					case HORIZONTAL_ALIGNMENT_CENTER: {
-						text_ofs.x = (drawable_size_remained.width - text_buf_width) / 2.0f;
+						if (!align_center_fill) {
+							text_ofs.x = (drawable_size_remained.width - text_buf_width) / 2;
+						}
 					}
 						[[fallthrough]];
 					case HORIZONTAL_ALIGNMENT_FILL:
@@ -439,7 +447,7 @@ void Button::_notification(int p_what) {
 					} break;
 				}
 
-				text_ofs.y = (drawable_size_remained.height - text_buf->get_size().height) / 2.0f + style_margin_top;
+				text_ofs.y = ((drawable_size_remained.height - text_buf->get_size().height) / 2) + style_margin_top;
 				if (vertical_icon_alignment == VERTICAL_ALIGNMENT_TOP) {
 					text_ofs.y += custom_element_size.height - drawable_size_remained.height; // Offset by the icon's height.
 				}
@@ -449,6 +457,34 @@ void Button::_notification(int p_what) {
 				if (outline_size > 0 && font_outline_color.a > 0.0f) {
 					text_buf->draw_outline(ci, text_ofs, outline_size, font_outline_color);
 				}
+			}
+
+			bool icon_centered = icon_align_rtl_checked == HORIZONTAL_ALIGNMENT_CENTER && vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER;
+			if (draw_icon) {
+				if (draw_text && icon_centered) {
+					if (rtl) {
+						icon_ofs.x += (text_buf_width + h_separation) / 2;
+					} else {
+						icon_ofs.x -= (text_buf_width + h_separation) / 2;
+					}
+				}
+				draw_texture_rect(_icon, Rect2(icon_ofs, icon_size), false, icon_modulate_color);
+			}
+
+			if (draw_text) {
+				if (draw_icon && icon_centered) {
+					if (rtl) {
+						text_ofs.x = icon_ofs.x - text_buf_width - h_separation;
+					} else {
+						text_ofs.x = icon_ofs.x + icon_size.width + h_separation;
+					}
+				}
+				if (rtl && icon_align_rtl_checked != HORIZONTAL_ALIGNMENT_CENTER) {
+					text_ofs.x = size.width - right_internal_margin_with_h_separation - style_margin_right - text_buf_width;
+					if (draw_icon && icon_align_rtl_checked == HORIZONTAL_ALIGNMENT_RIGHT) {
+						text_ofs.x -= icon_size.width + h_separation;
+					}
+				}
 				text_buf->draw(ci, text_ofs, font_color);
 			}
 		} break;
@@ -456,7 +492,7 @@ void Button::_notification(int p_what) {
 }
 
 Size2 Button::_fit_icon_size(const Size2 &p_size) const {
-	int max_width = theme_cache.icon_max_width;
+	const int max_width = theme_cache.icon_max_width;
 	Size2 icon_size = p_size;
 
 	if (max_width > 0 && icon_size.width > max_width) {
@@ -484,26 +520,22 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 	}
 
 	if (!expand_icon && p_icon.is_valid()) {
-		Size2 icon_size = _fit_icon_size(p_icon->get_size());
+		Size2i icon_size = _fit_icon_size(p_icon->get_size());
 		if (vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER) {
 			minsize.height = MAX(minsize.height, icon_size.height);
 		} else {
 			minsize.height += icon_size.height;
 		}
 
-		if (horizontal_icon_alignment != HORIZONTAL_ALIGNMENT_CENTER) {
-			minsize.width += icon_size.width;
-			if (!xl_text.is_empty() || !p_text.is_empty()) {
-				minsize.width += MAX(0, theme_cache.h_separation);
-			}
-		} else {
-			minsize.width = MAX(minsize.width, icon_size.width);
+		minsize.width += icon_size.width;
+		if (!xl_text.is_empty() || !p_text.is_empty()) {
+			minsize.width += MAX(0, theme_cache.h_separation);
 		}
 	}
 
 	if (!xl_text.is_empty() || !p_text.is_empty()) {
 		Ref<Font> font = theme_cache.font;
-		float font_height = font->get_height(theme_cache.font_size);
+		int font_height = font->get_height(theme_cache.font_size);
 		if (vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER) {
 			minsize.height = MAX(font_height, minsize.height);
 		} else {
