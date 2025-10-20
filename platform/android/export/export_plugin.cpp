@@ -483,7 +483,7 @@ String EditorExportPlatformAndroid::get_project_name(const Ref<EditorExportPrese
 	}
 
 	if (aname.is_empty()) {
-		aname = GODOT_VERSION_NAME;
+		aname = ENGINE_VERSION_NAME;
 	}
 
 	return aname;

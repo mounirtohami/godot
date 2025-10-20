@@ -1119,7 +1119,11 @@ void OS_Unix::unset_environment(const String &p_var) const {
 }
 
 String OS_Unix::get_user_data_dir(const String &p_user_dir) const {
+#ifndef GAME_ENGINE
 	return get_data_path().path_join(p_user_dir);
+#else
+	return get_data_path().path_join(get_godot_dir_name());
+#endif // !GAME_ENGINE
 }
 
 String OS_Unix::get_executable_path() const {

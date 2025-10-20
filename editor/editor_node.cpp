@@ -6046,6 +6046,7 @@ void EditorNode::redo() {
 }
 
 bool EditorNode::validate_custom_directory() {
+#ifndef GAME_ENGINE
 	bool use_custom_dir = GLOBAL_GET("application/config/use_custom_user_dir");
 
 	if (use_custom_dir) {
@@ -6060,6 +6061,7 @@ bool EditorNode::validate_custom_directory() {
 			}
 		}
 	}
+#endif // !GAME_ENGINE
 
 	return true;
 }

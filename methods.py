@@ -142,6 +142,14 @@ def get_version_info(module_version_string="", silent=False):
     import version
 
     version_info = {
+        "game_short_name": str(version.game_short_name),
+        "game_name": str(version.game_name),
+        "game_major": int(version.game_major),
+        "game_minor": int(version.game_minor),
+        "game_patch": int(version.game_patch),
+        "game_website": str(version.game_website),
+        "game_license": str(version.game_license),
+        "game_copyright": str(version.game_copyright),
         "short_name": str(version.short_name),
         "name": str(version.name),
         "major": int(version.major),
@@ -151,6 +159,8 @@ def get_version_info(module_version_string="", silent=False):
         "build": str(build_name),
         "module_config": str(version.module_config) + module_version_string,
         "website": str(version.website),
+        "license": str(version.license),
+        "copyright": str(version.copyright),
         "docs_branch": str(version.docs),
     }
 
@@ -1234,8 +1244,11 @@ def generate_vs_project(env, original_args, project_name="godot"):
     sources_active = []
     others_active = []
 
+    import version
+
+    exec_name = version.game_short_name if env.game_engine else version.short_name
     get_dependencies(
-        env.File(f"#bin/godot{env['PROGSUFFIX']}"), env, extensions, headers_active, sources_active, others_active
+        env.File(f"#bin/{exec_name}{env['PROGSUFFIX']}"), env, extensions, headers_active, sources_active, others_active
     )
 
     all_items = []
@@ -1296,7 +1309,7 @@ def generate_vs_project(env, original_args, project_name="godot"):
             properties.append(
                 "<ActiveProjectItemList_%s>;%s;</ActiveProjectItemList_%s>" % (x, ";".join(itemlist[x]), x)
             )
-        output = os.path.join("bin", f"godot{env['PROGSUFFIX']}")
+        output = os.path.join("bin", f"{exec_name}{env['PROGSUFFIX']}")
 
         # The modules_enabled.gen.h header containing the defines is only generated on build, and only for the most recently built
         # platform, which means VS can't properly render code that's inside module-specific ifdefs. This adds those defines to the

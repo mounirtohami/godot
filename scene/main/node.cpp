@@ -1714,7 +1714,7 @@ void Node::remove_child(Node *p_child) {
 	if (handled) {
 		data.children_cache.remove_at(data.children_cache.size() - 1);
 	} else {
-		data.children_cache_dirty = true;
+		_validate_cache();
 	}
 
 	p_child->data.parent = nullptr;
@@ -1750,7 +1750,7 @@ void Node::delete_all_children(bool p_include_internal, DeleteMode p_delete_mode
 	data.blocked--;
 
 	if (data.children.size() != prev_size) {
-		data.children_cache_dirty = true;
+		_validate_cache();
 
 		notification(NOTIFICATION_CHILD_ORDER_CHANGED);
 		emit_signal(SNAME("child_order_changed"));
@@ -1777,9 +1777,7 @@ void Node::_update_children_cache_impl() const {
 	// Sort them
 	data.children_cache.sort_custom<ComparatorByIndex>();
 	// Update indices
-	data.external_children_count_cache = 0;
-	data.internal_children_back_count_cache = 0;
-	data.internal_children_front_count_cache = 0;
+	_reset_children_counters();
 
 	for (uint32_t i = 0; i < data.children_cache.size(); i++) {
 		switch (data.children_cache[i]->data.internal_mode) {

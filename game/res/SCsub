@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+from misc.utility.scons_hints import *
+
+import texture_packer
+
+Import("env")
+
+pack_images = env.Command("images.gen.h", Glob("images/*.png"), texture_packer.pack_textures)
+env.Depends(pack_images, "texture_packer.py")
+
+env.add_source_files(env.game_sources, "*.cpp")

@@ -762,7 +762,7 @@ Error DisplayServerWindows::_file_dialog_with_options_show(const String &p_title
 
 	ERR_FAIL_INDEX_V(int(p_mode), FILE_DIALOG_MODE_SAVE_MAX, FAILED);
 
-	String appname;
+#ifndef GAME_ENGINE
 	if (Engine::get_singleton()->is_editor_hint()) {
 		appname = "Godot.GodotEditor." + String(GODOT_VERSION_BRANCH);
 	} else {
@@ -780,6 +780,9 @@ Error DisplayServerWindows::_file_dialog_with_options_show(const String &p_title
 		clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
 		appname = "Godot." + clean_app_name + "." + version;
 	}
+#else
+	String appname = String(ENGINE_VERSION_NAME) + String(ENGINE_VERSION_BRANCH);
+#endif // !GAME_ENGINE
 
 	FileDialogData *fd = memnew(FileDialogData);
 	if (windows.has(p_window_id) && !windows[p_window_id].is_popup) {
@@ -6609,6 +6612,7 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode, 
 		HRESULT hr = SHGetPropertyStoreForWindow(wd.hWnd, IID_IPropertyStore, (void **)&prop_store);
 		if (hr == S_OK) {
 			PROPVARIANT val;
+#ifndef GAME_ENGINE
 			String appname;
 			if (Engine::get_singleton()->is_editor_hint()) {
 				appname = "Godot.GodotEditor." + String(GODOT_VERSION_FULL_CONFIG);
@@ -6627,6 +6631,9 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode, 
 				clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
 				appname = "Godot." + clean_app_name + "." + version;
 			}
+#else
+			String appname = String(ENGINE_VERSION_NAME).replace_char(' ', '_') + "_V" + String(ENGINE_VERSION_BRANCH);
+#endif // !GAME_ENGINE
 			InitPropVariantFromString((PCWSTR)appname.utf16().get_data(), &val);
 			prop_store->SetValue(PKEY_AppUserModel_ID, val);
 			prop_store->Release();
@@ -7324,9 +7331,11 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 	}
 #endif
 	String appname;
+	String name;
 	if (Engine::get_singleton()->is_editor_hint()) {
 		appname = "Godot.GodotEditor." + String(GODOT_VERSION_FULL_CONFIG);
 	} else {
+#ifndef GAME_ENGINE
 		String name = GLOBAL_GET("application/config/name");
 		String version = GLOBAL_GET("application/config/version");
 		if (version.is_empty()) {
@@ -7340,6 +7349,10 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 		}
 		clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
 		appname = "Godot." + clean_app_name + "." + version;
+#else
+		appname = String(ENGINE_VERSION_NAME) + String(ENGINE_VERSION_BRANCH);
+		name = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 
 #ifndef TOOLS_ENABLED
 		// Set for exported projects only.
@@ -7350,7 +7363,7 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 			RegSetValueExW(key, (LPCWSTR)value_name.utf16().get_data(), 0, REG_SZ, (const BYTE *)cs_name.get_data(), cs_name.size() * sizeof(WCHAR));
 			RegCloseKey(key);
 		}
-#endif
+#endif // !TOOLS_ENABLED
 	}
 	SetCurrentProcessExplicitAppUserModelID((PCWSTR)appname.utf16().get_data());
 

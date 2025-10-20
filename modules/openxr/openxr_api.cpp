@@ -608,10 +608,10 @@ bool OpenXRAPI::create_instance() {
 
 	// Create our OpenXR instance
 	XrApplicationInfo application_info{
-		"Godot Engine", // applicationName, if we're running a game we'll update this down below.
+		ENGINE_VERSION_NAME, // applicationName, if we're running a game we'll update this down below.
 		1, // applicationVersion, we don't currently have this
-		"Godot Engine", // engineName
-		GODOT_VERSION_MAJOR * 10000 + GODOT_VERSION_MINOR * 100 + GODOT_VERSION_PATCH, // engineVersion 4.0 -> 40000, 4.0.1 -> 40001, 4.1 -> 40100, etc.
+		ENGINE_VERSION_NAME, // engineName
+		ENGINE_VERSION_MAJOR * 10000 + ENGINE_VERSION_MINOR * 100 + ENGINE_VERSION_PATCH,
 		openxr_version, // apiVersion
 	};
 
@@ -635,7 +635,11 @@ bool OpenXRAPI::create_instance() {
 	};
 
 	// Get our project name
+#ifndef GAME_ENGINE
 	String project_name = GLOBAL_GET("application/config/name");
+#else
+	String project_name = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 	if (!project_name.is_empty()) {
 		copy_string_to_char_buffer(project_name, instance_create_info.applicationInfo.applicationName, XR_MAX_APPLICATION_NAME_SIZE);
 	}

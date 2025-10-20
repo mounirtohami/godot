@@ -47,19 +47,49 @@
 // Defines the main "branch" version. Patch versions in this branch should be
 // forward-compatible.
 // Example: "3.1"
+#define GAME_VERSION_BRANCH _MKSTR(GAME_VERSION_MAJOR) "." _MKSTR(GAME_VERSION_MINOR)
 #define GODOT_VERSION_BRANCH _MKSTR(GODOT_VERSION_MAJOR) "." _MKSTR(GODOT_VERSION_MINOR)
-#if GODOT_VERSION_PATCH
+#if VERSION_PATCH
 // Example: "3.1.4"
+#define GAME_VERSION_NUMBER GAME_VERSION_BRANCH "." _MKSTR(GAME_VERSION_PATCH)
 #define GODOT_VERSION_NUMBER GODOT_VERSION_BRANCH "." _MKSTR(GODOT_VERSION_PATCH)
 #else // patch is 0, we don't include it in the "pretty" version number.
 // Example: "3.1" instead of "3.1.0"
+#define GAME_VERSION_NUMBER GAME_VERSION_BRANCH
 #define GODOT_VERSION_NUMBER GODOT_VERSION_BRANCH
 #endif // GODOT_VERSION_PATCH
 
 // Version number encoded as hexadecimal int with one byte for each number,
 // for easy comparison from code.
 // Example: 3.1.4 will be 0x030104, making comparison easy from script.
+#define GAME_VERSION_HEX 0x10000 * GAME_VERSION_MAJOR + 0x100 * GAME_VERSION_MINOR + GAME_VERSION_PATCH
 #define GODOT_VERSION_HEX 0x10000 * GODOT_VERSION_MAJOR + 0x100 * GODOT_VERSION_MINOR + GODOT_VERSION_PATCH
+
+#ifdef GAME_ENGINE
+#define ENGINE_VERSION_NAME GAME_VERSION_NAME
+#define ENGINE_VERSION_SHORT_NAME GAME_VERSION_SHORT_NAME
+#define ENGINE_VERSION_BRANCH GAME_VERSION_BRANCH
+#define ENGINE_VERSION_NUMBER GAME_VERSION_NUMBER
+#define ENGINE_VERSION_HEX GAME_VERSION_HEX
+#define ENGINE_VERSION_MAJOR GAME_VERSION_MAJOR
+#define ENGINE_VERSION_MINOR GAME_VERSION_MINOR
+#define ENGINE_VERSION_PATCH GAME_VERSION_PATCH
+#define ENGINE_VERSION_WEBSITE GAME_VERSION_WEBSITE
+#define ENGINE_VERSION_LICENSE GAME_VERSION_LICENSE
+#define ENGINE_VERSION_COPYRIGHT GAME_VERSION_COPYRIGHT
+#else
+#define ENGINE_VERSION_NAME GODOT_VERSION_NAME
+#define ENGINE_VERSION_SHORT_NAME GODOT_VERSION_SHORT_NAME
+#define ENGINE_VERSION_BRANCH GODOT_VERSION_BRANCH
+#define ENGINE_VERSION_NUMBER GODOT_VERSION_NUMBER
+#define ENGINE_VERSION_HEX GODOT_VERSION_HEX
+#define ENGINE_VERSION_MAJOR GODOT_VERSION_MAJOR
+#define ENGINE_VERSION_MINOR GODOT_VERSION_MINOR
+#define ENGINE_VERSION_PATCH GODOT_VERSION_PATCH
+#define ENGINE_VERSION_WEBSITE GODOT_VERSION_WEBSITE
+#define ENGINE_VERSION_LICENSE GODOT_VERSION_LICENSE
+#define ENGINE_VERSION_COPYRIGHT GODOT_VERSION_COPYRIGHT
+#endif
 
 // Describes the full configuration of that Godot version, including the version number,
 // the status (beta, stable, etc.), potential module-specific features (e.g. mono)
@@ -78,7 +108,7 @@
 
 // Same as above, but prepended with Godot's name and a cosmetic "v" for "version".
 // Example: "Godot v3.1.4.stable.official.mono.double"
-#define GODOT_VERSION_FULL_NAME GODOT_VERSION_NAME " v" GODOT_VERSION_FULL_BUILD
+#define GODOT_VERSION_FULL_NAME ENGINE_VERSION_NAME " v" GODOT_VERSION_FULL_BUILD
 
 // Git commit hash, generated at build time in `core/version_hash.gen.cpp`.
 extern const char *const GODOT_VERSION_HASH;

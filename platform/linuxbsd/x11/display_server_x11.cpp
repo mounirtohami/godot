@@ -5714,6 +5714,7 @@ void DisplayServerX11::_update_context(WindowData &wd) {
 				break;
 		}
 
+#ifndef GAME_ENGINE
 		CharString class_str;
 		if (context == CONTEXT_ENGINE) {
 			String config_name = GLOBAL_GET("application/config/name");
@@ -5725,6 +5726,9 @@ void DisplayServerX11::_update_context(WindowData &wd) {
 		} else {
 			class_str = "Godot";
 		}
+#else
+		CharString class_str = String(ENGINE_VERSION_NAME).utf8();
+#endif // !GAME_ENGINE
 
 		classHint->res_class = class_str.ptrw();
 		classHint->res_name = name_str.ptrw();

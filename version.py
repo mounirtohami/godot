@@ -1,3 +1,11 @@
+game_short_name = "game"
+game_name = "Game Example"
+game_major = 0
+game_minor = 1
+game_patch = 0
+game_website = "https://game-example.com"
+game_license = "N/A"
+game_copyright = "(c) 2025-present Game Developers"
 short_name = "godot"
 name = "Godot Engine"
 major = 4
@@ -7,3 +15,5 @@ status = "dev"
 module_config = ""
 website = "https://godotengine.org"
 docs = "latest"
+license = "MIT"
+copyright = "(c) 2007-present Juan Linietsky, Ariel Manzur and Godot Engine contributors"

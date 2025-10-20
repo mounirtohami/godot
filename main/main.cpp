@@ -106,6 +106,11 @@
 #include "tests/test_main.h"
 #endif
 
+#ifdef GAME_ENGINE
+#include "game/game_tree.h"
+#include "game/register_game_types.h"
+#endif // !GAME_ENGINE
+
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/debug_adapter/debug_adapter_server.h"
 #include "editor/debugger/editor_debugger_node.h"
@@ -206,6 +211,7 @@ static bool accessibility_mode_set = false;
 static bool single_window = false;
 static bool editor = false;
 static bool project_manager = false;
+static bool game_engine = false;
 static bool cmdline_tool = false;
 static String locale;
 static String log_file;
@@ -234,7 +240,7 @@ static DisplayServer::WindowMode window_mode = DisplayServer::WINDOW_MODE_WINDOW
 static DisplayServer::ScreenOrientation window_orientation = DisplayServer::SCREEN_LANDSCAPE;
 static DisplayServer::VSyncMode window_vsync_mode = DisplayServer::VSYNC_ENABLED;
 static uint32_t window_flags = 0;
-static Size2i window_size = Size2i(1152, 648);
+static Size2i window_size = Size2i(640, 480);
 
 static int init_screen = DisplayServer::SCREEN_PRIMARY;
 static bool init_fullscreen = false;
@@ -427,15 +433,15 @@ void Main::print_header(bool p_rich) {
 	if (GODOT_VERSION_TIMESTAMP > 0) {
 		// Version timestamp available.
 		if (p_rich) {
-			Engine::get_singleton()->print_header_rich("\u001b[38;5;39m" + String(GODOT_VERSION_NAME) + "\u001b[0m v" + get_full_version_string() + " (" + Time::get_singleton()->get_datetime_string_from_unix_time(GODOT_VERSION_TIMESTAMP, true) + " UTC) - \u001b[4m" + String(GODOT_VERSION_WEBSITE));
+			Engine::get_singleton()->print_header_rich("\u001b[38;5;39m" + String(ENGINE_VERSION_NAME) + "\u001b[0m v" + get_full_version_string() + " (" + Time::get_singleton()->get_datetime_string_from_unix_time(GODOT_VERSION_TIMESTAMP, true) + " UTC) - \u001b[4m" + String(ENGINE_VERSION_WEBSITE));
 		} else {
-			Engine::get_singleton()->print_header(String(GODOT_VERSION_NAME) + " v" + get_full_version_string() + " (" + Time::get_singleton()->get_datetime_string_from_unix_time(GODOT_VERSION_TIMESTAMP, true) + " UTC) - " + String(GODOT_VERSION_WEBSITE));
+			Engine::get_singleton()->print_header(String(ENGINE_VERSION_NAME) + " v" + get_full_version_string() + " (" + Time::get_singleton()->get_datetime_string_from_unix_time(GODOT_VERSION_TIMESTAMP, true) + " UTC) - " + String(ENGINE_VERSION_WEBSITE));
 		}
 	} else {
 		if (p_rich) {
-			Engine::get_singleton()->print_header_rich("\u001b[38;5;39m" + String(GODOT_VERSION_NAME) + "\u001b[0m v" + get_full_version_string() + " - \u001b[4m" + String(GODOT_VERSION_WEBSITE));
+			Engine::get_singleton()->print_header_rich("\u001b[38;5;39m" + String(ENGINE_VERSION_NAME) + "\u001b[0m v" + get_full_version_string() + " - \u001b[4m" + String(ENGINE_VERSION_WEBSITE));
 		} else {
-			Engine::get_singleton()->print_header(String(GODOT_VERSION_NAME) + " v" + get_full_version_string() + " - " + String(GODOT_VERSION_WEBSITE));
+			Engine::get_singleton()->print_header(String(ENGINE_VERSION_NAME) + " v" + get_full_version_string() + " - " + String(ENGINE_VERSION_WEBSITE));
 		}
 	}
 }
@@ -1027,7 +1033,9 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 
 	String audio_driver = "";
 	String project_path = ".";
+#ifndef GAME_ENGINE
 	bool upwards = false;
+#endif // !GAME_ENGINE
 	String debug_uri = "";
 #if defined(TOOLS_ENABLED) && (defined(WINDOWS_ENABLED) || defined(LINUXBSD_ENABLED))
 	bool test_rd_creation = false;
@@ -1658,10 +1666,10 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 				OS::get_singleton()->print("Missing relative or absolute path, aborting.\n");
 				goto error;
 			}
-#ifdef OVERRIDE_ENABLED
+#if !defined(GAME_ENGINE) && defined(OVERRIDE_ENABLED)
 		} else if (arg == "-u" || arg == "--upwards") { // scan folders upwards
 			upwards = true;
-#endif // OVERRIDE_ENABLED
+#endif // !GAME_ENGINE && OVERRIDE_ENABLED
 		} else if (arg == "--quit") { // Auto quit at the end of the first main loop iteration
 			quit_after = 1;
 #ifdef TOOLS_ENABLED
@@ -1942,6 +1950,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	}
 #endif // OVERRIDE_ENABLED
 
+#ifndef GAME_ENGINE
 	OS::get_singleton()->_in_editor = editor;
 	if (globals->setup(project_path, main_pack, upwards, editor) == OK) {
 #ifdef TOOLS_ENABLED
@@ -1958,11 +1967,17 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		goto error;
 #endif
 	}
+#else
+	if (FileAccess::exists(OS::get_singleton()->get_user_data_dir().path_join("settings.game"))) {
+		globals->setup(OS::get_singleton()->get_user_data_dir(), "");
+	}
+	game_engine = true;
+#endif
 
 	// Initialize WorkerThreadPool.
 	{
 #ifdef THREADS_ENABLED
-		if (editor || project_manager) {
+		if (editor || project_manager || game_engine) {
 			WorkerThreadPool::get_singleton()->init(-1, 0.75);
 		} else {
 			int worker_threads = GLOBAL_GET("threading/worker_pool/max_threads");
@@ -2134,7 +2149,11 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	// This also prevents logs from being created for the editor instance, as feature tags
 	// are disabled while in the editor (even if they should logically apply).
 	GLOBAL_DEF("debug/file_logging/enable_file_logging.pc", true);
+#ifndef GAME_ENGINE
 	GLOBAL_DEF("debug/file_logging/log_path", "user://logs/godot.log");
+#else
+	GLOBAL_DEF("debug/file_logging/log_path", "user://logs/game.log");
+#endif // GAME_ENGINE
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "debug/file_logging/max_log_files", PROPERTY_HINT_RANGE, "0,20,1,or_greater"), 5);
 
 	// If `--log-file` is used to override the log path, allow creating logs for the project manager or editor
@@ -2158,6 +2177,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		OS::get_singleton()->add_logger(memnew(RotatedFileLogger(base_path, max_files)));
 	}
 
+#ifndef GAME_ENGINE
 	if (main_args.is_empty() && String(GLOBAL_GET("application/run/main_scene")).is_empty() && String(GLOBAL_GET("application/run/main_loop_type")) == "SceneTree") {
 #ifdef TOOLS_ENABLED
 		if (!editor && !project_manager) {
@@ -2170,9 +2190,10 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		}
 #endif
 	}
+#endif // !GAME_ENGINE
 
-	if (editor || project_manager) {
-		Engine::get_singleton()->set_editor_hint(true);
+	if (editor || project_manager || game_engine) {
+		Engine::get_singleton()->set_editor_hint(!game_engine);
 		use_custom_res = false;
 		input_map->load_default(); //keys for editor
 	} else {
@@ -3539,6 +3560,11 @@ Error Main::setup2(bool p_show_boot_logo) {
 
 	register_scene_singletons();
 
+#ifdef GAME_ENGINE
+	register_game_types();
+	register_game_singletons();
+#endif // GAME_ENGINE
+
 	{
 		OS::get_singleton()->benchmark_begin_measure("Scene", "Modules and Extensions");
 
@@ -3797,8 +3823,9 @@ int Main::start() {
 #endif // TOOLS_ENABLED
 
 	main_timer_sync.init(OS::get_singleton()->get_ticks_usec());
-	List<String> args = OS::get_singleton()->get_cmdline_args();
 
+#ifndef GAME_ENGINE
+	List<String> args = OS::get_singleton()->get_cmdline_args();
 	for (List<String>::Element *E = args.front(); E; E = E->next()) {
 		// First check parameters that do not have an argument to the right.
 
@@ -3912,6 +3939,7 @@ int Main::start() {
 		}
 #endif
 	}
+#endif // !GAME_ENGINE
 
 	uint64_t minimum_time_msec = GLOBAL_DEF(PropertyInfo(Variant::INT, "application/boot_splash/minimum_display_time", PROPERTY_HINT_RANGE, "0,100,1,or_greater,suffix:ms"), 0);
 	if (Engine::get_singleton()->is_editor_hint()) {
@@ -4067,6 +4095,7 @@ int Main::start() {
 	main_loop_type = String();
 #endif // OVERRIDE_ENABLED
 
+#ifndef GAME_ENGINE
 	if (script.is_empty() && game_path.is_empty()) {
 		const String main_scene = GLOBAL_GET("application/run/main_scene");
 		if (main_scene.begins_with("uid://")) {
@@ -4084,6 +4113,7 @@ int Main::start() {
 	if (main_loop_type.is_empty()) {
 		main_loop_type = GLOBAL_GET("application/run/main_loop_type");
 	}
+#endif // !GAME_ENGINE
 
 #ifdef TOOLS_ENABLED
 	if (!editor && !project_manager && !cmdline_tool && script.is_empty() && game_path.is_empty() && main_loop_type.is_empty()) {
@@ -4100,6 +4130,10 @@ int Main::start() {
 	MainLoop *main_loop = nullptr;
 	if (editor) {
 		main_loop = memnew(SceneTree);
+#ifdef GAME_ENGINE
+	} else {
+		main_loop = memnew(GameTree);
+#endif // GAME_ENGINE
 	}
 
 	if (!script.is_empty()) {
@@ -4225,7 +4259,11 @@ int Main::start() {
 			sml->set_disable_node_threading(true);
 		}
 
+#ifndef GAME_ENGINE
 		bool embed_subwindows = GLOBAL_GET("display/window/subwindows/embed_subwindows");
+#else
+		bool embed_subwindows = false;
+#endif // !GAME_ENGINE
 
 		if (single_window || (!project_manager && !editor && embed_subwindows) || !DisplayServer::get_singleton()->has_feature(DisplayServer::Feature::FEATURE_SUBWINDOWS)) {
 			sml->get_root()->set_embedding_subwindows(true);
@@ -4358,8 +4396,10 @@ int Main::start() {
 			OS::get_singleton()->benchmark_end_measure("Startup", "Editor");
 		}
 #endif
+#ifndef GAME_ENGINE
 		sml->set_auto_accept_quit(GLOBAL_GET("application/config/auto_accept_quit"));
 		sml->set_quit_on_go_back(GLOBAL_GET("application/config/quit_on_go_back"));
+#endif // !GAME_ENGINE
 
 		if (!editor && !project_manager) {
 			//standard helpers that can be changed from main config
@@ -4404,7 +4444,11 @@ int Main::start() {
 				sml->set_auto_accept_quit(GLOBAL_GET("application/config/auto_accept_quit"));
 				sml->set_quit_on_go_back(GLOBAL_GET("application/config/quit_on_go_back"));
 			}
+#ifndef GAME_ENGINE
 			String appname = GLOBAL_GET("application/config/name");
+#else
+			String appname = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 			appname = TranslationServer::get_singleton()->translate(appname);
 #ifdef DEBUG_ENABLED
 			// Append a suffix to the window title to denote that the project is running
@@ -4489,6 +4533,7 @@ int Main::start() {
 #endif
 		}
 
+#ifndef GAME_ENGINE
 		if (!project_manager && !editor) { // game
 
 			OS::get_singleton()->benchmark_begin_measure("Startup", "Load Game");
@@ -4540,6 +4585,7 @@ int Main::start() {
 
 			OS::get_singleton()->benchmark_end_measure("Startup", "Load Game");
 		}
+#endif // !GAME_ENGINE
 
 #ifdef TOOLS_ENABLED
 		if (project_manager) {
@@ -4978,6 +5024,10 @@ void Main::cleanup(bool p_force) {
 	unregister_platform_apis();
 	unregister_driver_types();
 	unregister_scene_types();
+
+#ifdef GAME_ENGINE
+	unregister_game_types();
+#endif // GAME_ENGINE
 
 	finalize_theme_db();
 

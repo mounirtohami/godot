@@ -49,8 +49,10 @@ class ProjectSettings : public Object {
 
 public:
 	typedef HashMap<String, Variant> CustomMap;
+#ifndef GAME_ENGINE
 	static inline const String PROJECT_DATA_DIR_NAME_SUFFIX = "godot";
 	static inline const String EDITOR_SETTING_OVERRIDE_PREFIX = PNAME("editor_overrides") + String("/");
+#endif // !GAME_ENGINE
 
 	// Properties that are not for built in values begin from this value, so builtin ones are displayed first.
 	constexpr static const int32_t NO_BUILTIN_ORDER_BASE = 1 << 16;

@@ -345,6 +345,22 @@ private:
 
 	void _clean_up_owner();
 
+	_FORCE_INLINE_ void _reset_children_counters() const {
+		data.internal_children_front_count_cache = 0;
+		data.internal_children_back_count_cache = 0;
+		data.external_children_count_cache = 0;
+	}
+
+	_FORCE_INLINE_ void _validate_cache() const {
+		if (!data.children.is_empty()) {
+			data.children_cache_dirty = true;
+		} else {
+			data.children_cache_dirty = false;
+			data.children_cache.clear();
+			_reset_children_counters();
+		}
+	}
+
 	_FORCE_INLINE_ void _update_children_cache() const {
 		if (unlikely(data.children_cache_dirty)) {
 			_update_children_cache_impl();

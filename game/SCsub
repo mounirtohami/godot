@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+from misc.utility.scons_hints import *
+
+Import("env")
+
+env.game_sources = []
+
+SConscript("res/SCsub")
+
+env.add_source_files(env.game_sources, "*.cpp")
+
+lib = env.add_library("game", env.game_sources)
+
+env.Prepend(LIBS=[lib])

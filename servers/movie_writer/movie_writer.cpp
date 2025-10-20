@@ -32,6 +32,7 @@
 #include "core/config/project_settings.h"
 #include "core/io/dir_access.h"
 #include "core/os/time.h"
+#include "core/version.h"
 #include "scene/main/window.h"
 #include "servers/audio/audio_driver_dummy.h"
 #include "servers/display/display_server.h"
@@ -96,7 +97,11 @@ void MovieWriter::get_supported_extensions(List<String> *r_extensions) const {
 }
 
 void MovieWriter::begin(const Size2i &p_movie_size, uint32_t p_fps, const String &p_base_path) {
+#ifndef GAME_ENGINE
 	project_name = GLOBAL_GET("application/config/name");
+#else
+	project_name = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 
 	print_line(vformat("Movie Maker mode enabled, recording movie at %d FPS...", p_fps));
 

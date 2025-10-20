@@ -19,6 +19,14 @@ def version_info_builder(target, source, env):
     with methods.generated_wrapper(str(target[0])) as file:
         file.write(
             """\
+#define GAME_VERSION_SHORT_NAME "{game_short_name}"
+#define GAME_VERSION_NAME "{game_name}"
+#define GAME_VERSION_MAJOR {game_major}
+#define GAME_VERSION_MINOR {game_minor}
+#define GAME_VERSION_PATCH {game_patch}
+#define GAME_VERSION_WEBSITE "{game_website}"
+#define GAME_VERSION_LICENSE "{game_license}"
+#define GAME_VERSION_COPYRIGHT "{game_copyright}"
 #define GODOT_VERSION_SHORT_NAME "{short_name}"
 #define GODOT_VERSION_NAME "{name}"
 #define GODOT_VERSION_MAJOR {major}
@@ -30,6 +38,8 @@ def version_info_builder(target, source, env):
 #define GODOT_VERSION_WEBSITE "{website}"
 #define GODOT_VERSION_DOCS_BRANCH "{docs_branch}"
 #define GODOT_VERSION_DOCS_URL "https://docs.godotengine.org/en/" GODOT_VERSION_DOCS_BRANCH
+#define GODOT_VERSION_LICENSE "{license}"
+#define GODOT_VERSION_COPYRIGHT "{copyright}"
 """.format(**source[0].read())
         )
 
@@ -98,6 +108,7 @@ def make_authors_header(target, source, env):
         "Lead Developer": "AUTHORS_LEAD_DEVELOPERS",
         "Project Manager": "AUTHORS_PROJECT_MANAGERS",
         "Developers": "AUTHORS_DEVELOPERS",
+        "Game Developers": "GAME_DEVELOPERS",
     }
     buffer = methods.get_buffer(str(source[0]))
     reading = False

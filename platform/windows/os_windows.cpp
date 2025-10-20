@@ -2511,7 +2511,11 @@ String OS_Windows::get_system_dir(SystemDir p_dir, bool p_shared_storage) const 
 }
 
 String OS_Windows::get_user_data_dir(const String &p_user_dir) const {
+#ifndef GAME_ENGINE
 	return get_data_path().path_join(p_user_dir).replace_char('\\', '/');
+#else
+	return get_data_path().path_join(get_godot_dir_name()).replace_char('\\', '/');
+#endif // !GAME_ENGINE
 }
 
 String OS_Windows::get_unique_id() const {

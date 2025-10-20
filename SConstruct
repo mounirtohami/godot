@@ -161,7 +161,7 @@ opts = Variables(customs, ARGUMENTS)
 opts.Add((["platform", "p"], "Target platform (%s)" % "|".join(platform_list), ""))
 opts.Add(
     EnumVariable(
-        "target", "Compilation target", "editor", ["editor", "template_release", "template_debug"], ignorecase=2
+        "target", "Compilation target", "editor", ["editor", "template_release", "template_debug", "game_debug", "game_release"], ignorecase=2
     )
 )
 opts.Add(EnumVariable("arch", "CPU architecture", "auto", ["auto"] + architectures, architecture_aliases, ignorecase=2))
@@ -489,9 +489,10 @@ env.platform_apis = platform_apis
 # - Optimization level
 # - Debug symbols for crash traces / debuggers
 
-env.editor_build = env["target"] == "editor"
-env.dev_build = env["dev_build"]
-env.debug_features = env["target"] in ["editor", "template_debug"]
+env.game_engine = env["target"] in ["game_debug", "game_release"]
+env.editor_build = not env.game_engine and env["target"] == "editor"
+env.debug_features = env["target"] in ["editor", "template_debug", "game_debug"]
+env.dev_build = env["target"] == "game_debug" or env["dev_build"]
 
 if env["optimize"] == "auto":
     if env.dev_build:
@@ -506,13 +507,15 @@ env["debug_symbols"] = methods.get_cmdline_bool("debug_symbols", env.dev_build)
 
 if env.editor_build:
     env.Append(CPPDEFINES=["TOOLS_ENABLED"])
+elif env.game_engine:
+    env.Append(CPPDEFINES=["GAME_ENGINE"])
 
-if env.debug_features:
+if env.debug_features or env["target"] == "game_debug":
     # DEBUG_ENABLED enables debugging *features* and debug-only code, which is intended
     # to give *users* extra debugging information for their game development.
     env.Append(CPPDEFINES=["DEBUG_ENABLED"])
 
-if env.dev_build:
+if env.dev_build or env["target"] == "game_debug":
     # DEV_ENABLED enables *engine developer* code which should only be compiled for those
     # working on the engine itself.
     env.Append(CPPDEFINES=["DEV_ENABLED"])
@@ -978,7 +981,7 @@ else:
     suffix = "." + env["platform"]
 
 suffix += "." + env["target"]
-if env.dev_build:
+if env.dev_build and not env.game_engine:
     suffix += ".dev"
 
 if env["precision"] == "double":
@@ -1033,7 +1036,7 @@ if env["minizip"]:
 if env["brotli"]:
     env.Append(CPPDEFINES=["BROTLI_ENABLED"])
 
-if not env["disable_overrides"]:
+if not env["disable_overrides"] and not env.game_engine:
     env.Append(CPPDEFINES=["OVERRIDE_ENABLED"])
 
 if not env["verbose"]:
@@ -1171,6 +1174,8 @@ SConscript("servers/SCsub")
 SConscript("scene/SCsub")
 if env.editor_build:
     SConscript("editor/SCsub")
+if env.game_engine:
+    SConscript("game/SCsub")
 SConscript("drivers/SCsub")
 
 SConscript("platform/SCsub")

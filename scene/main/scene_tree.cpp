@@ -37,6 +37,7 @@
 #include "core/object/message_queue.h"
 #include "core/object/worker_thread_pool.h"
 #include "core/os/os.h"
+#include "core/version.h"
 #include "node.h"
 #include "scene/animation/tween.h"
 #include "scene/debugger/scene_debugger.h"
@@ -2050,6 +2051,10 @@ SceneTree::SceneTree() {
 	root->set_process_mode(Node::PROCESS_MODE_PAUSABLE);
 	root->set_name("root");
 
+#ifdef GAME_ENGINE
+	root->set_title(String(GAME_VERSION_NAME));
+#endif // GAME_ENGINE
+
 	if (Engine::get_singleton()->is_editor_hint()) {
 		root->set_wrap_controls(true);
 		root->set_auto_translate_mode(Node::AUTO_TRANSLATE_MODE_ALWAYS);
@@ -2057,8 +2062,12 @@ SceneTree::SceneTree() {
 		root->set_auto_translate_mode(GLOBAL_GET("internationalization/rendering/root_node_auto_translate") ? Node::AUTO_TRANSLATE_MODE_ALWAYS : Node::AUTO_TRANSLATE_MODE_DISABLED);
 	}
 
+#ifndef GAME_ENGINE
 	// Set after auto translate mode to avoid changing the displayed title back and forth.
 	root->set_title(GLOBAL_GET("application/config/name"));
+#else
+	root->set_title(String(GAME_VERSION_NAME));
+#endif // !GAME_ENGINE
 
 #ifndef _3D_DISABLED
 	if (root->get_world_3d().is_null()) {

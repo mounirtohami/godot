@@ -31,6 +31,7 @@
 #include "tts_linux.h"
 
 #include "core/config/project_settings.h"
+#include "core/version.h"
 #include "servers/text/text_server.h"
 
 TTS_Linux *TTS_Linux::singleton = nullptr;
@@ -56,6 +57,7 @@ void TTS_Linux::speech_init_thread_func(void *p_userdata) {
 #else
 		{
 #endif
+#ifndef GAME_ENGINE
 			CharString class_str;
 			String config_name = GLOBAL_GET("application/config/name");
 			if (config_name.length() == 0) {
@@ -64,6 +66,11 @@ void TTS_Linux::speech_init_thread_func(void *p_userdata) {
 				class_str = config_name.utf8();
 			}
 			tts->synth = spd_open(class_str.get_data(), "Godot_Engine_Speech_API", "Godot_Engine", SPD_MODE_THREADED);
+#else
+			String app_name = String(ENGINE_VERSION_NAME).replace_char(' ', '_');
+			CharString class_str = app_name.utf8();
+			tts->synth = spd_open(class_str.get_data(), vformat("%s_Speech_API", app_name).utf8().get_data(), app_name.utf8().get_data(), SPD_MODE_THREADED);
+#endif // !GAME_ENGINE
 			if (tts->synth) {
 				tts->synth->callback_end = &speech_event_callback;
 				tts->synth->callback_cancel = &speech_event_callback;

@@ -311,11 +311,15 @@ Error AudioDriverPulseAudio::init() {
 
 	String context_name;
 	if (Engine::get_singleton()->is_editor_hint()) {
-		context_name = GODOT_VERSION_NAME " Editor";
+		context_name = String(ENGINE_VERSION_NAME) + " Editor";
 	} else {
+#ifndef GAME_ENGINE
 		context_name = GLOBAL_GET("application/config/name");
+#else
+		context_name = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 		if (context_name.is_empty()) {
-			context_name = GODOT_VERSION_NAME " Project";
+			context_name = String(ENGINE_VERSION_NAME) + " Project";
 		}
 	}
 

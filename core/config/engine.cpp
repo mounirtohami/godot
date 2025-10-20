@@ -151,6 +151,10 @@ double Engine::get_unfrozen_time_scale() const {
 
 Dictionary Engine::get_version_info() const {
 	Dictionary dict;
+	dict["game_major"] = GAME_VERSION_MAJOR;
+	dict["game_minor"] = GAME_VERSION_MINOR;
+	dict["game_patch"] = GAME_VERSION_PATCH;
+	dict["game_hex"] = GAME_VERSION_HEX;
 	dict["major"] = GODOT_VERSION_MAJOR;
 	dict["minor"] = GODOT_VERSION_MINOR;
 	dict["patch"] = GODOT_VERSION_PATCH;
@@ -196,6 +200,7 @@ Dictionary Engine::get_author_info() const {
 	dict["project_managers"] = array_from_info(AUTHORS_PROJECT_MANAGERS);
 	dict["founders"] = array_from_info(AUTHORS_FOUNDERS);
 	dict["developers"] = array_from_info(AUTHORS_DEVELOPERS);
+	dict["game_developers"] = array_from_info(GAME_DEVELOPERS);
 
 	return dict;
 }

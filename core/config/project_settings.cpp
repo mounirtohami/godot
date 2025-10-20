@@ -57,7 +57,11 @@ String ProjectSettings::get_project_data_dir_name() const {
 }
 
 String ProjectSettings::get_project_data_path() const {
+#ifndef GAME_ENGINE
 	return "res://" + get_project_data_dir_name();
+#else
+	return "user://" + get_project_data_dir_name();
+#endif // !GAME_ENGINE
 }
 
 String ProjectSettings::get_resource_path() const {
@@ -632,6 +636,7 @@ void ProjectSettings::_convert_to_last_version(int p_from_version) {
  *    If nothing was found, error out.
  */
 Error ProjectSettings::_setup(const String &p_path, const String &p_main_pack, bool p_upwards, bool p_ignore_override) {
+#ifndef GAME_ENGINE
 	if (!OS::get_singleton()->get_resource_dir().is_empty()) {
 		// OS will call ProjectSettings->get_resource_path which will be empty if not overridden!
 		// If the OS would rather use a specific location, then it will not be empty.
@@ -769,11 +774,15 @@ Error ProjectSettings::_setup(const String &p_path, const String &p_main_pack, b
 
 	// Nothing was found, try to find a project file in provided path (`p_path`)
 	// or, if requested (`p_upwards`) in parent directories.
+#endif // !GAME_ENGINE
 
 	Ref<DirAccess> d = DirAccess::create(DirAccess::ACCESS_FILESYSTEM);
 	ERR_FAIL_COND_V_MSG(d.is_null(), ERR_CANT_CREATE, vformat("Cannot create DirAccess for path '%s'.", p_path));
 	d->change_dir(p_path);
 
+#ifdef GAME_ENGINE
+	return _load_settings_text(d->get_current_dir().path_join("settings.game"));
+#else
 	String current_dir = d->get_current_dir();
 	bool found = false;
 	Error err;
@@ -816,10 +825,12 @@ Error ProjectSettings::_setup(const String &p_path, const String &p_main_pack, b
 	}
 
 	return OK;
+#endif // GAME_ENGINE
 }
 
 Error ProjectSettings::setup(const String &p_path, const String &p_main_pack, bool p_upwards, bool p_ignore_override) {
 	Error err = _setup(p_path, p_main_pack, p_upwards, p_ignore_override);
+#ifndef GAME_ENGINE
 	if (err == OK && !p_ignore_override) {
 		String custom_settings = GLOBAL_GET("application/config/project_settings_override");
 		if (!custom_settings.is_empty()) {
@@ -830,6 +841,9 @@ Error ProjectSettings::setup(const String &p_path, const String &p_main_pack, bo
 	// Updating the default value after the project settings have loaded.
 	bool use_hidden_directory = GLOBAL_GET("application/config/use_hidden_project_data_directory");
 	project_data_dir_name = (use_hidden_directory ? "." : "") + PROJECT_DATA_DIR_NAME_SUFFIX;
+#else
+	project_data_dir_name = "." + String(ENGINE_VERSION_SHORT_NAME);
+#endif // !GAME_ENGINE
 
 	// Using GLOBAL_GET on every block for compressing can be slow, so assigning here.
 	Compression::zstd_long_distance_matching = GLOBAL_GET("compression/formats/zstd/long_distance_matching");
@@ -917,8 +931,12 @@ Error ProjectSettings::_load_settings_text(const String &p_path) {
 		if (err == ERR_FILE_EOF) {
 			// If we're loading a project.godot from source code, we can operate some
 			// ProjectSettings conversions if need be.
+#ifndef GAME_ENGINE
 			_convert_to_last_version(config_version);
 			last_save_time = FileAccess::get_modified_time(get_resource_path().path_join("project.godot"));
+#else
+			last_save_time = FileAccess::get_modified_time(OS::get_singleton()->get_user_data_dir().path_join("settings.game"));
+#endif // !GAME_ENGINE
 			return OK;
 		}
 		ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Error parsing '%s' at line %d: %s File might be corrupted.", p_path, lines, error_text));
@@ -997,9 +1015,14 @@ void ProjectSettings::clear(const String &p_name) {
 }
 
 Error ProjectSettings::save() {
-	Error error = save_custom(get_resource_path().path_join("project.godot"));
+#ifndef GAME_ENGINE
+	const String path = get_resource_path().path_join("project.godot");
+#else
+	const String path = OS::get_singleton()->get_user_data_dir().path_join("settings.game");
+#endif // !GAME_ENGINE
+	Error error = save_custom(path);
 	if (error == OK) {
-		last_save_time = FileAccess::get_modified_time(get_resource_path().path_join("project.godot"));
+		last_save_time = FileAccess::get_modified_time(path);
 	}
 	return error;
 }
@@ -1077,7 +1100,11 @@ Error ProjectSettings::_save_settings_text(const String &p_file, const RBMap<Str
 	Error err;
 	Ref<FileAccess> file = FileAccess::open(p_file, FileAccess::WRITE, &err);
 
+#ifndef GAME_ENGINE
 	ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Couldn't save project.godot - %s.", p_file));
+#else
+	ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Couldn't save settings.game - %s.", p_file));
+#endif // !GAME_ENGINE
 
 	file->store_line("; Engine configuration file.");
 	file->store_line("; It's best edited using the editor UI and not directly,");
@@ -1245,7 +1272,7 @@ Error ProjectSettings::save_custom(const String &p_path, const CustomMap &p_cust
 		save_features += f;
 	}
 
-	if (p_path.ends_with(".godot") || p_path.ends_with("override.cfg")) {
+	if (p_path.ends_with(".godot") || p_path.ends_with("override.cfg") || p_path.ends_with(".game")) {
 		return _save_settings_text(p_path, save_props, p_custom, save_features);
 	} else if (p_path.ends_with(".binary")) {
 		return _save_settings_binary(p_path, save_props, p_custom, save_features);
@@ -1319,7 +1346,11 @@ bool ProjectSettings::is_project_loaded() const {
 }
 
 bool ProjectSettings::_property_can_revert(const StringName &p_name) const {
+#ifdef TOOLS_ENABLED
 	return props.has(p_name) && !String(p_name).begins_with(EDITOR_SETTING_OVERRIDE_PREFIX);
+#else
+	return props.has(p_name);
+#endif // TOOLS_ENABLED
 }
 
 bool ProjectSettings::_property_get_revert(const StringName &p_name, Variant &r_property) const {
@@ -1366,10 +1397,10 @@ TypedArray<Dictionary> ProjectSettings::get_global_class_list() {
 	if (cf->load(get_global_class_list_path()) == OK) {
 		global_class_list = cf->get_value("", "list", Array());
 	} else {
-#ifndef TOOLS_ENABLED
+#if !defined(TOOLS_ENABLED) && !defined(GAME_ENGINE)
 		// Script classes can't be recreated in exported project, so print an error.
 		ERR_PRINT("Could not load global script cache.");
-#endif
+#endif // !defined(TOOLS_ENABLED) && !defined(GAME_ENGINE)
 	}
 
 	// File read succeeded or failed. If it failed, assume everything is still okay.
@@ -1505,6 +1536,7 @@ void ProjectSettings::get_argument_options(const StringName &p_function, int p_i
 }
 #endif
 
+#ifndef GAME_ENGINE
 void ProjectSettings::set_editor_setting_override(const String &p_setting, const Variant &p_value) {
 	set_setting(EDITOR_SETTING_OVERRIDE_PREFIX + p_setting, p_value);
 }
@@ -1516,6 +1548,7 @@ bool ProjectSettings::has_editor_setting_override(const String &p_setting) const
 Variant ProjectSettings::get_editor_setting_override(const String &p_setting) const {
 	return get_setting(EDITOR_SETTING_OVERRIDE_PREFIX + p_setting);
 }
+#endif // !GAME_ENGINE
 
 void ProjectSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_setting", "name"), &ProjectSettings::has_setting);
@@ -1584,26 +1617,31 @@ ProjectSettings::ProjectSettings() {
 		}
 	}
 #endif
-
+#ifndef GAME_ENGINE
 	GLOBAL_DEF_BASIC("application/config/name", "");
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::DICTIONARY, "application/config/name_localized", PROPERTY_HINT_LOCALIZABLE_STRING), Dictionary());
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::STRING, "application/config/description", PROPERTY_HINT_MULTILINE_TEXT), "");
 	GLOBAL_DEF_BASIC("application/config/version", "");
 	GLOBAL_DEF_INTERNAL(PropertyInfo(Variant::STRING, "application/config/tags"), PackedStringArray());
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::STRING, "application/run/main_scene", PROPERTY_HINT_FILE, "*.tscn,*.scn,*.res"), "");
+	GLOBAL_DEF_RST("application/config/use_hidden_project_data_directory", true);
+	GLOBAL_DEF("application/config/use_custom_user_dir", false);
+	GLOBAL_DEF("application/config/custom_user_dir_name", "");
+	GLOBAL_DEF("application/run/main_loop_type", "SceneTree");
+	GLOBAL_DEF("application/config/quit_on_go_back", true);
+	GLOBAL_DEF("application/config/project_settings_override", "");
+	GLOBAL_DEF("display/window/energy_saving/keep_screen_on", true);
+	GLOBAL_DEF("application/config/disable_project_settings_override", false);
+#else
+	GLOBAL_DEF_BASIC("application/config/name", String(GAME_VERSION_NAME));
+	GLOBAL_DEF("application/config/quit_on_go_back", false);
+	GLOBAL_DEF("display/window/energy_saving/keep_screen_on", false);
+#endif // !GAME_ENGINE
+	GLOBAL_DEF("application/config/auto_accept_quit", true);
 	GLOBAL_DEF("application/run/disable_stdout", false);
 	GLOBAL_DEF("application/run/disable_stderr", false);
 	GLOBAL_DEF("application/run/print_header", true);
 	GLOBAL_DEF("application/run/enable_alt_space_menu", false);
-	GLOBAL_DEF_RST("application/config/use_hidden_project_data_directory", true);
-	GLOBAL_DEF("application/config/use_custom_user_dir", false);
-	GLOBAL_DEF("application/config/custom_user_dir_name", "");
-	GLOBAL_DEF("application/config/project_settings_override", "");
-	GLOBAL_DEF("application/config/disable_project_settings_override", false);
-
-	GLOBAL_DEF("application/run/main_loop_type", "SceneTree");
-	GLOBAL_DEF("application/config/auto_accept_quit", true);
-	GLOBAL_DEF("application/config/quit_on_go_back", true);
 
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "accessibility/general/accessibility_support", PROPERTY_HINT_ENUM, "Auto (When Screen Reader is Running),Always Active,Disabled"), 0);
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "accessibility/general/updates_per_second", PROPERTY_HINT_RANGE, "1,100,1"), 60);
@@ -1615,8 +1653,8 @@ ProjectSettings::ProjectSettings() {
 	// - Have a 16:9 aspect ratio,
 	// - Have both dimensions divisible by 8 to better play along with video recording,
 	// - Be displayable correctly in windowed mode on a 1366×768 display (tested on Windows 10 with default settings).
-	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "display/window/size/viewport_width", PROPERTY_HINT_RANGE, "1,7680,1,or_greater"), 1152); // 8K resolution
-	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "display/window/size/viewport_height", PROPERTY_HINT_RANGE, "1,4320,1,or_greater"), 648); // 8K resolution
+	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "display/window/size/viewport_width", PROPERTY_HINT_RANGE, "1,7680,1,or_greater"), 640); // 8K resolution
+	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "display/window/size/viewport_height", PROPERTY_HINT_RANGE, "1,4320,1,or_greater"), 480); // 8K resolution
 
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "display/window/size/mode", PROPERTY_HINT_ENUM, "Windowed,Minimized,Maximized,Fullscreen,Exclusive Fullscreen"), 0);
 
@@ -1639,7 +1677,6 @@ ProjectSettings::ProjectSettings() {
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "display/window/size/window_width_override", PROPERTY_HINT_RANGE, "0,7680,1,or_greater"), 0); // 8K resolution
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "display/window/size/window_height_override", PROPERTY_HINT_RANGE, "0,4320,1,or_greater"), 0); // 8K resolution
 
-	GLOBAL_DEF("display/window/energy_saving/keep_screen_on", true);
 	GLOBAL_DEF("animation/warnings/check_invalid_track_paths", true);
 	GLOBAL_DEF("animation/warnings/check_angle_interpolation_type_conflicting", true);
 

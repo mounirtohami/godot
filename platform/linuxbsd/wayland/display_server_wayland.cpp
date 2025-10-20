@@ -40,6 +40,7 @@
 #endif
 
 #include "core/os/main_loop.h"
+#include "core/version.h"
 #include "servers/rendering/dummy/rasterizer_dummy.h"
 
 #ifdef VULKAN_ENABLED
@@ -82,12 +83,16 @@ String DisplayServerWayland::_get_app_id_from_context(Context p_context) {
 
 		case CONTEXT_ENGINE:
 		default: {
+#ifndef GAME_ENGINE
 			String config_name = GLOBAL_GET("application/config/name");
 			if (config_name.length() != 0) {
 				app_id = config_name;
 			} else {
 				app_id = "org.godotengine.Godot";
 			}
+#else
+			app_id = String(ENGINE_VERSION_NAME);
+#endif // !GAME_ENGINE
 		}
 	}
 
