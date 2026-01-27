@@ -41,6 +41,7 @@
 #include "core/os/os.h"
 #include "core/version.h"
 #include "editor/debugger/editor_debugger_node.h"
+#include "editor/docks/editor_dock_manager.h"
 #include "editor/editor_main_screen.h"
 #include "editor/editor_node.h"
 #include "editor/export/lipo.h"
@@ -158,7 +159,7 @@ bool godot_icall_Internal_ScriptEditorEdit(Resource *p_resource, int32_t p_line,
 }
 
 void godot_icall_Internal_EditorNodeShowScriptScreen() {
-	EditorNode::get_editor_main_screen()->select(EditorMainScreen::EDITOR_SCRIPT);
+	EditorNode::get_singleton()->focus_script_editor();
 }
 
 void godot_icall_Internal_EditorRunPlay() {

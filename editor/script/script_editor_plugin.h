@@ -38,6 +38,7 @@
 #include "scene/resources/text_file.h"
 
 class CodeTextEditor;
+class EditorDock;
 class EditorFileDialog;
 class EditorHelpSearch;
 class FindReplaceBar;
@@ -48,7 +49,6 @@ class TabContainer;
 class TextureRect;
 class Tree;
 class VSplitContainer;
-class WindowWrapper;
 
 class EditorSyntaxHighlighter : public SyntaxHighlighter {
 	GDCLASS(EditorSyntaxHighlighter, SyntaxHighlighter)
@@ -301,6 +301,7 @@ class ScriptEditor : public PanelContainer {
 
 		SEARCH_HELP,
 		SEARCH_WEBSITE,
+		RELOAD_SAVED_SCENE,
 
 		// Theme.
 		THEME_IMPORT,
@@ -333,8 +334,7 @@ class ScriptEditor : public PanelContainer {
 
 	Button *help_search = nullptr;
 	Button *site_search = nullptr;
-	Button *make_floating = nullptr;
-	bool is_floating = false;
+	Button *reload_saved_scene = nullptr;
 	EditorHelpSearch *help_search_dialog = nullptr;
 
 	ItemList *script_list = nullptr;
@@ -366,8 +366,6 @@ class ScriptEditor : public PanelContainer {
 
 	FindInFilesDialog *find_in_files_dialog = nullptr;
 	FindInFilesContainer *find_in_files = nullptr;
-
-	WindowWrapper *window_wrapper = nullptr;
 
 #ifdef ANDROID_ENABLED
 	Control *virtual_keyboard_spacer = nullptr;
@@ -556,8 +554,6 @@ class ScriptEditor : public PanelContainer {
 	void _set_script_zoom_factor(float p_zoom_factor);
 	void _update_code_editor_zoom_factor(CodeTextEditor *p_code_text_editor);
 
-	void _window_changed(bool p_visible);
-
 	static void _open_script_request(const String &p_path);
 	void _close_builtin_scripts_from_scene(const String &p_scene);
 
@@ -580,8 +576,6 @@ public:
 	Ref<Resource> open_file(const String &p_file);
 
 	void ensure_select_current();
-
-	bool is_editor_floating();
 
 	_FORCE_INLINE_ bool edit(const Ref<Resource> &p_resource, bool p_grab_focus = true) { return edit(p_resource, -1, 0, p_grab_focus); }
 	bool edit(const Ref<Resource> &p_resource, int p_line, int p_col, bool p_grab_focus = true);
@@ -623,21 +617,22 @@ public:
 
 	static void register_create_script_editor_function(CreateScriptEditorFunc p_func);
 
-	ScriptEditor(WindowWrapper *p_wrapper);
+	ScriptEditor();
 };
 
 class ScriptEditorPlugin : public EditorPlugin {
 	GDCLASS(ScriptEditorPlugin, EditorPlugin);
 
+	EditorDock *script_dock = nullptr;
 	ScriptEditor *script_editor = nullptr;
-	WindowWrapper *window_wrapper = nullptr;
+	Ref<Shortcut> make_floating_shortcut;
 
 	String last_editor;
 
-	void _focus_another_editor();
-
 	void _save_last_editor(const String &p_editor);
 	void _window_visibility_changed(bool p_visible);
+
+	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
 protected:
 	void _notification(int p_what);
@@ -646,7 +641,6 @@ public:
 	static bool open_in_external_editor(const String &p_path, int p_line, int p_col, bool p_ignore_project = false);
 
 	virtual String get_plugin_name() const override { return TTRC("Script"); }
-	bool has_main_screen() const override { return true; }
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
 	virtual void make_visible(bool p_visible) override;

@@ -43,9 +43,11 @@
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/doc/editor_help_search.h"
+#include "editor/docks/editor_dock.h"
 #include "editor/docks/editor_dock_manager.h"
 #include "editor/docks/filesystem_dock.h"
 #include "editor/docks/inspector_dock.h"
+#include "editor/docks/script_dock.h"
 #include "editor/docks/signals_dock.h"
 #include "editor/editor_interface.h"
 #include "editor/editor_main_screen.h"
@@ -1310,7 +1312,7 @@ void ScriptEditor::_file_dialog_action(const String &p_file) {
 		case FILE_MENU_OPEN: {
 			if (!is_visible_in_tree()) {
 				// When created from outside the editor.
-				EditorNode::get_singleton()->get_editor_main_screen()->select(EditorMainScreen::EDITOR_SCRIPT);
+				EditorDockManager::get_singleton()->focus_dock(ScriptDock::get_singleton());
 			}
 			open_file(p_file);
 			file_dialog_option = -1;
@@ -1484,6 +1486,10 @@ void ScriptEditor::_menu_option(int p_option) {
 			} else {
 				OS::get_singleton()->shell_open(GODOT_VERSION_DOCS_URL "/");
 			}
+		} break;
+		case RELOAD_SAVED_SCENE: {
+			save_current_script();
+			EditorNode::get_singleton()->trigger_menu_option(EditorNode::SCENE_RELOAD_SAVED_SCENE, false);
 		} break;
 		case FILE_MENU_HISTORY_NEXT: {
 			_history_forward();
@@ -1809,10 +1815,6 @@ void ScriptEditor::_notification(int p_what) {
 
 		case NOTIFICATION_TRANSLATION_CHANGED: {
 			_update_online_doc();
-			if (!make_floating->is_disabled()) {
-				// Override default ScreenSelect tooltip if multi-window support is available.
-				make_floating->set_tooltip_text(TTR("Make the script editor floating.") + "\n" + TTR("Right-click to open the screen selector."));
-			}
 			[[fallthrough]];
 		}
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
@@ -1821,6 +1823,7 @@ void ScriptEditor::_notification(int p_what) {
 
 			help_search->set_button_icon(get_editor_theme_icon(SNAME("HelpSearch")));
 			site_search->set_button_icon(get_editor_theme_icon(SNAME("ExternalLink")));
+			reload_saved_scene->set_button_icon(get_editor_theme_icon(SNAME("Reload")));
 
 			if (is_layout_rtl()) {
 				script_forward->set_button_icon(get_editor_theme_icon(SNAME("Back")));
@@ -2079,10 +2082,6 @@ void ScriptEditor::ensure_select_current() {
 	_update_selected_editor_menu();
 }
 
-bool ScriptEditor::is_editor_floating() {
-	return is_floating;
-}
-
 void ScriptEditor::_find_scripts(Node *p_base, Node *p_current, HashSet<Ref<Script>> &used) {
 	if (p_current != p_base && p_current->get_owner() != p_base) {
 		return;
@@ -2252,10 +2251,10 @@ void ScriptEditor::_update_online_doc() {
 	if (native_class_doc) {
 		String name = eh->get_class();
 		String tooltip = vformat(TTR("Open '%s' in Godot online documentation."), name);
-		site_search->set_text(TTRC("Open in Online Docs"));
+		// site_search->set_text(TTRC("Open in Online Docs"));
 		site_search->set_tooltip_text(tooltip);
 	} else {
-		site_search->set_text(TTRC("Online Docs"));
+		// site_search->set_text(TTRC("Online Docs"));
 		site_search->set_tooltip_text(TTRC("Open Godot online documentation."));
 	}
 }
@@ -4155,11 +4154,6 @@ void ScriptEditor::_update_code_editor_zoom_factor(CodeTextEditor *p_code_text_e
 	}
 }
 
-void ScriptEditor::_window_changed(bool p_visible) {
-	make_floating->set_visible(!p_visible);
-	is_floating = p_visible;
-}
-
 void ScriptEditor::_filter_scripts_text_changed(const String &p_newtext) {
 	_update_script_names();
 }
@@ -4190,9 +4184,7 @@ void ScriptEditor::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("script_close", PropertyInfo(Variant::OBJECT, "script", PROPERTY_HINT_RESOURCE_TYPE, "Script")));
 }
 
-ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
-	window_wrapper = p_wrapper;
-
+ScriptEditor::ScriptEditor() {
 	script_editor_cache.instantiate();
 	script_editor_cache->load(EditorPaths::get_singleton()->get_project_settings_dir().path_join("script_editor_cache.cfg"));
 
@@ -4426,10 +4418,16 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 
 	help_search = memnew(Button);
 	help_search->set_theme_type_variation(SceneStringName(FlatButton));
-	help_search->set_text(TTRC("Search Help"));
+	// help_search->set_text(TTRC("Search Help"));
 	help_search->connect(SceneStringName(pressed), callable_mp(this, &ScriptEditor::_menu_option).bind(SEARCH_HELP));
 	menu_hb->add_child(help_search);
 	help_search->set_tooltip_text(TTRC("Search the reference documentation."));
+
+	reload_saved_scene = memnew(Button);
+	reload_saved_scene->set_theme_type_variation(SceneStringName(FlatButton));
+	reload_saved_scene->connect(SceneStringName(pressed), callable_mp(this, &ScriptEditor::_menu_option).bind(RELOAD_SAVED_SCENE));
+	menu_hb->add_child(reload_saved_scene);
+	reload_saved_scene->set_tooltip_text(TTRC("Reload the current scene."));
 
 	menu_hb->add_child(memnew(VSeparator));
 
@@ -4448,15 +4446,6 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	script_forward->set_disabled(true);
 	menu_hb->add_child(script_forward);
 	script_forward->connect(SceneStringName(pressed), callable_mp(this, &ScriptEditor::_history_forward));
-
-	menu_hb->add_child(memnew(VSeparator));
-
-	make_floating = memnew(ScreenSelect);
-	make_floating->set_tooltip_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
-	make_floating->connect("request_open_in_screen", callable_mp(window_wrapper, &WindowWrapper::enable_window_on_screen).bind(true));
-
-	menu_hb->add_child(make_floating);
-	p_wrapper->connect("window_visibility_changed", callable_mp(this, &ScriptEditor::_window_changed));
 
 	tab_container->connect("tab_changed", callable_mp(this, &ScriptEditor::_tab_changed));
 
@@ -4560,13 +4549,6 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	_update_online_doc();
 }
 
-void ScriptEditorPlugin::_focus_another_editor() {
-	if (window_wrapper->get_window_enabled()) {
-		ERR_FAIL_COND(last_editor.is_empty());
-		EditorInterface::get_singleton()->set_main_screen_editor(last_editor);
-	}
-}
-
 void ScriptEditorPlugin::_save_last_editor(const String &p_editor) {
 	if (p_editor != get_plugin_name()) {
 		last_editor = p_editor;
@@ -4574,7 +4556,6 @@ void ScriptEditorPlugin::_save_last_editor(const String &p_editor) {
 }
 
 void ScriptEditorPlugin::_window_visibility_changed(bool p_visible) {
-	_focus_another_editor();
 	if (p_visible) {
 		script_editor->add_theme_style_override(SceneStringName(panel), script_editor->get_theme_stylebox("ScriptEditorPanelFloating", EditorStringName(EditorStyles)));
 	} else {
@@ -4584,9 +4565,6 @@ void ScriptEditorPlugin::_window_visibility_changed(bool p_visible) {
 
 void ScriptEditorPlugin::_notification(int p_what) {
 	switch (p_what) {
-		case NOTIFICATION_TRANSLATION_CHANGED: {
-			window_wrapper->set_window_title(vformat(TTR("%s - Godot Engine"), TTR("Script Editor")));
-		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			connect("main_screen_changed", callable_mp(this, &ScriptEditorPlugin::_save_last_editor));
 		} break;
@@ -4691,16 +4669,13 @@ bool ScriptEditorPlugin::handles(Object *p_object) const {
 
 void ScriptEditorPlugin::make_visible(bool p_visible) {
 	if (p_visible) {
-		window_wrapper->show();
-		script_editor->ensure_select_current();
-	} else {
-		window_wrapper->hide();
+		script_dock->make_visible();
+		EditorDockManager::get_singleton()->focus_dock(script_dock);
 	}
 }
 
 void ScriptEditorPlugin::selected_notify() {
 	script_editor->ensure_select_current();
-	_focus_another_editor();
 }
 
 String ScriptEditorPlugin::get_unsaved_status(const String &p_for_scene) const {
@@ -4758,37 +4733,10 @@ void ScriptEditorPlugin::apply_changes() {
 
 void ScriptEditorPlugin::set_window_layout(Ref<ConfigFile> p_layout) {
 	script_editor->set_window_layout(p_layout);
-
-	if (EDITOR_GET("interface/multi_window/restore_windows_on_load") && window_wrapper->is_window_available() && p_layout->has_section_key("ScriptEditor", "window_rect")) {
-		window_wrapper->restore_window_from_saved_position(
-				p_layout->get_value("ScriptEditor", "window_rect", Rect2i()),
-				p_layout->get_value("ScriptEditor", "window_screen", -1),
-				p_layout->get_value("ScriptEditor", "window_screen_rect", Rect2i()));
-	} else {
-		window_wrapper->set_window_enabled(false);
-	}
 }
 
 void ScriptEditorPlugin::get_window_layout(Ref<ConfigFile> p_layout) {
 	script_editor->get_window_layout(p_layout);
-
-	if (window_wrapper->get_window_enabled()) {
-		p_layout->set_value("ScriptEditor", "window_rect", window_wrapper->get_window_rect());
-		int screen = window_wrapper->get_window_screen();
-		p_layout->set_value("ScriptEditor", "window_screen", screen);
-		p_layout->set_value("ScriptEditor", "window_screen_rect", DisplayServer::get_singleton()->screen_get_usable_rect(screen));
-
-	} else {
-		if (p_layout->has_section_key("ScriptEditor", "window_rect")) {
-			p_layout->erase_section_key("ScriptEditor", "window_rect");
-		}
-		if (p_layout->has_section_key("ScriptEditor", "window_screen")) {
-			p_layout->erase_section_key("ScriptEditor", "window_screen");
-		}
-		if (p_layout->has_section_key("ScriptEditor", "window_screen_rect")) {
-			p_layout->erase_section_key("ScriptEditor", "window_screen_rect");
-		}
-	}
 }
 
 void ScriptEditorPlugin::get_breakpoints(List<String> *p_breakpoints) {
@@ -4797,6 +4745,16 @@ void ScriptEditorPlugin::get_breakpoints(List<String> *p_breakpoints) {
 
 void ScriptEditorPlugin::edited_scene_changed() {
 	script_editor->edited_scene_changed();
+}
+
+void ScriptEditorPlugin::shortcut_input(const Ref<InputEvent> &p_event) {
+	if (p_event.is_null() || !p_event->is_pressed() || p_event->is_echo()) {
+		return;
+	}
+
+	if (make_floating_shortcut.is_valid() && make_floating_shortcut->matches_event(p_event)) {
+		EditorDockManager::get_singleton()->make_dock_floating(script_dock);
+	}
 }
 
 ScriptEditorPlugin::ScriptEditorPlugin() {
@@ -4808,17 +4766,18 @@ ScriptEditorPlugin::ScriptEditorPlugin() {
 	ED_SHORTCUT("script_text_editor/convert_to_lowercase", TTRC("Lowercase"), KeyModifierMask::SHIFT | Key::F5);
 	ED_SHORTCUT("script_text_editor/capitalize", TTRC("Capitalize"), KeyModifierMask::SHIFT | Key::F6);
 
-	window_wrapper = memnew(WindowWrapper);
-	window_wrapper->set_margins_enabled(true);
+	set_process_shortcut_input(true);
 
-	script_editor = memnew(ScriptEditor(window_wrapper));
-	Ref<Shortcut> make_floating_shortcut = ED_SHORTCUT_AND_COMMAND("script_editor/make_floating", TTRC("Make Floating"));
-	window_wrapper->set_wrapped_control(script_editor, make_floating_shortcut);
+	make_floating_shortcut = ED_SHORTCUT_AND_COMMAND("script_editor/make_floating", TTRC("Make Floating"));
 
-	EditorNode::get_singleton()->get_editor_main_screen()->get_control()->add_child(window_wrapper);
-	window_wrapper->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	window_wrapper->hide();
-	window_wrapper->connect("window_visibility_changed", callable_mp(this, &ScriptEditorPlugin::_window_visibility_changed));
+	script_dock = memnew(ScriptDock);
+	EditorDockManager::get_singleton()->add_dock(script_dock);
+
+	script_editor = memnew(ScriptEditor);
+	script_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	script_dock->add_child(script_editor);
+
+	// window_wrapper->connect("window_visibility_changed", callable_mp(this, &ScriptEditorPlugin::_window_visibility_changed));
 
 	ScriptServer::set_reload_scripts_on_save(EDITOR_GET("text_editor/behavior/files/auto_reload_and_parse_scripts_on_save"));
 }

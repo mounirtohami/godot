@@ -91,6 +91,7 @@
 #include "editor/docks/import_dock.h"
 #include "editor/docks/inspector_dock.h"
 #include "editor/docks/scene_tree_dock.h"
+#include "editor/docks/script_dock.h"
 #include "editor/docks/signals_dock.h"
 #include "editor/editor_data.h"
 #include "editor/editor_interface.h"
@@ -418,8 +419,6 @@ void EditorNode::shortcut_input(const Ref<InputEvent> &p_event) {
 		} else if (ED_IS_SHORTCUT("editor/editor_3d", p_event)) {
 			editor_main_screen->select(EditorMainScreen::EDITOR_3D);
 #endif // _3D_DISABLED
-		} else if (ED_IS_SHORTCUT("editor/editor_script", p_event)) {
-			editor_main_screen->select(EditorMainScreen::EDITOR_SCRIPT);
 		} else if (ED_IS_SHORTCUT("editor/editor_game", p_event)) {
 			editor_main_screen->select(EditorMainScreen::EDITOR_GAME);
 		} else if (ED_IS_SHORTCUT("editor/editor_help", p_event)) {
@@ -3153,7 +3152,7 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 			SceneTreeDock::get_singleton()->set_selection({ current_node });
 			InspectorDock::get_singleton()->update(current_node);
 			if (!inspector_only && !skip_main_plugin) {
-				if (!ScriptEditor::get_singleton()->is_editor_floating() && ScriptEditor::get_singleton()->is_visible_in_tree()) {
+				if (ScriptEditor::get_singleton()->is_visible_in_tree()) {
 					skip_main_plugin = stay_in_script_editor_on_node_selected;
 				} else {
 					skip_main_plugin = !editor_main_screen->can_auto_switch_screens();
@@ -6701,31 +6700,11 @@ void EditorNode::_prepare_save_confirmation_popup() {
 }
 
 void EditorNode::_toggle_distraction_free_mode() {
-	if (EDITOR_GET("interface/editor/separate_distraction_mode")) {
-		int screen = editor_main_screen->get_selected_index();
-
-		if (screen == EditorMainScreen::EDITOR_SCRIPT) {
-			script_distraction_free = !script_distraction_free;
-			set_distraction_free_mode(script_distraction_free);
-		} else {
-			scene_distraction_free = !scene_distraction_free;
-			set_distraction_free_mode(scene_distraction_free);
-		}
-	} else {
-		set_distraction_free_mode(distraction_free->is_pressed());
-	}
+	set_distraction_free_mode(distraction_free->is_pressed());
 }
 
 void EditorNode::update_distraction_free_mode() {
-	if (!EDITOR_GET("interface/editor/separate_distraction_mode")) {
-		return;
-	}
-	int screen = editor_main_screen->get_selected_index();
-	if (screen == EditorMainScreen::EDITOR_SCRIPT) {
-		set_distraction_free_mode(script_distraction_free);
-	} else {
-		set_distraction_free_mode(scene_distraction_free);
-	}
+	set_distraction_free_mode(distraction_free->is_pressed());
 }
 
 void EditorNode::set_distraction_free_mode(bool p_enter) {
@@ -7724,7 +7703,6 @@ void EditorNode::_feature_profile_changed() {
 #ifndef _3D_DISABLED
 		editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_3D, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
 #endif // _3D_DISABLED
-		editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_SCRIPT, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT));
 		if (!Engine::get_singleton()->is_recovery_mode_hint()) {
 			editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_GAME, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_GAME));
 		}
@@ -7740,7 +7718,6 @@ void EditorNode::_feature_profile_changed() {
 #ifndef _3D_DISABLED
 		editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_3D, true);
 #endif // _3D_DISABLED
-		editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_SCRIPT, true);
 		if (!Engine::get_singleton()->is_recovery_mode_hint()) {
 			editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_GAME, true);
 		}
@@ -8213,6 +8190,10 @@ HashMap<String, Variant> EditorNode::get_initial_settings() {
 	settings["physics/3d/physics_engine"] = "Jolt Physics";
 	settings["rendering/rendering_device/driver.windows"] = "d3d12";
 	return settings;
+}
+
+void EditorNode::focus_script_editor() {
+	EditorDockManager::get_singleton()->focus_dock(ScriptDock::get_singleton());
 }
 
 EditorNode::EditorNode() {
@@ -8822,13 +8803,11 @@ EditorNode::EditorNode() {
 	// Use the Ctrl modifier so F2 can be used to rename nodes in the scene tree dock.
 	ED_SHORTCUT_AND_COMMAND("editor/editor_2d", TTRC("Open 2D Workspace"), KeyModifierMask::CTRL | Key::F1);
 	ED_SHORTCUT_AND_COMMAND("editor/editor_3d", TTRC("Open 3D Workspace"), KeyModifierMask::CTRL | Key::F2);
-	ED_SHORTCUT_AND_COMMAND("editor/editor_script", TTRC("Open Script Editor"), KeyModifierMask::CTRL | Key::F3);
 	ED_SHORTCUT_AND_COMMAND("editor/editor_game", TTRC("Open Game View"), KeyModifierMask::CTRL | Key::F4);
 	ED_SHORTCUT_AND_COMMAND("editor/editor_assetlib", TTRC("Open Asset Library"), KeyModifierMask::CTRL | Key::F5);
 
 	ED_SHORTCUT_OVERRIDE("editor/editor_2d", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_1);
 	ED_SHORTCUT_OVERRIDE("editor/editor_3d", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_2);
-	ED_SHORTCUT_OVERRIDE("editor/editor_script", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_3);
 	ED_SHORTCUT_OVERRIDE("editor/editor_game", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_4);
 	ED_SHORTCUT_OVERRIDE("editor/editor_assetlib", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_5);
 

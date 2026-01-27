@@ -437,9 +437,6 @@ private:
 	ConfirmationDialog *disk_changed = nullptr;
 	ConfirmationDialog *project_data_missing = nullptr;
 
-	bool scene_distraction_free = false;
-	bool script_distraction_free = false;
-
 	bool changing_scene = false;
 	bool cmdline_mode = false;
 	bool convert_old = false;
@@ -1039,6 +1036,8 @@ public:
 	void redo();
 
 	int execute_and_show_output(const String &p_title, const String &p_path, const List<String> &p_arguments, bool p_close_on_ok = true, bool p_close_on_errors = false, String *r_output = nullptr);
+
+	void focus_script_editor();
 
 	EditorNode();
 	~EditorNode();
